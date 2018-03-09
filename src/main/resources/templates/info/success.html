@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="head :: head" th:remove="tag"></head>
+<body>
+	<div class="container-fluid">
+		<img class="hobbyte-info right" src="/images/success-hobbyte.png"/>
+		<div class="row">
+			<div class="info-box success">
+				<div th:utext="${message}"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

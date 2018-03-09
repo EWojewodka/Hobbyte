@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="header">
+		<div class="container-fluid" id="header">
+	    	<div class="header-image"></div>
+	     	<div class="header-obscure"></div>
+	        <div class="menu-btn-wrapper">
+	            <button class="btn btn-default" onclick="toggleMenu(true)">
+	               <svg  height="20px"
+	                      id="Layer_1"
+	                      style="enable-background:new 0 0 32 32;"
+	                      version="1.1"
+	                      viewBox="0 0 32 32"
+	                      width="20px"
+	                      xml:space="preserve"
+	                      xmlns="http://www.w3.org/2000/svg"
+	                      xmlns:xlink="http://www.w3.org/1999/xlink">
+	                        <path d="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z"/>
+	                     </svg>&nbsp;&nbsp;MENU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+	            </button>
+	        </div>
+	        <div th:text="${T(com.webrest.hobbyte.app.user.ExtranetUserUtils).isLogged(#session)}"></div>
+		        <div th:switch="${userContext.isUserLogged()}"> 
+				  <div th:case="true">
+		            <div class="buttons-wrapper" id="sign-buttons">
+		                <a href="/profile/{{ Auth::user()->name }}">
+		                    <button class="btn btn-default"><i class="fa fa-user"></i> Profile</button>
+		                </a>
+		            </div>
+				  </div>
+				  <div th:case="*">
+		        	<div class="buttons-wrapper" id="sign-buttons">
+		                <a href="/auth/sign-in">
+		                    <button class="btn btn-default">
+		                        <i class="fa fa-lock"></i> SIGN IN
+		                    </button>
+		                </a>
+		        	</div>
+				  </div> 
+				</div>
+	        <a href="/" class="header-slogan">
+	                Join to the best minds around the world!
+	        </a>
+	        <div class="navbar navbar-left">
+	            <button class="close" onclick="toggleMenu(false)">&#10006;</button>
+	            <ul>
+	                <a href="#"><li>News</li></a>
+	                <a href="#"><li>Top</li></a>
+	                <a href="#"><li>Last</li></a>
+	                <a href="#"><li>Categories</li></a>
+	                <a href="#"><li>Help</li></a>
+	                <a href="#"><li>Settings</li></a>
+	            </ul>
+	            <div class="socials">
+	                <div class="sub-title text-center">Socials</div> <br/>
+	                <a class="facebook" href="#"><i class="fa fa-facebook-square"></i> facebook </a><br/>
+	                <a class="linkedin" href="#"><i class="fa fa-linkedin-square"></i> linkedin</a> <br/>
+	                <a class="snapchat" href="#"><i class="fa fa-snapchat-square"></i> snapchat</a>
+	            </div>
+	        </div>
+	 	</div>
+    </div>
+	
+</body>
+</html>

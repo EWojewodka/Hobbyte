@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="errors(fields)">
+		<div th:if="${fields.hasAnyErrors()}" class="alert alert-danger">
+			<i class="fa fa-exclamation-circle"></i>
+			<ul>
+				<li th:each="err : ${fields.allErrors()}" th:text="${err}"></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

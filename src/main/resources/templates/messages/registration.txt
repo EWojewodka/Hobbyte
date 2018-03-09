@@ -1,0 +1,4 @@
+<div class="text-center">
+	<h3 class="display-3">Your account is created.</h3>
+	Please click <a href="/profile">link</a> for go to your profile site.
+</div>

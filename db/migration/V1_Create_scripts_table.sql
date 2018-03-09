@@ -1,0 +1,1 @@
+CREATE TABLE hb_scripts();
