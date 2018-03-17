@@ -1,29 +1,34 @@
 package com.webrest.hobbyte.core.utils;
 
-import java.lang.reflect.Field;
-
 public class EnumUtils {
-	
-	@SuppressWarnings("unchecked")
-	public static <T extends Enum<T>> T findByField(Class<T> enumType, String fieldName, String value) {
 
+	public static <T extends Enum<? extends WithId>> T findById(Class<T> enumType, int id) {
 		try {
-			Object[] objects = enumType.getEnumConstants();
-			for (Object obj : objects) {
-				Field keyField = obj.getClass().getDeclaredField(fieldName);
-				keyField.setAccessible(true);
-				if (value.equals(keyField.get(obj))) {
-					return (T) obj;
-				}
+			T[] objects = enumType.getEnumConstants();
+			for (T _obj : objects) {
+				WithId obj = (WithId) _obj;
+				if (id == obj.getId())
+					return _obj;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
-	public static <T extends Enum<T>> T findById(Class<T> enumType, int id) {
-		return findByField(enumType, "id", String.valueOf(id));
+	
+	public static <T extends Enum<? extends WithCode>> T findByCode(Class<T> enumType, String code) {
+		try {
+			T[] objects = enumType.getEnumConstants();
+			for (T _obj : objects) {
+				WithCode obj = (WithCode) _obj;
+				if (code.equals(obj.getCode()))
+					return _obj;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
+
 }

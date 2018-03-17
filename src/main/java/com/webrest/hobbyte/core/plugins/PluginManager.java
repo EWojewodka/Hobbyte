@@ -23,7 +23,7 @@ public class PluginManager {
 
 	// Find and sort project plugins.
 	private PluginManager() {
-		Set<Class<? extends IPlugin>> _plugins = ClassUtils.onlyNonAbstract(ClassUtils.findSubTypes(IPlugin.class));
+		Set<Class<? extends IPlugin>> _plugins = ClassUtils.filterNonAbstract(ClassUtils.findSubTypes(IPlugin.class));
 		PluginSort sorter = new PluginSort(_plugins);
 		sorter.sort();
 		plugins = sorter.getPlugins();

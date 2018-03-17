@@ -4,12 +4,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 /**
  * Basic servlet info wrapper.
  * 
  * @author wojew
  *
  */
+@Service
+@Scope(scopeName = "session")
 public interface IHttpContext {
 
 	/**

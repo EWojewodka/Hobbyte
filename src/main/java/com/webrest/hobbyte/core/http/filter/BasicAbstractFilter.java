@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-public abstract class BasicFilter implements IFilter {
+public abstract class BasicAbstractFilter implements IFilter {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

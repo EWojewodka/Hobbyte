@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="head :: head" th:remove="tag"></head>
+<body>
+	<div class="container-fluid error-page">
+		<div class="row">
+			<div class="col-lg-6 title">
+				<h3 class="display-3" th:text="${title}"></h3>
+				<button class="btn btn-info" onclick="$('#error-message').slideToggle(500, 'swing');"><i class="fa fa-angle-double-down"></i></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6 content">
+				<div th:text="${errorMessage}" id="error-message"></div>
+			</div>
+			<div class="col-lg-6 nav">
+				<div class="row text-right">
+					<div class="col-lg-12">
+						<ul>
+							<li><a onclick="history.back(1);">Back to last page</a></li>
+							<li><a href="/">Back to home page</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="row contact text-center contact">
+					<div class="col-lg-12">
+						<h3 class="display-3">
+							<a href="mailto::emilwojewodka@gmail.com">Report error</a>
+						</h3>
+						<span>
+							Click <a href="mailto::emilwojewodka@gmail.com"><b>here</b></a> or just write to me on: <br/>
+							emilwojewodka@gmail.com <br/>
+							<br/>							
+							Please paste error content to mail. <br/>
+							It'll help me in debug :D
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

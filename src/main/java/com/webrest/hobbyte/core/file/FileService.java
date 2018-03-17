@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
 import org.springframework.util.StringUtils;
 
 import com.webrest.hobbyte.core.utils.FileUtils;
@@ -40,8 +39,8 @@ public class FileService implements IFileService {
 	protected String[] comments = new String[0];
 
 	public FileService(File file) {
-		Assert.assertNotNull("Cannot init file service for null file", file);
-		Assert.assertTrue(String.format("File (%s) doesn't exists.", file.getPath()), file.exists());
+		if(file == null || !file.exists())
+			throw new IllegalArgumentException(String.format("cannot create file service, cause file is null or doesnt exists. (%s)", file));
 		this.file = file;
 	}
 

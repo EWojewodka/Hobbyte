@@ -20,11 +20,10 @@
 	                     </svg>&nbsp;&nbsp;MENU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 	            </button>
 	        </div>
-	        <div th:text="${T(com.webrest.hobbyte.app.user.ExtranetUserUtils).isLogged(#session)}"></div>
-		        <div th:switch="${userContext.isUserLogged()}"> 
+		        <div th:switch="${extranetContext.isUserLogged()}"> 
 				  <div th:case="true">
 		            <div class="buttons-wrapper" id="sign-buttons">
-		                <a href="/profile/{{ Auth::user()->name }}">
+		                <a th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}">
 		                    <button class="btn btn-default"><i class="fa fa-user"></i> Profile</button>
 		                </a>
 		            </div>
@@ -50,7 +49,7 @@
 	                <a href="#"><li>Last</li></a>
 	                <a href="#"><li>Categories</li></a>
 	                <a href="#"><li>Help</li></a>
-	                <a href="#"><li>Settings</li></a>
+	                <li><a href="/profile/settings">Settings</a></li>
 	            </ul>
 	            <div class="socials">
 	                <div class="sub-title text-center">Socials</div> <br/>

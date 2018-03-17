@@ -43,7 +43,7 @@ public abstract class SecurityAbstractController implements Accessible {
 		if (hasAccess())
 			return;
 		if (!StringUtils.isEmpty(getRedirectURL()))
-			throw new RedirectException(getRedirectURL());
+			throw new RedirectException(context, getRedirectURL());
 		context.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN);
 	}
 	

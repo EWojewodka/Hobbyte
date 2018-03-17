@@ -16,6 +16,16 @@ public class FileUtils {
 		return new File(ROOT_FILE, relativePath);
 	}
 
+	/**
+	 * Return true is template /templates/error/{errorCode}.html exists.
+	 * 
+	 * @param errorCode
+	 * @return
+	 */
+	public static boolean existsErrorPage(int errorCode) {
+		return FileUtils.class.getClassLoader().getResource("templates/error/" + errorCode + ".html") != null;
+	}
+
 	public static void close(Closeable closeable) {
 		if (closeable != null)
 			try {

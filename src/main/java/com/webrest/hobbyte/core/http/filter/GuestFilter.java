@@ -12,22 +12,21 @@ import com.webrest.hobbyte.app.user.ExtranetUserUtils;
  * @author wojew
  *
  */
-public class GuestFilter extends BasicFilter {
+public class GuestFilter extends BasicAbstractFilter {
 
 	@Override
 	public String getPath() {
-		return "/auth/sing-in";
+		return "/auth/**";
 	}
 
 	@Override
 	public boolean hasAccess(HttpServletRequest request, HttpServletResponse repsonse) throws Exception {
-		repsonse.sendRedirect("/auth-in");
 		return !ExtranetUserUtils.isLogged(request);
 	}
 
 	@Override
 	public String redirectOnFail() {
-		return "/";
+		return "/profile";
 	}
 
 }

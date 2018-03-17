@@ -8,8 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import com.webrest.hobbyte.app.user.ExtranetUserStatus;
+import com.webrest.hobbyte.app.user.model.enums.ExtranetUserAgreement;
+import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
+import com.webrest.hobbyte.app.user.model.enums.Gender;
+import com.webrest.hobbyte.app.user.model.enums.NewsletterStatus;
 
 @Entity
 @Table(name = "hb_extranet_users")
@@ -41,13 +45,24 @@ public class ExtranetUser {
 	@Column
 	private int status;
 	
-
 	@Column
 	private int agreement = ExtranetUserAgreement.NOT_ACCEPT.getId();
 
 	@Column
-	private int age;
+	private Date born;
+	
+	@Column(name = "phone_number", nullable = true)
+	private String phoneNumber;
+	
+	@Column(nullable = true)
+	private Integer gender;
 
+	@Column
+	private int newsletter;
+	
+	@Transient
+	private ExtranetUserPolicy userPolicy = new ExtranetUserPolicy(this);
+	
 	public ExtranetUser() {
 
 	}
@@ -108,12 +123,12 @@ public class ExtranetUser {
 		this.agreement = agreement.getId();
 	}
 
-	public int getAge() {
-		return age;
+	public Date getBorn() {
+		return born;
 	}
-
-	public void setAge(int age) {
-		this.age = age;
+	
+	public void setBorn(Date born) {
+		this.born = born;
 	}
 
 	public ExtranetUserStatus getStatus() {
@@ -123,5 +138,34 @@ public class ExtranetUser {
 	public void setStatus(ExtranetUserStatus status) {
 		this.status = status.getId();
 	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public Gender getGender() {
+		return Gender.getById(gender == null ? -1 : gender);
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender.getId();
+	}
+
+	public NewsletterStatus getNewsletter() {
+		return NewsletterStatus.getById(newsletter);
+	}
+
+	public void setNewsletter(NewsletterStatus newsletter) {
+		this.newsletter = newsletter.getId();
+	}
+
+	public ExtranetUserPolicy getUserPolicy() {
+		return userPolicy;
+	}
+	
 
 }

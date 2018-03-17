@@ -1,20 +1,23 @@
 package com.webrest.hobbyte.core.utils;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.lang.reflect.Field;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.aspectj.util.FileUtil;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
+
+import com.webrest.hobbyte.core.logger.LoggerFactory;
 
 public class ClassUtils {
 
 	public static final Class<?>[] EMPTY_ARRAY = new Class[0];
+
+	private static final Logger LOGGER = LoggerFactory.getLogger();
 
 	/**
 	 * Return collection of subtypes of passes class. </br>
@@ -41,32 +44,73 @@ public class ClassUtils {
 	 * @param collection
 	 * @return
 	 */
-	public static <T> Set<Class<? extends T>> onlyNonAbstract(Collection<Class<? extends T>> collection) {
+	public static <T> Set<Class<? extends T>> filterNonAbstract(Collection<Class<? extends T>> collection) {
 		return collection.parallelStream().filter(x -> !Modifier.isAbstract(x.getModifiers()))
 				.collect(Collectors.toSet());
 	}
 
-	public static File[] findProjectFiles() {
-		return FileUtil.listFiles(new File("."), new FileFilter() {
-
-			@Override
-			public boolean accept(File pathname) {
-				String name = pathname.getName();
-				return name.startsWith("script") && name.endsWith(".sql");
-			}
-		});
+	public static <T> Set<Class<? extends T>> findNonAbstract(Class<T> clazz) {
+		return filterNonAbstract(findSubTypes(clazz));
 	}
 
-	public static void addValueToField(Object obj, Object valueToAdd) {
-		Field[] fields = obj.getClass().getFields();
-		for (Field f : fields) {
-			if (f.getType().equals(valueToAdd.getClass()))
-				try {
-					f.set(obj, valueToAdd);
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+	/**
+	 * Return {@link Class} instance if there is a {@link Constructor} with passed
+	 * <code>constructorParameters</code> types. If so, create new instance, and
+	 * pass to that constructor parameters.
+	 * 
+	 * @see #getConstructor(Class, Class...)
+	 * @param constructorClass
+	 * @param constructorParameters
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T createInstance(Class<? extends T> constructorClass, Object... constructorParameters) {
+
+		int arrayLength = constructorParameters == null ? 0 : constructorParameters.length;
+		Class<?>[] constructorParameterClasses = new Class<?>[arrayLength];
+
+		for (int i = 0; i < arrayLength; i++)
+			constructorParameterClasses[i] = constructorParameters[i].getClass();
+
+		Constructor<?> constructor = getConstructor(constructorClass, constructorParameterClasses);
+
+		try {
+			return (T) constructor.newInstance(constructorParameters);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	/**
+	 * Return {@link Constructor} of {@link Class}. If Class<?> array parameter is
+	 * null there will be replaced by {@link #EMPTY_ARRAY}, so returned
+	 * {@link Constructor} will be without arguments. </br>
+	 * Also method return <code>null</code> if there is no
+	 * {@link Class#getConstructor(Class...)} with specified constructor parameter
+	 * types.
+	 * 
+	 * @param constructorClass
+	 * @param constructorParameterClasses
+	 * @return
+	 */
+	public static <T> Constructor<? extends T> getConstructor(Class<? extends T> constructorClass,
+			Class<?>... constructorParameterClasses) {
+		if (constructorClass == null)
+			return null;
+
+		if (constructorParameterClasses == null)
+			constructorParameterClasses = EMPTY_ARRAY;
+
+		try {
+			return constructorClass.getConstructor(constructorParameterClasses);
+		} catch (NoSuchMethodException | SecurityException e) {
+			LOGGER.info("Can't find constructor of (" + constructorClass.getName() + " ) class with parameters "
+					+ StringUtils.toGenericString(constructorParameterClasses, ","));
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

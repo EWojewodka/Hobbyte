@@ -1,8 +1,9 @@
-package com.webrest.hobbyte.app.user;
+package com.webrest.hobbyte.app.user.model.enums;
 
 import com.webrest.hobbyte.core.utils.EnumUtils;
+import com.webrest.hobbyte.core.utils.WithId;
 
-public enum ExtranetUserStatus {
+public enum ExtranetUserStatus implements WithId{
 	ACTIVE(1),
 	/**
 	 * 

@@ -13,6 +13,7 @@
                 <div class="panel-body">
 
 					<form class="form-horizontal" role="form" method="POST" action="/auth/sign-up" th:object="${loginForm}">
+						<input type="hidden" name="referer" value="javascript:document.referer" />
 						<div th:include="fragments/formErrors :: errors(${#fields})" th:remove="tag"></div>
 
 						<div class="form-group">
@@ -40,7 +41,7 @@
 								</div>
 							</div>
 						</div>
-
+						
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary">Login</button>

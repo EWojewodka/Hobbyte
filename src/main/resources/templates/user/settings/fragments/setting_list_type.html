@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="setting-type-list">
+		<div class="row settings-type-list">
+			<div class="col-lg-offset-2 col-lg-8">
+				<ul>
+					<li><a href="/profile/settings/account">Account</a></li>
+					<li><a href="/profile/settings/privacy">Privacy</a></li>
+					<li><a href="/profile/settings/advertising">Advertising</a></li>
+					<li><a href="/profile/settings/messages">Messages</a></li>
+					<li><a href="/profile/settings/customization">Customization</a></li>
+				</ul>
+			</div>
+		</div>
+		<p id="active" style="visibility: hidden;" th:class="${active}"></p>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var active = document.getElementById('active');
+			var links =	document.querySelectorAll("a[href^='/profile/settings/']");
+			for(i=0; i<links.length; i++) {
+				var link = links[i];
+				if(link.href.indexOf(active.className) != -1)
+					link.className += 'active-setting-category';
+			}
+		/*]]>*/
+		</script>
+	</div>
+</body>
+</html>

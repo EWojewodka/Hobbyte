@@ -6,12 +6,10 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.webrest.hobbyte.app.user.ExtranetUserStatus;
-import com.webrest.hobbyte.app.user.ExtranetUserUtils;
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDAO;
 import com.webrest.hobbyte.app.user.form.LoginForm;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
-import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
+import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.core.security.validator.FormValidator;
 import com.webrest.hobbyte.core.security.validator.rules.AssertTrueRule;
 import com.webrest.hobbyte.core.security.validator.rules.NotNullRule;

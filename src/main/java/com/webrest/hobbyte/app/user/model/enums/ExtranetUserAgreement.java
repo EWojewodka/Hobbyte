@@ -1,4 +1,4 @@
-package com.webrest.hobbyte.app.user.model;
+package com.webrest.hobbyte.app.user.model.enums;
 
 public enum ExtranetUserAgreement {
 
