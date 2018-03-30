@@ -1,9 +1,14 @@
 package com.webrest.hobbyte.core.utils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,8 +54,40 @@ public class ClassUtils {
 				.collect(Collectors.toSet());
 	}
 
+	/**
+	 * Return only non abstract subclasses of passed clazz.
+	 * 
+	 * @see #findSubTypes(Class)
+	 * @see #filterNonAbstract(Collection)
+	 * @param clazz
+	 * @return
+	 */
 	public static <T> Set<Class<? extends T>> findNonAbstract(Class<T> clazz) {
 		return filterNonAbstract(findSubTypes(clazz));
+	}
+
+	/**
+	 * Return array of {@link Field} which are annotated by passed to parameter
+	 * {@link Annotation} in specified {@link Class}
+	 * 
+	 * @param clazz
+	 * @param annotation
+	 * @return
+	 */
+	public static Field[] getAnnotatedFields(Class<?> clazz, Class<? extends Annotation> annotation) {
+		Asserts.notNull(clazz, "Cannot get any fields from null class :<");
+		Asserts.notNull(annotation,
+				"Cannot get any fields from " + clazz.getName() + " because passed annotation is null.");
+		
+		List<Field> fields = new ArrayList<>();
+		Field[] _fields = clazz.getDeclaredFields();
+		for (Field field : _fields) {
+			if (field.isAnnotationPresent(annotation)) {
+				field.setAccessible(true);
+				fields.add(field);
+			}
+		}
+		return fields.toArray(new Field[fields.size()]);
 	}
 
 	/**
@@ -111,6 +148,11 @@ public class ClassUtils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static Class<?> getGenericType(Class<?> clazz) {
+		return (Class) ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 
 }

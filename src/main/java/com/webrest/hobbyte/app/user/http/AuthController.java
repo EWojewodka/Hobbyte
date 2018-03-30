@@ -47,9 +47,10 @@ public class AuthController extends BaseController {
 	 * @param binding
 	 * @param model
 	 * @return
+	 * @throws Exception 
 	 */
 	@PostMapping(value = "/auth/sign-in")
-	public String postSignIn(@Valid @ModelAttribute RegistrationForm form, final BindingResult binding, Model model) {
+	public String postSignIn(@Valid @ModelAttribute RegistrationForm form, final BindingResult binding, Model model) throws Exception {
 		registrationService.addForm(form);
 		if (binding.hasErrors() || !registrationService.isValid(binding)) {
 			return "auth/sign_in";

@@ -318,9 +318,6 @@ form .dark:hover{
     transform: scale3d(1.05,1.05,1.05);
 }
 
-form .dark:hover > *{
-
-}
 
 form .btn-primary:hover{
     background-color: rgba(255,255,255,0.6);

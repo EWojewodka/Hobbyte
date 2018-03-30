@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.webrest.hobbyte.app.user.ExtranetUserUtils;
+import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
@@ -20,8 +21,16 @@ public abstract class UserAjaxForm extends AjaxDynamicForm {
 
 	private ExtranetUser user;
 
+	private ExtranetUserDao userDao;
+
+	public UserAjaxForm(ExtranetUserDao userDao) {
+		this.userDao = userDao;
+	}
+
 	/**
-	 * Throw exception if session user is not logged
+	 * Throw exception if session user is not logged TODO: Bad implementation. This
+	 * method should be invoked everytime without manual invoke in
+	 * {@link #process(HttpServletRequest)} method.
 	 * 
 	 * @param request
 	 * @throws AjaxMessageException
@@ -35,6 +44,10 @@ public abstract class UserAjaxForm extends AjaxDynamicForm {
 
 	public ExtranetUser getUser() {
 		return user;
+	}
+
+	public ExtranetUserDao getUserDao() {
+		return userDao;
 	}
 
 }

@@ -3,6 +3,8 @@
  */
 package com.webrest.hobbyte.core.utils;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
@@ -57,6 +59,76 @@ public class StringUtils {
 		for (Object obj : objs)
 			joiner.add(String.valueOf(obj)); // not use toString(), cause we don't check object is not null.
 		return joiner.toString();
+	}
+
+	/**
+	 * If double or float is as a String {@link #isNumeric(String)} return false.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static boolean isNumeric(String value) {
+		if (isEmpty(value))
+			return false;
+		try {
+			Double.parseDouble(value);
+		} catch (Exception e) {
+			// Maybe there is too much chars and cannot be parset to double. Let's check
+			// every char.
+			char[] chars = value.toCharArray();
+			for (Character _char : chars) {
+				if (Character.isAlphabetic(_char))
+					return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Replace all of #variable-name# by {@link Object#toString()} from value of
+	 * <code>variables</code>. For example: </br>
+	 * <code>Hello <b>#user.name#</b>! </code></br>
+	 * will be replaced by variable with key "user.name" from passed map as
+	 * parameter.
+	 * 
+	 * @param content
+	 * @param variables
+	 * @return
+	 */
+	public static String replaceVariable(String content, Map<String, ?> variables) {
+		if (variables == null || variables.size() == 0)
+			return content;
+
+		Iterator<String> it = variables.keySet().iterator();
+		while (it.hasNext()) {
+			String key = it.next();
+			content = content.replace("#" + key + "#", variables.get(key).toString());
+		}
+		return content;
+	}
+
+	public static boolean getAsBoolean(Object obj) {
+		return getAsBoolean(obj, false);
+	}
+
+	public static boolean getAsBoolean(Object obj, boolean defaultValue) {
+		if (obj == null)
+			return defaultValue;
+		
+		String stringObj = obj.toString();
+		return stringObj.equals("1") || stringObj.equals("true") || stringObj.equals("yes");
+	}
+
+	public static int getAsInt(Object obj) {
+		return getAsInt(obj, 0);
+	}
+	
+	public static int getAsInt(Object obj, int defaultValue) {
+		if (obj == null)
+			return defaultValue;
+		if (!isNumeric(obj.toString()))
+			return defaultValue;
+		return Integer.valueOf(obj.toString());
 	}
 
 }

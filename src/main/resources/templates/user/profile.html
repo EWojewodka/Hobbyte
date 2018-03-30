@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="head :: head" th:remove="tag"></head>
 <body>
+	<div class="header-obscure"></div>
 	<div th:include="normal_header :: header" th:remove="tag"></div>
 	 <div class="container-fluid one-page">
         <div class="row user-presentation">
@@ -29,7 +30,7 @@
           		left bar
           	</div>
           	<div class="col-lg-offset-1 col-lg-6 block profile-center-bar">
-          		some content
+				some content
           	</div>
           	<div class="col-lg-offset-1 col-lg-2 block profile-right-bar">
           		right bar
@@ -37,21 +38,4 @@
         </div>
     </div>
 </body>
-	<!-- <ul>
-		<li>
-			<div th:if="${userProfile.getName()}" th:remove="tag">
-				Name: <p th:text="${userProfile.getName()}" th:remove="tag"></p>
-			</div>
-		</li>
-		<li>
-			<div th:if="${userProfile.getLastname()}" th:remove="tag">
-				Name: <p th:text="${userProfile.getLastname()}" th:remove="tag"></p>
-			</div>
-		</li>
-		<li>
-			<div th:if="${userProfile.getBorn()}" th:remove="tag">
-				Age: <p th:text="${#dates.format(userProfile.getBorn(), 'dd-MMM-yyyy')}" th:remove="tag"></p>
-			</div>
-		</li>
-	</ul> -->
 </html>

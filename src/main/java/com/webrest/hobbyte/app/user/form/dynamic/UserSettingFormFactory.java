@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDAO;
+import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
 
 /**
@@ -25,13 +25,14 @@ import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
 public class UserSettingFormFactory {
 
 	@Autowired
-	private ExtranetUserDAO userDao;
+	private ExtranetUserDao userDao;
 
 	private static final Map<String, AjaxDynamicForm> FORM_BUFFER = new HashMap<>();
 
 	@PostConstruct
 	protected void init() {
 		registerForm(new ChangeEmailForm(userDao));
+		registerForm(new ChangePhoneForm(userDao));
 	}
 
 	protected static void registerForm(AjaxDynamicForm form) {

@@ -1,5 +1,7 @@
 package com.webrest.hobbyte.app.user.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -7,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDAO;
+import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.form.RegistrationForm;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.security.validator.FormValidator;
@@ -18,14 +20,15 @@ import com.webrest.hobbyte.core.security.validator.rules.NullRule;
 public class UserRegistrationService extends FormValidator {
 
 	@Autowired
-	private ExtranetUserDAO userDAO;
+	private ExtranetUserDao userDAO;
 
 	@Autowired
 	private PasswordEncoder encoder;
-	
+
 	private RegistrationForm form;
 
-	public ExtranetUser createFromForm() {
+	@Transactional(rollbackOn = Exception.class)
+	public ExtranetUser createFromForm() throws Exception {
 		ExtranetUser user = new ExtranetUser();
 		user.setLogin(form.getLogin());
 		user.setEmail(form.getEmail());
@@ -33,7 +36,7 @@ public class UserRegistrationService extends FormValidator {
 		userDAO.save(user);
 		return user;
 	}
-
+	
 	public void addForm(RegistrationForm form) {
 		this.form = form;
 	}

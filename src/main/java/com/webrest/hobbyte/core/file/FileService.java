@@ -18,9 +18,15 @@ import java.util.regex.Pattern;
 
 import org.springframework.util.StringUtils;
 
+import com.webrest.hobbyte.core.utils.Asserts;
 import com.webrest.hobbyte.core.utils.FileUtils;
 
 /**
+ * {@link FileService} for parse text files. Can extract comments and content.
+ * </br>
+ * Services are cached - and remove from cache if file is modified. - for more
+ * info look at {@link FileService#getFromCache()}}
+ * 
  * @author Emil Wojewódka
  *
  * @since 27 lut 2018
@@ -38,9 +44,14 @@ public class FileService implements IFileService {
 
 	protected String[] comments = new String[0];
 
+	/**
+	 * Create instance of {@link FileService}.
+	 * 
+	 * @param file
+	 */
 	public FileService(File file) {
-		if(file == null || !file.exists())
-			throw new IllegalArgumentException(String.format("cannot create file service, cause file is null or doesnt exists. (%s)", file));
+		Asserts.exists(file,
+				String.format("cannot create file service, cause file is null or doesnt exists. (%s)", file));
 		this.file = file;
 	}
 
@@ -52,12 +63,22 @@ public class FileService implements IFileService {
 	 */
 	@Override
 	public String read() throws IOException {
+		FileService fromCache = getFromCache();
+		if (fromCache != null) {
+			/**
+			 * #read should return String from first instance of FileService for this file.
+			 */
+			comments = fromCache.comments;
+			return fromCache.read();
+		}
+
 		if (isRead)
 			return content;
 		isRead = true;
 		InputStreamReader in = null;
 		BufferedReader br = null;
 
+		// Read file to String. Every line end by \n - break line.
 		try {
 			in = new InputStreamReader(open());
 			br = new BufferedReader(in);
@@ -70,19 +91,21 @@ public class FileService implements IFileService {
 		} finally {
 			close(is, in, br);
 		}
+		SERVICE_BUFFER.add(new FileServiceBuffer(this));
 		return content;
 	}
 
 	/**
 	 * Override this method for find file comments.
+	 * 
 	 * @return
 	 */
 	protected String getCommentRegex() {
 		return "";
 	}
-	
+
 	protected String[] findComments() {
-		if(StringUtils.isEmpty(getCommentRegex()))
+		if (StringUtils.isEmpty(getCommentRegex()))
 			return comments;
 		Matcher m = Pattern.compile(getCommentRegex()).matcher(content);
 		List<String> tmpList = new ArrayList<>();
@@ -136,6 +159,7 @@ public class FileService implements IFileService {
 
 	/**
 	 * Return <code>true</code> if {@link #read()} was invoked at least once.
+	 * 
 	 * @return
 	 */
 	public boolean isRead() {
@@ -144,6 +168,7 @@ public class FileService implements IFileService {
 
 	/**
 	 * Return file comments.
+	 * 
 	 * @return
 	 */
 	public String[] getComments() {
@@ -162,4 +187,93 @@ public class FileService implements IFileService {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Return {@link FileService} from cache if file wasn't modified since
+	 * {@link #_read()}, in otherwise return null.
+	 * 
+	 * @return
+	 */
+	private FileService getFromCache() {
+		@SuppressWarnings("unlikely-arg-type")
+		int cacheNumber = SERVICE_BUFFER.indexOf(this);
+		if (cacheNumber == -1)
+			return null;
+		FileServiceBuffer cacheObject = SERVICE_BUFFER.get(cacheNumber);
+		if (cacheObject.isExpired()) {
+			SERVICE_BUFFER.remove(cacheObject);
+			return null;
+		}
+		return cacheObject.service;
+	}
+
+	/**
+	 * Class for store cache object.
+	 * 
+	 * @author Emil Wojewódka
+	 *
+	 * @since 24 mar 2018
+	 */
+	static class FileServiceBuffer {
+
+		/**
+		 * Object to store in cache.
+		 */
+		private final FileService service;
+
+		/**
+		 * Time of create cache object in unix time. It's neccessery for recognize is
+		 * file modified since last {@link FileService#read()}
+		 */
+		private volatile long time;
+
+		/**
+		 * Create instance of cache object for {@link FileService}
+		 * 
+		 * @param service
+		 */
+		public FileServiceBuffer(FileService service) {
+			this.service = service;
+			this.time = System.currentTimeMillis();
+		}
+
+		/**
+		 * Return true if file wansn't modified since last {@link FileService#read()}
+		 * 
+		 * @return
+		 */
+		private boolean isExpired() {
+			return service.getFile().lastModified() > time;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((service == null) ? 0 : service.hashCode());
+			result = prime * result + (int) (time ^ (time >>> 32));
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			FileServiceBuffer other = (FileServiceBuffer) obj;
+
+			if (service == null) {
+				if (other.service != null)
+					return false;
+				/** If File#equals(Object) are different - they're not equals. */
+			} else if (!service.getFile().equals(other.service.getFile()))
+				return false;
+			return true;
+		}
+
+	}
+
 }

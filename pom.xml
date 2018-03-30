@@ -93,6 +93,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<goals>
+					<goal>run-boot</goal>
+				</goals>
 				<configuration>
 					<additionalProperties></additionalProperties>
 					<mainClass>${project.start-class}</mainClass>

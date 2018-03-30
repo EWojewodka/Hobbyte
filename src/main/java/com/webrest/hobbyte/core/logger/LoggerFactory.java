@@ -3,6 +3,8 @@ package com.webrest.hobbyte.core.logger;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
+import com.webrest.hobbyte.core.file.properties.PropertiesFacade;
+import com.webrest.hobbyte.core.file.properties.PropertiesGetter;
 
 /**
  * Factory for getting loggers and other linked objects, e.g.
@@ -11,9 +13,30 @@ import org.slf4j.Logger;
  * @author wojew
  *
  */
-public class LoggerFactory {
+public enum LoggerFactory {
+	INSTANCE;
 
-	private static final ILoggerFactory factory = org.slf4j.LoggerFactory.getILoggerFactory();
+	private ILoggerFactory factory = org.slf4j.LoggerFactory.getILoggerFactory();
+
+	private static final NullLogger NULL_LOGGER = new NullLogger();
+
+	private final PropertiesGetter propertiesGetter;
+
+	private boolean isEnabled;
+
+	private LoggerFactory() {
+		propertiesGetter = new PropertiesGetter(PropertiesFacade.get("application"));
+		isEnabled = propertiesGetter.getAsBoolean("logging.enable", false);
+		System.out.println("LOGGING IS: " + (isEnabled ? "enabled" : "disabled"));
+	}
+
+	private static LoggerFactory getInstance() {
+		return LoggerFactory.INSTANCE;
+	}
+
+	private static ILoggerFactory getLegacyFactory() {
+		return getInstance().factory;
+	}
 
 	/**
 	 * Return standard logger.
@@ -22,7 +45,7 @@ public class LoggerFactory {
 	 * @return
 	 */
 	public static Logger getLogger(Class<?> clazz) {
-		return factory.getLogger(clazz.getName());
+		return getInstance().isEnabled ? getLegacyFactory().getLogger(clazz.getName()) : NULL_LOGGER;
 	}
 
 	/**

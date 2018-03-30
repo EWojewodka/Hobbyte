@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDAO;
+import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.form.LoginForm;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
@@ -19,7 +19,7 @@ import com.webrest.hobbyte.core.security.validator.rules.NotNullRule;
 public class UserLoginService extends FormValidator {
 
 	@Autowired
-	private ExtranetUserDAO userDAO;
+	private ExtranetUserDao userDAO;
 
 	@Autowired
 	private PasswordEncoder encoder;

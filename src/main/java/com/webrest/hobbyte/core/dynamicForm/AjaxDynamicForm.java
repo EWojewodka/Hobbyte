@@ -6,6 +6,7 @@ package com.webrest.hobbyte.core.dynamicForm;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
@@ -68,5 +69,9 @@ public abstract class AjaxDynamicForm {
 	}
 
 	public abstract String getCode();
+	
+	protected void addMessage(JSONObject jsonObject, String message) throws JSONException {
+		jsonObject.put("msg", message);
+	}
 
 }

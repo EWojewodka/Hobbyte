@@ -26,6 +26,10 @@ public class FileUtils {
 		return FileUtils.class.getClassLoader().getResource("templates/error/" + errorCode + ".html") != null;
 	}
 
+	public static File getMailTemplate(String name) {
+		return getFile("/templates/mails/content/" + name + ".mail");
+	}
+	
 	public static void close(Closeable closeable) {
 		if (closeable != null)
 			try {

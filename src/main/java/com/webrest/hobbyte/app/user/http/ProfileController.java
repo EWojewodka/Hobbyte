@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDAO;
+import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.form.dynamic.UserSettingFormFactory;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
@@ -33,7 +33,7 @@ import com.webrest.hobbyte.core.http.controllers.BaseController;
 public class ProfileController extends BaseController {
 
 	@Autowired
-	private ExtranetUserDAO userDAO;
+	private ExtranetUserDao userDAO;
 
 	@Autowired
 	private IExtranetUserContext userContext;

@@ -16,6 +16,8 @@ import com.webrest.hobbyte.core.file.FileService;
 import com.webrest.hobbyte.core.logger.LoggerFactory;
 
 /**
+ * Instance should be init by {@link PropertiesFacade#get(String)}
+ * 
  * @author Emil Wojewódka
  *
  * @since 27 lut 2018
@@ -32,7 +34,7 @@ public class PropertyService extends FileService {
 		super(file);
 		this.propertiesName = file.getName();
 	}
-	
+
 	/**
 	 * @param file
 	 */
@@ -43,9 +45,9 @@ public class PropertyService extends FileService {
 
 	// Find property file by name.
 	private static File propertyName2File(String propertyName) {
-		if(!propertyName.endsWith(".properties"))
+		if (!propertyName.endsWith(".properties"))
 			propertyName = propertyName + ".properties";
-		
+
 		URI uri = null;
 		try {
 			uri = PropertyService.class.getClassLoader().getResource(propertyName).toURI();
@@ -80,7 +82,6 @@ public class PropertyService extends FileService {
 		return props;
 	}
 
-	
 	public String getPropertiesName() {
 		return propertiesName;
 	}

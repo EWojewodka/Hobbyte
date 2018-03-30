@@ -1,13 +1,10 @@
 package com.webrest.hobbyte.core.messages;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.springframework.util.StringUtils;
 
 import com.webrest.hobbyte.core.file.FileService;
 import com.webrest.hobbyte.core.utils.FileUtils;
+import com.webrest.hobbyte.core.utils.StringUtils;
 
 public class SimpleDecorator implements IDecorator {
 
@@ -25,16 +22,11 @@ public class SimpleDecorator implements IDecorator {
 		if (StringUtils.isEmpty(content))
 			return "";
 
-		return replaceVariables(content, message.getParams());
+		return StringUtils.replaceVariable(content, message.getParams());
 	}
 
-	protected String replaceVariables(String content, Map<String, Object> params) {
-		Iterator<String> it = params.keySet().iterator();
-		while (it.hasNext()) {
-			String key = it.next();
-			content = content.replace("#" + key + "#", params.get(key).toString());
-		}
-		return content;
+	public IMessage getMessage() {
+		return message;
 	}
 
 }

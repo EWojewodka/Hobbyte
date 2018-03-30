@@ -14,10 +14,11 @@ import com.webrest.hobbyte.app.user.model.enums.ExtranetUserAgreement;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.app.user.model.enums.Gender;
 import com.webrest.hobbyte.app.user.model.enums.NewsletterStatus;
+import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 
 @Entity
 @Table(name = "hb_extranet_users")
-public class ExtranetUser {
+public class ExtranetUser extends DatabaseObjectImpl {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,34 +42,36 @@ public class ExtranetUser {
 
 	@Column
 	private String lastname;
-	
+
 	@Column
 	private int status;
-	
+
 	@Column
 	private int agreement = ExtranetUserAgreement.NOT_ACCEPT.getId();
 
 	@Column
 	private Date born;
-	
+
 	@Column(name = "phone_number", nullable = true)
 	private String phoneNumber;
-	
+
 	@Column(nullable = true)
 	private Integer gender;
 
 	@Column
 	private int newsletter;
-	
+
 	@Transient
-	private ExtranetUserPolicy userPolicy = new ExtranetUserPolicy(this);
-	
-	public ExtranetUser() {
+	private ExtranetUserPolicy userPolicy;
 
-	}
-
+	@Override
 	public int getId() {
 		return id;
+	}
+
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getLogin() {
@@ -126,7 +129,7 @@ public class ExtranetUser {
 	public Date getBorn() {
 		return born;
 	}
-	
+
 	public void setBorn(Date born) {
 		this.born = born;
 	}
@@ -163,9 +166,11 @@ public class ExtranetUser {
 		this.newsletter = newsletter.getId();
 	}
 
-	public ExtranetUserPolicy getUserPolicy() {
+	public ExtranetUserPolicy createOrGetUserPolicy() {
+		if (userPolicy != null)
+			return userPolicy;
+		this.userPolicy = new ExtranetUserPolicy(this);
 		return userPolicy;
 	}
-	
 
 }

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDAO;
+import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.utils.StringUtils;
 
@@ -19,10 +19,8 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  */
 public class ChangeEmailForm extends UserAjaxForm {
 
-	private ExtranetUserDAO userDao;
-
-	public ChangeEmailForm(ExtranetUserDAO userDao) {
-		this.userDao = userDao;
+	public ChangeEmailForm(ExtranetUserDao userDao) {
+		super(userDao);
 	}
 
 	@Override
@@ -38,9 +36,9 @@ public class ChangeEmailForm extends UserAjaxForm {
 					HttpServletResponse.SC_BAD_REQUEST);
 
 		getUser().setEmail(newEmail);
-		userDao.save(getUser());
+		getUserDao().save(getUser());
 		JSONObject result = new JSONObject();
-		result.put("msg", "Your email has been changed.");
+		addMessage(result, "Your email has been changed.");
 		return result;
 	}
 

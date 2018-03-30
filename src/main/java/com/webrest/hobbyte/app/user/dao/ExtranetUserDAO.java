@@ -1,19 +1,52 @@
+/**
+ * 
+ */
 package com.webrest.hobbyte.app.user.dao;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.webrest.hobbyte.app.user.listeners.ExtranetUserDependencyListener;
+import com.webrest.hobbyte.app.user.listeners.RegistrationListener;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
+import com.webrest.hobbyte.core.dao.GenericDao;
 
-@Repository
-public interface ExtranetUserDAO extends JpaRepository<ExtranetUser, Integer>{
+/**
+ * @author Emil Wojewódka
+ *
+ * @since 24 mar 2018
+ */
+@Component
+public class ExtranetUserDao extends GenericDao<ExtranetUser> {
 
-	ExtranetUser findByLogin(String login);
-
-	ExtranetUser findByEmail(String email);
+	@Autowired
+	private ExtranetUserDependencyListener dependencyListener;
 	
-	@Query("SELECT user FROM ExtranetUser user WHERE login=?1 OR email=?1")
-	ExtranetUser findByLoginOrEmail(String loginOrEmail);
+	@Autowired
+	private RegistrationListener registrationListener;
 	
+	@PostConstruct
+	public void init() {
+		addListener(dependencyListener);
+		addListener(registrationListener);
+	}
+	
+	public ExtranetUser findByLoginOrEmail(String loginOrEmail) {
+		ExtranetUser result = findByEmail(loginOrEmail);
+		if(result == null)
+			result = findByLogin(loginOrEmail);
+		return result;
+	}
+	
+	public ExtranetUser findByLogin(String login) {
+		ExtranetUser findBy = findBy("login", login);
+		return findBy;
+	}
+	
+	public ExtranetUser findByEmail(String email) {
+		return findBy("email", email);
+	}
+
 }
