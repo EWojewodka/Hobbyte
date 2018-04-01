@@ -110,42 +110,42 @@ function showFailAfterAjax(form, content) {
 }
 
 function smoothScroll() {
-	$('a[href*="#"]').on(
-			'click',
-			function(event) {
-				if (location.pathname.replace(/^\//, '') == this.pathname
-						.replace(/^\//, '')
-						&& location.hostname == this.hostname) {
-					var target = $(this.hash);
-					target = target.length ? target : $('[name='
-							+ this.hash.slice(1) + ']');
-					if (target.length) {
-						event.preventDefault();
-						$('html, body').animate({
-							scrollTop : target.offset().top
-						}, 500, function() {
-							var $target = $(target);
+	$('a[href*="#"]').on('click',
+		function(event) {
+			if (location.pathname.replace(/^\//, '') == this.pathname
+					.replace(/^\//, '')
+					&& location.hostname == this.hostname) {
+				var target = $(this.hash);
+				target = target.length ? target : $('[name='
+						+ this.hash.slice(1) + ']');
+				if (target.length) {
+					event.preventDefault();
+					$('html, body').animate({
+						scrollTop : target.offset().top
+					}, 500, function() {
+						var $target = $(target);
+						$target.focus();
+						if ($target.is(":focus")) {
+							return false;
+						} else {
+							$target.attr('tabindex', '-1');
 							$target.focus();
-							if ($target.is(":focus")) {
-								return false;
-							} else {
-								$target.attr('tabindex', '-1');
-								$target.focus();
-							}
-							;
-						});
-					}
+						}
+						;
+					});
 				}
-			});
+			}
+		});
 }
 
 function onlyOneCheckbox() {
-	
 	$('.one-checkbox .checkbox').on('change', function(e) {
 		$(this).siblings().each(function() {
 			var toUncheck = $(this).find('input[type="checkbox"]').first();
 			toUncheck.prop("checked", false);
+			toUncheck.prop("disabled", false);
 		});
+		e.target.disabled = true;
 	});
 }
 

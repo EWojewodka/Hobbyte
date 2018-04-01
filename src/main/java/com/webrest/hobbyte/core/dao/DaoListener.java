@@ -20,6 +20,7 @@ public interface DaoListener<T extends DatabaseObject> extends IPriority{
 
 	public enum DaoListenerState {
 		CREATE,
+		LOAD,
 		BEFORE_FIRST_SAVE,
 		AFTER_FIRST_SAVE,
 		BEFORE_SAVE,
@@ -30,6 +31,9 @@ public interface DaoListener<T extends DatabaseObject> extends IPriority{
 	
 	/** Method invoke by {@link DaoListenerState#CREATE} state */
 	void onCreate();
+
+	/** Method invoke by {@link DaoListenerState#LOAD} state */
+	void onLoad(T databaseObject);
 
 	/** Method invoke by {@link DaoListenerState#BEFORE_FIRST_SAVE} state */
 	void beforeFirstSave(T databaseObject);

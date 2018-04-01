@@ -44,6 +44,11 @@ public class FileService implements IFileService {
 
 	protected String[] comments = new String[0];
 
+	public FileService(InputStream is) {
+		this.is = is;
+		file = null;
+	}
+	
 	/**
 	 * Create instance of {@link FileService}.
 	 * 
@@ -80,7 +85,7 @@ public class FileService implements IFileService {
 
 		// Read file to String. Every line end by \n - break line.
 		try {
-			in = new InputStreamReader(open());
+			in = new InputStreamReader(is == null ? open() : is);
 			br = new BufferedReader(in);
 			StringBuilder sb = new StringBuilder();
 			String line;
@@ -195,6 +200,9 @@ public class FileService implements IFileService {
 	 * @return
 	 */
 	private FileService getFromCache() {
+		if(file == null)
+			return null;
+		
 		@SuppressWarnings("unlikely-arg-type")
 		int cacheNumber = SERVICE_BUFFER.indexOf(this);
 		if (cacheNumber == -1)

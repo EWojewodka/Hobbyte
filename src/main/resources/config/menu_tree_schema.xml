@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menutree>
+	<folder name="extranet-users" id="users">
+		<leaf name="Users" uri="/sys/users" id="users_list" />
+	</folder>
+	<folder name="application" id="application" />
+</menutree>

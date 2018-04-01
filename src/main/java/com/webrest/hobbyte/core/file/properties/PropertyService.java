@@ -30,13 +30,25 @@ public class PropertyService extends FileService {
 
 	private String propertiesName;
 
+	public PropertyService(String propertiesName, InputStream is) {
+		super(is);
+		this.propertiesName = propertiesName;
+	}
+	
+	/**
+	 * Create instance of {@link PropertyService} based on file object.
+	 * 
+	 * @param propertiesName
+	 */
 	PropertyService(File file) {
 		super(file);
 		this.propertiesName = file.getName();
 	}
 
 	/**
-	 * @param file
+	 * Create instance of {@link PropertyService} based on properties name.
+	 * 
+	 * @param propertiesName
 	 */
 	PropertyService(String propertiesName) {
 		this(propertyName2File(propertiesName));
@@ -44,7 +56,7 @@ public class PropertyService extends FileService {
 	}
 
 	// Find property file by name.
-	private static File propertyName2File(String propertyName) {
+	protected static File propertyName2File(String propertyName) {
 		if (!propertyName.endsWith(".properties"))
 			propertyName = propertyName + ".properties";
 

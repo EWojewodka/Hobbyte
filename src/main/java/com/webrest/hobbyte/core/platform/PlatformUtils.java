@@ -25,4 +25,13 @@ public class PlatformUtils {
 		return false;
 	}
 
+	/**
+	 * @return {@code true} if platform is running from executable jar.
+	 */
+	public static boolean isRunningFromJar() {
+		String className = PlatformUtils.class.getName().replace('.', '/');
+		String classJar = PlatformUtils.class.getResource("/" + className + ".class").toString();
+		return classJar.startsWith("jar:");
+	}
+
 }

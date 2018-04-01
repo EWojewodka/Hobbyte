@@ -33,7 +33,7 @@
 										Account visiblity
 									</div>
 									<small class="pale">
-										<p th:text="${extranetContext.getUser().getUserPolicy().getProfileVisibilty()}" th:remove="tag"></p>
+										<p th:text="${extranetContext.getUser().createOrGetUserPolicy().getProfileVisibilty()}" th:remove="tag"></p>
 									</small>								
 								</div>
 							</div>

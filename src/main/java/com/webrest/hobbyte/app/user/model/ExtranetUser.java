@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserAgreement;
+import com.webrest.hobbyte.app.user.model.enums.ExtranetUserRoles;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.app.user.model.enums.Gender;
 import com.webrest.hobbyte.app.user.model.enums.NewsletterStatus;
@@ -60,6 +61,9 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	@Column
 	private int newsletter;
+	
+	@Column(name = "role_id")
+	private int roleId = ExtranetUserRoles.USER.getId();
 
 	@Transient
 	private ExtranetUserPolicy userPolicy;
@@ -164,6 +168,14 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	public void setNewsletter(NewsletterStatus newsletter) {
 		this.newsletter = newsletter.getId();
+	}
+
+	public ExtranetUserRoles getRole() {
+		return ExtranetUserRoles.getById(roleId);
+	}
+
+	public void setRole(ExtranetUserRoles role) {
+		this.roleId = role.getId();
 	}
 
 	public ExtranetUserPolicy createOrGetUserPolicy() {

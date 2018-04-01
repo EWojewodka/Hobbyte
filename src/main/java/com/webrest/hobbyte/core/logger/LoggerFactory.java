@@ -20,14 +20,17 @@ public enum LoggerFactory {
 
 	private static final NullLogger NULL_LOGGER = new NullLogger();
 
-	private final PropertiesGetter propertiesGetter;
+	private static final PropertiesGetter PROPERTIES_GETTER;
 
-	private boolean isEnabled;
+	private static boolean isEnabled;
+
+	static {
+		PROPERTIES_GETTER = new PropertiesGetter(PropertiesFacade.get("application"));
+		isEnabled = PROPERTIES_GETTER.getAsBoolean("logging.enable", true);
+		System.out.println("LOGGING IS: " + (isEnabled ? "enabled" : "disabled"));
+	}
 
 	private LoggerFactory() {
-		propertiesGetter = new PropertiesGetter(PropertiesFacade.get("application"));
-		isEnabled = propertiesGetter.getAsBoolean("logging.enable", false);
-		System.out.println("LOGGING IS: " + (isEnabled ? "enabled" : "disabled"));
 	}
 
 	private static LoggerFactory getInstance() {
@@ -45,7 +48,7 @@ public enum LoggerFactory {
 	 * @return
 	 */
 	public static Logger getLogger(Class<?> clazz) {
-		return getInstance().isEnabled ? getLegacyFactory().getLogger(clazz.getName()) : NULL_LOGGER;
+		return LoggerFactory.isEnabled ? getLegacyFactory().getLogger(clazz.getName()) : NULL_LOGGER;
 	}
 
 	/**

@@ -30,6 +30,10 @@ public abstract class DaoListenerImpl<T extends DatabaseObject> implements DaoLi
 	}
 
 	@Override
+	public void onLoad(T databaseObject) {
+	}
+
+	@Override
 	public void beforeFirstSave(T databaseObject) {
 	}
 

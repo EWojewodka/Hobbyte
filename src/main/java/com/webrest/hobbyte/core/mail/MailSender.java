@@ -21,7 +21,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import com.webrest.hobbyte.core.file.properties.IEnvironmentProperties;
-import com.webrest.hobbyte.core.file.properties.SpringProperties;
 import com.webrest.hobbyte.core.logger.LoggerFactory;
 import com.webrest.hobbyte.core.platform.PlatformInfo;
 import com.webrest.hobbyte.core.utils.StringUtils;

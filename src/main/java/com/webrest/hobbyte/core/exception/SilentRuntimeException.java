@@ -12,28 +12,28 @@ public class SilentRuntimeException extends RuntimeException {
 
 	private static final long serialVersionUID = 2775942627885956228L;
 
-	/** {@inheritDoc}} */
+	/** {@inheritDoc} */
 	public SilentRuntimeException() {
 		super();
 	}
 
-	/** {@inheritDoc}} */
+	/** {@inheritDoc} */
 	public SilentRuntimeException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
-	/** {@inheritDoc}} */
+	/** {@inheritDoc} */
 	public SilentRuntimeException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	/** {@inheritDoc}} */
+	/** {@inheritDoc} */
 	public SilentRuntimeException(String message) {
 		super(message);
 	}
 
-	/** {@inheritDoc}} */
+	/** {@inheritDoc} */
 	public SilentRuntimeException(Throwable cause) {
 		super(cause);
 	}

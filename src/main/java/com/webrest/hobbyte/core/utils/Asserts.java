@@ -6,6 +6,7 @@ package com.webrest.hobbyte.core.utils;
 import java.io.File;
 
 import org.springframework.util.Assert;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * Class inspired by {@link Assert}
@@ -24,6 +25,17 @@ public class Asserts extends Assert {
 		notNull(file, "[File not null] - file cannot be null");
 		if (!file.exists())
 			throw new IllegalArgumentException(message);
-
 	}
+
+	public static void notEmpty(NamedNodeMap nodeMap, String message) {
+		notNull(nodeMap, message);
+		if (nodeMap.getLength() == 0)
+			throw new IllegalArgumentException(message);
+	}
+
+	public static void notEmpty(String string, String message) {
+		if (StringUtils.isEmpty(string))
+			throw new IllegalArgumentException(message);
+	}
+
 }

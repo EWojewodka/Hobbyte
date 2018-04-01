@@ -50,6 +50,7 @@
 	                <a href="#"><li>Categories</li></a>
 	                <a href="#"><li>Help</li></a>
 	                <li><a href="/profile/settings">Settings</a></li>
+	                <li th:if="${extranetContext.isUserLogged()} AND ${#strings.equals('ADMIN', #strings.toString(extranetContext.getUser().getRole()))}"><a href="/sys"> Admin panel</a></li>
 	            </ul>
 	            <div class="socials">
 	                <div class="sub-title text-center">Socials</div> <br/>

@@ -15,7 +15,6 @@ import org.hibernate.Session;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.ResultTransformer;
 import org.springframework.stereotype.Component;
 
 import com.webrest.hobbyte.core.criteria.CriteriaFilter;
@@ -163,6 +162,11 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 			Consumer<DaoListener> consumer = null;
 
 			switch (state) {
+			case LOAD:
+				consumer = (l -> {
+					l.onLoad(dbo);
+				});
+				break;
 			case AFTER_REMOVE:
 				consumer = (l -> {
 					l.afterRemove(dbo);

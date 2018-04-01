@@ -7,14 +7,18 @@ import org.springframework.util.StringUtils;
 
 import com.webrest.hobbyte.core.exception.RedirectException;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
+import com.webrest.hobbyte.core.http.filter.BasicAbstractFilter;
 import com.webrest.hobbyte.core.security.Accessible;
 
 /**
  * Controller which should be expanded for improve controller security.
  * 
+ * @deprecated since 31-03-2018 - please register {@link BasicAbstractFilter}
+ *             for controller security.
  * @author wojew
  *
  */
+@Deprecated
 @Controller
 public abstract class SecurityAbstractController implements Accessible {
 
@@ -46,7 +50,7 @@ public abstract class SecurityAbstractController implements Accessible {
 			throw new RedirectException(context, getRedirectURL());
 		context.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN);
 	}
-	
+
 	/**
 	 * Return {@link IHttpContext} interface implementation.
 	 * 

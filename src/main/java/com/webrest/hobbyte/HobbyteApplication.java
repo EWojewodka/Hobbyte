@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import com.webrest.hobbyte.core.profiler.EnvironmentProfiler;
+
 @SpringBootApplication
 @ComponentScan("com.webrest.hobbyte")
 @EnableJpaRepositories
@@ -13,12 +15,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class HobbyteApplication {
 
 	public static void main(String[] args) {
-		System.out.println("!@#!#@!@#" + args.length);
-		if (args.length > 0) {
-			for(String s : args)
-				System.out.println("XDXDXDXDXD" + s);
-		}
-		System.out.println(System.getProperty("spring.profiles.active"));
+		EnvironmentProfiler profiler = new EnvironmentProfiler();
+		profiler.setOnStart();
 		SpringApplication.run(HobbyteApplication.class, args);
 	}
 

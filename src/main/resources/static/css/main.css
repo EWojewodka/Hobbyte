@@ -29,6 +29,9 @@ body{
 a{
     color: inherit !important;
 }
+a:hover{
+	cursor: pointer;
+}
 
 a:hover, a:active, a:focus{
     text-decoration: none !important;
@@ -188,8 +191,11 @@ a.header-slogan{
     z-index: 999;
 }
 
-.navbar ul{
+ul{
     list-style: none;
+}
+
+.navbar ul{
     padding: 15px;
     padding-top: 30px;
     width: 100%;
@@ -359,6 +365,11 @@ form .btn-primary:hover{
     position: absolute;
     opacity: 0;
     cursor: pointer;
+}
+
+.checkmark ~ input[type='checkbox'] {
+	width: 20px;
+	height: 20px;
 }
 
 .checkmark {
@@ -563,6 +574,12 @@ div.profile-content {
 	overflow: hidden;
 }
 
+.error-page.four-zero-four {
+	background-image: url('/images/404.png');
+    background-size: unset;
+	height: 90%;
+}
+
 #error-message{
 	display: none;
 	padding: 15px;
@@ -762,6 +779,12 @@ li a {
 	padding-left: 10px;
 	content: '\f101';
 	font-family: 'FontAwesome';
+}
+
+.menu-tree{
+	border-right: solid black 2px;
+	height: 80vh;
+	padding: 15px;
 }
 
 @media only screen and (max-width:961px){

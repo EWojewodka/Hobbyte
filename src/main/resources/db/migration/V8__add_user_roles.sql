@@ -1,0 +1,1 @@
+ALTER TABLE hb_extranet_users ADD COLUMN role_id INTEGER DEFAULT 0;
