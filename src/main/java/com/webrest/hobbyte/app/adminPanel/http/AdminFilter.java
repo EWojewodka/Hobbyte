@@ -6,10 +6,12 @@ package com.webrest.hobbyte.app.adminPanel.http;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Service;
+
 import com.webrest.hobbyte.app.user.ExtranetUserUtils;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserRoles;
-import com.webrest.hobbyte.core.http.filter.BasicAbstractFilter;
+import com.webrest.hobbyte.core.http.filter.BasicSecurityFilter;
 
 /**
  * Admin panel filter. Only {@link ExtranetUserRoles#ADMIN} has access to this
@@ -19,7 +21,8 @@ import com.webrest.hobbyte.core.http.filter.BasicAbstractFilter;
  *
  * @since 31 mar 2018
  */
-public class AdminFilter extends BasicAbstractFilter {
+@Service
+public class AdminFilter extends BasicSecurityFilter {
 
 	@Override
 	public String getPath() {

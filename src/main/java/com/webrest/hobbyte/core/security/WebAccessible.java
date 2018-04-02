@@ -7,4 +7,6 @@ public interface WebAccessible extends Accessible{
 
 	boolean hasAccess(HttpServletRequest request, HttpServletResponse repsonse) throws Exception;
 
+	String redirectOnFail();
+	
 }

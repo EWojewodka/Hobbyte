@@ -3,6 +3,8 @@
  */
 package com.webrest.hobbyte.core.menuTree;
 
+import java.util.List;
+
 import com.webrest.hobbyte.core.xml.FromNodeSource;
 
 /**
@@ -30,13 +32,6 @@ public interface IMenuTreeElement extends FromNodeSource<IMenuTreeElement> {
 	String getId();
 
 	/**
-	 * Return type of element.
-	 * 
-	 * @return
-	 */
-	MenuTreeElementType getType();
-
-	/**
 	 * Return path to resource content.
 	 * 
 	 * @return
@@ -56,4 +51,6 @@ public interface IMenuTreeElement extends FromNodeSource<IMenuTreeElement> {
 	 * @return
 	 */
 	IMenuTreeElement getParent();
+	
+	List<IMenuTreeElement> getChildren();
 }

@@ -3,9 +3,6 @@
  */
 package com.webrest.hobbyte.app.user.listeners;
 
-import java.util.Base64;
-import java.util.Base64.Encoder;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,7 @@ import com.webrest.hobbyte.core.exception.SilentRuntimeException;
 import com.webrest.hobbyte.core.mail.Mail;
 import com.webrest.hobbyte.core.mail.Mail.MailBuilder;
 import com.webrest.hobbyte.core.mail.MailService;
+import com.webrest.hobbyte.core.utils.StringUtils;
 
 /**
  * @author Emil Wojewódka
@@ -35,19 +33,13 @@ public class RegistrationListener extends DaoListenerImpl<ExtranetUser> {
 		MailBuilder mailBuilder = new Mail.MailBuilder(databaseObject.getEmail(), "registration");
 		HashMap<Object, Object> hashMap = new HashMap<>();
 		hashMap.put("username", databaseObject.getLogin());
-		hashMap.put("confirmation-link", generateActivationLink(databaseObject.getLogin()));
+		hashMap.put("confirmation-link", StringUtils.generateRandom(24));
 		try {
 			mailService.sendMail(mailBuilder.build());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new SilentRuntimeException(e);
 		}
-	}
-
-	private String generateActivationLink(String login) {
-		String unixCode = String.valueOf(new Date().getTime());
-		Encoder encoder = Base64.getEncoder();
-		return encoder.encodeToString((login + unixCode).getBytes());
 	}
 
 }

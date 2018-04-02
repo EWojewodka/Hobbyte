@@ -7,13 +7,13 @@ import org.springframework.util.StringUtils;
 
 import com.webrest.hobbyte.core.exception.RedirectException;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
-import com.webrest.hobbyte.core.http.filter.BasicAbstractFilter;
+import com.webrest.hobbyte.core.http.filter.BasicSecurityFilter;
 import com.webrest.hobbyte.core.security.Accessible;
 
 /**
  * Controller which should be expanded for improve controller security.
  * 
- * @deprecated since 31-03-2018 - please register {@link BasicAbstractFilter}
+ * @deprecated since 31-03-2018 - please register {@link BasicSecurityFilter}
  *             for controller security.
  * @author wojew
  *

@@ -9,6 +9,7 @@ $(document).ready(function() {
 	handleDynamicForms();
 	smoothScroll();
 	onlyOneCheckbox();
+	listenMenuTree();
 });
 
 function toggleMenu(show) {
@@ -151,4 +152,12 @@ function onlyOneCheckbox() {
 
 function showNewPostModal() {
 	$('.header-obscure').slideDown(200);
+}
+
+function listenMenuTree(){
+	$('.menu-tree-element-wrapper').hide();
+	$('.menu-tree-element div').on('click', function(){
+		var parent = $(this);
+		parent.siblings('.menu-tree-element-wrapper').toggle();
+	});
 }

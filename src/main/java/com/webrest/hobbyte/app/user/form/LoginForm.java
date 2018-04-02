@@ -9,6 +9,8 @@ public class LoginForm {
 
 	@NotEmpty
 	private String password;
+	
+	private boolean remember;
 
 	public String getLogin() {
 		return login;
@@ -24,6 +26,14 @@ public class LoginForm {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean isRemember() {
+		return remember;
+	}
+
+	public void setRemember(boolean remember) {
+		this.remember = remember;
 	}
 
 }

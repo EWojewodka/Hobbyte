@@ -6,6 +6,8 @@ package com.webrest.hobbyte.core.http.filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Service;
+
 import com.webrest.hobbyte.app.user.ExtranetUserUtils;
 
 /**
@@ -13,7 +15,8 @@ import com.webrest.hobbyte.app.user.ExtranetUserUtils;
  *
  * @since 10 mar 2018
  */
-public class ExtranetUserFilter extends BasicAbstractFilter{
+@Service
+public class ExtranetUserFilter extends BasicSecurityFilter{
 
 	
 	@Override

@@ -1,15 +1,31 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-	<div th:fragment="structure">
-		<div class="col-lg-3 menu-tree">
-			<ul>
-				<li>dsadasd</li>
-				<li>sadsa</li>
-				<li>dsadsad</li>
-				<li>sadsads</li>
-			</ul>
+	<div th:fragment="structure-wrapper">
+		<div class="col-lg-2 menu-tree">
+		    <div th:each="mt : ${menuTree}" th:remove="tag">
+			    <div th:include="sys/menu/menu_tree :: structure(mt=${mt}, level=0)"></div>
+		    </div>
 		</div>
 	</div>
+	
+	<div th:fragment="structure(mt, level)">
+		<div class="row menu-tree-element">
+			<div class="col-lg-12">
+				<div class="menu-tree-element-entity">
+					<i th:classappend="${mt.icon} != null ? ${mt.icon} : '' " class="menu-tree-icon"></i>
+					<div th:text="${mt.getName()}" th:src="${mt.uri}" th:id="${mt.getId()}"></div>
+				</div>
+				<div th:if="${mt.getChildren()} != null AND ${mt.getChildren().size() &gt; 0}" th:remove="tag">
+					<div class="menu-tree-element-wrapper">
+						<div th:each="mtChild : ${mt.getChildren()}" th:remove="tag">
+							<div th:include="sys/menu/menu_tree :: structure(mt=${mtChild}, level=(${level}+1))" th:remove="tag"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 </body>
 </html>

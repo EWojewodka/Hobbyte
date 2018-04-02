@@ -17,7 +17,6 @@ import com.webrest.hobbyte.app.user.service.UserRegistrationService;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 import com.webrest.hobbyte.core.utils.MessageUtils;
-import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Controller
 public class AuthController extends BaseController {
@@ -88,9 +87,9 @@ public class AuthController extends BaseController {
 		if (binding.hasErrors() || !loginService.isValid(binding)) {
 			return "auth/sign_up";
 		}
+		loginService.handleRememberMe();
 		((IExtranetUserContext) getContext()).loginUser(loginService.getUser());
-		String referer = getContext().getRequest().getParameter("referer");
-		return "redirect:" + (StringUtils.isEmpty(referer) ? "/" : referer);
+		return "redirect:/";
 	}
 
 }

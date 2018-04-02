@@ -67,6 +67,9 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	@Transient
 	private ExtranetUserPolicy userPolicy;
+	
+	@Column(name = "remember_me_code", nullable = true, unique=true)
+	private String rememberMeCode;
 
 	@Override
 	public int getId() {
@@ -176,6 +179,14 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	public void setRole(ExtranetUserRoles role) {
 		this.roleId = role.getId();
+	}
+
+	public String getRememberMeCode() {
+		return rememberMeCode;
+	}
+
+	public void setRememberMeCode(String rememberMeCode) {
+		this.rememberMeCode = rememberMeCode;
 	}
 
 	public ExtranetUserPolicy createOrGetUserPolicy() {

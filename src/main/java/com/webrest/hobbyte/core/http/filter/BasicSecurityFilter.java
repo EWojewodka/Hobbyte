@@ -3,10 +3,14 @@ package com.webrest.hobbyte.core.http.filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-public abstract class BasicAbstractFilter implements IFilter {
+import com.webrest.hobbyte.core.security.WebAccessible;
+
+@Service
+public abstract class BasicSecurityFilter implements IFilter, WebAccessible {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

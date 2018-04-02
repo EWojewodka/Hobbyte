@@ -8,6 +8,8 @@ import com.webrest.hobbyte.app.user.model.ExtranetUser;
 public class ExtranetUserUtils {
 
 	public static final String USER_SESSION_NAME = "logged-user";
+	
+	public static final String REMEMBER_ME_COOKIE_NAME = "remember-me";
 
 	public static boolean isLogged(HttpServletRequest request) {
 		return request != null && isLogged(request.getSession());
