@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<consoles>
+	<console 
+		id="users-list"
+		uri="/sys/users/list"
+		bean="com.webrest.hobbyte.app.user.model.ExtranetUser"
+		fields="id,login,email"
+		/>
+</consoles>

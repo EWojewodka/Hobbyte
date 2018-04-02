@@ -98,5 +98,16 @@ public abstract class DatabaseObjectImpl implements DatabaseObject {
 	public void save(GenericDao<DatabaseObject> dao) {
 		dao.save(this);
 	}
+	
+	public Object getProperty(String name) {
+		try {
+			Field field = getClass().getField(name);
+			field.setAccessible(true);
+			return field.get(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

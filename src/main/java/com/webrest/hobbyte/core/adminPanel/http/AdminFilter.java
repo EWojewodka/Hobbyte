@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.webrest.hobbyte.app.adminPanel.http;
+package com.webrest.hobbyte.core.adminPanel.http;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

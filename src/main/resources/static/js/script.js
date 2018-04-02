@@ -161,3 +161,12 @@ function listenMenuTree(){
 		parent.siblings('.menu-tree-element-wrapper').toggle();
 	});
 }
+
+function loadIFrame(_source){
+	var source = $(_source);
+	var navigator = source.find('.mt-navigator').first();
+	var src = navigator.attr('src');
+	if(src === undefined || src.length == 0)
+		return;
+	$('iframe').prop('src', src);
+}

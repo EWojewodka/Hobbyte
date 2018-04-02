@@ -6,6 +6,7 @@ package com.webrest.hobbyte.core.menuTree;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -31,12 +32,12 @@ public class MenuTreeElement implements IMenuTreeElement {
 
 	private List<IMenuTreeElement> children;
 
-	public MenuTreeElement(IMenuTreeElement parent, Node node) throws Exception {
+	public MenuTreeElement(IMenuTreeElement parent, Element node) throws Exception {
 		this(node);
 		this.parent = parent;
 	}
 
-	public MenuTreeElement(Node node) throws Exception {
+	public MenuTreeElement(Element node) throws Exception {
 		initFromNode(node);
 	}
 
@@ -91,7 +92,7 @@ public class MenuTreeElement implements IMenuTreeElement {
 	}
 
 	@Override
-	public IMenuTreeElement initFromNode(Node element) throws Exception {
+	public IMenuTreeElement initFromNode(Element element) throws Exception {
 		this.children = new ArrayList<>();
 
 		NamedNodeMap attrs = element.getAttributes();
@@ -126,7 +127,7 @@ public class MenuTreeElement implements IMenuTreeElement {
 				Node chilNode = children.item(i);
 				if (chilNode.getNodeType() != Node.ELEMENT_NODE)
 					continue;
-				this.children.add(new MenuTreeElement(this, chilNode));
+				this.children.add(new MenuTreeElement(this, (Element) chilNode));
 			}
 		}
 

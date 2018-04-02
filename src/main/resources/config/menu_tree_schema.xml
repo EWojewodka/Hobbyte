@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menutree>
 	<folder name="Extranet users" id="users" icon="fa fa-folder">
-		<leaf name="Users" uri="/sys/users" id="users_list" />
-		<leaf name="Users folder" id="users_list">
-			<leaf name="Users3" uri="/sys/users" id="users_list" />
-		</leaf>
+		<leaf name="Users" uri="/sys/list?console-id=users-list" id="users_list" icon="fa fa-users"/>
 	</folder>
 	<folder name="Application" id="application" icon="fa fa-folder"/>
 </menutree>

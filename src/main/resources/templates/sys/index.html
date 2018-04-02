@@ -1,11 +1,16 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="head :: head" th:remove="tag"></head>
+<head> <meta http-Equiv="Cache-Control" Content="no-cache" />
+    <meta http-Equiv="Pragma" Content="no-cache" />
+    <meta http-Equiv="Expires" Content="0" /></head>
 <body>
 	<div th:include="normal_header :: header" th:remove="tag"></div>
 	<div class="container-fluid">
 		<div class="row">
 			<div th:include="sys/menu/menu_tree :: structure-wrapper" th:remove="tag"></div>
+			<iframe height="550px" width="90%" frameborder="0">
+        </iframe>
 		</div>
 	</div>
 	<div th:include="footer :: footer" th:remove="tag"></div>		

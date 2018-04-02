@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="head :: head" th:remove="tag"></head>
+<head> 
+	<meta http-Equiv="Cache-Control" Content="no-cache" />
+    <meta http-Equiv="Pragma" Content="no-cache" />
+    <meta http-Equiv="Expires" Content="0" /></head>
+<body>
+	<div class="container-fluid">
+		<div class="row toolbar">
+			<div class="col-lg-12 text-left">
+				<div class="toolbar-button">
+					<i class="fa fa-refresh" onclick="location.reload()"></i>&nbsp;
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-offset-2 col-lg-8">
+				<table class="console">
+					<tbody>
+						<th:block th:each="field : ${console.fields}">
+						        <td th:text="${field}" th:classappend="${field == 'id'} ? text-center : ''" class="console-header"></td>
+						</th:block>
+						<th:block th:each="bean : ${beans}">
+					        <tr th:include="sys/templates/list :: row(fields=${console.fields},bean=${bean})" class="list-row"></tr>
+						</th:block>
+					</tbody>
+				</table>			
+			</div>
+		</div>
+	</div>
+	
+	<div th:fragment="row(fields,bean)">
+		<td th:each="field : ${fields}" th:remove="tag">
+			<td th:text="${bean.__${field}__}" th:classappend="${field == 'id'} ? text-center : ''"></td>
+		</td>
+	</div>
+</body>
+</html>

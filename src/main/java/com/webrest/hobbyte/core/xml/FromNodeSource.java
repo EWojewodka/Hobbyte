@@ -3,7 +3,7 @@
  */
 package com.webrest.hobbyte.core.xml;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * Class for create a java object from xml nodes. </br>
@@ -21,6 +21,6 @@ public interface FromNodeSource<T> {
 	 * @return
 	 * @throws Exception
 	 */
-	T initFromNode(Node element) throws Exception;
+	T initFromNode(Element element) throws Exception;
 
 }

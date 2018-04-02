@@ -785,6 +785,11 @@ li a {
 	border-right: solid black 2px;
 	height: 80vh;
 	padding: 15px;
+	resize: horizontal;
+	overflow: auto;
+	max-width: 30%;
+	min-width: 130px;
+	width: 130px;
 }
 
 .menu-tree-element-wrapper{
@@ -792,6 +797,9 @@ li a {
 }
 
 .menu-tree-element-entity{
+	font-size: 12px;
+	line-height: 12px;
+	margin-top: 3px;
 	display: flex;
 	flex-flow: row;
 }
@@ -802,6 +810,39 @@ li a {
 
 .menu-tree-element-entity i {
 	padding-right: 5px;	
+}
+
+.toolbar{
+	background-color: #e61d2b;
+	color: white;
+	margin-right: 0;
+	padding: 5px;
+}
+
+.console{
+	margin-top: 30px;
+	width: 100%;
+}
+
+.console tr:nth-child(even) {
+    background-color: #eee;
+}
+
+.console tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.console tr{
+	border-bottom: solid black 1px;
+	padding: 5px;
+}
+
+.console tr:hover{
+	background-color: rgba(0,0,0,0.4);
+}
+
+.console-header{
+	font-weight: bold;
 }
 
 @media only screen and (max-width:961px){
