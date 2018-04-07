@@ -101,7 +101,7 @@ public abstract class DatabaseObjectImpl implements DatabaseObject {
 	
 	public Object getProperty(String name) {
 		try {
-			Field field = getClass().getField(name);
+			Field field = getClass().getDeclaredField(name);
 			field.setAccessible(true);
 			return field.get(this);
 		} catch (Exception e) {

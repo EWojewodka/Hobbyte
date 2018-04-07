@@ -781,15 +781,15 @@ li a {
 	font-family: 'FontAwesome';
 }
 
+iframe{
+	margin: 0;
+	padding: 0 !important;
+}
+
 .menu-tree{
 	border-right: solid black 2px;
 	height: 80vh;
 	padding: 15px;
-	resize: horizontal;
-	overflow: auto;
-	max-width: 30%;
-	min-width: 130px;
-	width: 130px;
 }
 
 .menu-tree-element-wrapper{
@@ -819,6 +819,12 @@ li a {
 	padding: 5px;
 }
 
+.toolbar button {
+	background-color: transparent;
+	margin-left: 5px;
+	font-size: 11px;
+}
+
 .console{
 	margin-top: 30px;
 	width: 100%;
@@ -837,12 +843,17 @@ li a {
 	padding: 5px;
 }
 
-.console tr:hover{
+.console tr:hover:not(:first-child){
 	background-color: rgba(0,0,0,0.4);
 }
 
 .console-header{
 	font-weight: bold;
+	padding: 5px;
+}
+
+.console tr[id^='bean'] td{
+	padding: 2px;	
 }
 
 @media only screen and (max-width:961px){

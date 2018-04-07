@@ -27,6 +27,10 @@ public class HttpUtils {
 		if (StringUtils.isEmpty(cookieName) || request == null)
 			return null;
 		Cookie[] cookies = request.getCookies();
+
+		if (cookies == null)
+			return null;
+		
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(cookieName))
 				return cookie;

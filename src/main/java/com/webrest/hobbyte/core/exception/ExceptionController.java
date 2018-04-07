@@ -46,7 +46,8 @@ public class ExceptionController {
 	/**
 	 * Basic exception handler for every type of {@link Exception} </br>
 	 * Passed exception charge an {@link IExceptionModel} implementation and show
-	 * error page which is defined into {@link IExceptionModel#getTemplate()}
+	 * error page which is defined into {@link IExceptionModel#getTemplate()} </br>
+	 * FIXME: Always {@link HttpStatus} is 200 - we need to change it!
 	 * 
 	 * @param e
 	 * @param model
@@ -59,8 +60,7 @@ public class ExceptionController {
 		service.addToModel(model);
 		return service.getTemplate();
 	}
-	
-	
+
 	private void printException(Exception e) {
 		e.printStackTrace();
 	}

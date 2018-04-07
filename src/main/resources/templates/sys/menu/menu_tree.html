@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 	<div th:fragment="structure-wrapper">
-		<div class="col-lg-1 menu-tree">
+		<div class="col-lg-2 menu-tree">
 		    <div th:each="mt : ${menuTree}" th:remove="tag">
 			    <div th:include="sys/menu/menu_tree :: structure(mt=${mt}, level=0)"></div>
 		    </div>

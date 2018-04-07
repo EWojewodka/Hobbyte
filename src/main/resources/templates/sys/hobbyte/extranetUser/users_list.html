@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="sys/templates/list">
+<body>
+	<div layout:fragment="single-row" th:remove="tag">
+		<div th:switch="${field}">
+			<div th:case="'login'" th:remove="tag">
+				<td><a th:href="@{/profile/(${bean.login})}" th:text="${bean.login}"></a></td>
+			</div>
+			<div th:case="*" th:remove="tag">
+				<td th:text="${bean.getProperty('__${field}__')}" th:classappend="${field == 'id'} ? text-center : ''"></td>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

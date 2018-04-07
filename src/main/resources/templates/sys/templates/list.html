@@ -1,28 +1,83 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+	xmlns:th="http://www.thymeleaf.org"
+  	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  	layout:decorator="sys/templates/console">
 <head th:include="head :: head" th:remove="tag"></head>
 <head> 
 	<meta http-Equiv="Cache-Control" Content="no-cache" />
     <meta http-Equiv="Pragma" Content="no-cache" />
-    <meta http-Equiv="Expires" Content="0" /></head>
+    <meta http-Equiv="Expires" Content="0" />
+    <title th:text="${console.name}"></title>
+</head>
 <body>
-	<div class="container-fluid">
-		<div class="row toolbar">
-			<div class="col-lg-12 text-left">
-				<div class="toolbar-button">
-					<i class="fa fa-refresh" onclick="location.reload()"></i>&nbsp;
-				</div>
+	<div layout:fragment="toolbar">
+		<div th:if="${console.canAdd()}" th:remove="tag">
+			<a th:href="@{${detailsURL}(action=('add'),console-id=(__${console.id}__))}">
+				<button>
+					<i class="fa fa-plus-square"></i>&nbsp;add
+				</button>
+			</a>
+		</div>
+		<div th:if="${console.canRemove()}" th:remove="tag">
+			<a th:href="@{${detailsURL}(action=('remove'),console-id=(__${console.id}__))}">
+				<button>
+					<i class="fa fa-times-circle"></i>&nbsp;remove
+				</button>
+			</a>
+		</div>
+	</div>
+	<div layout:fragment="content">
+		<div class="row">
+			<div class="col-lg-6">
+				<table  layout:fragment="filter" class="console filter">
+				</table>			
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-lg-offset-2 col-lg-8">
+			<div class="col-lg-12">
 				<table class="console">
 					<tbody>
-						<th:block th:each="field : ${console.fields}">
-						        <td th:text="${field}" th:classappend="${field == 'id'} ? text-center : ''" class="console-header"></td>
-						</th:block>
+						<tr>
+							<th:block th:each="field : ${console.fieldColumnName.values()}">
+									<div th:fragment="list-header" th:remove="tag">
+										<div th:switch="${console.sort.contains('__${field}__')}">
+											<div th:case="${true}" th:remove="tag">
+												<td>
+													<a 
+														th:href="@{${detailsURL}(sort=(__${field}__),console-id=(__${console.id}__))}" 
+														th:text="${field}" 
+														th:classappend="${field == 'id'} ? text-center : ''" 
+														class="console-header">
+													</a>
+												</td>
+											</div>
+											<tr th:case="${false}" th:remove="tag">
+										        <td 
+										        	th:text="${field}" 
+										        	th:classappend="${field == 'id'} ? text-center : ''" 
+										        	class="console-header">
+										        </td>
+											</tr>
+										</div>
+									</div>
+							</th:block>
+							<td class="console-header text-center">action</td>
+						</tr>
 						<th:block th:each="bean : ${beans}">
-					        <tr th:include="sys/templates/list :: row(fields=${console.fields},bean=${bean})" class="list-row"></tr>
+							<tr th:id="bean-id-__${bean.id}__">	
+								<td th:each="field : ${console.fields}" th:remove="tag">
+									<div layout:fragment="single-row">
+										<td th:text="${bean.__${field}__}" th:classappend="${field == 'id'} ? text-center : ''"></td>
+									</div>
+								</td>
+								<td class="text-center small">
+									<input type="checkbox" name="to-remove" title="check it to remove"/>
+									<a th:each="children : ${console.getActionsConsole()}" th:text="${children.shortName}" th:href="@{${detailsURL}(console-id=${children.id},bean-id=${bean.id})}">
+										
+									</a>
+								</td>
+							</tr>
 						</th:block>
 					</tbody>
 				</table>			
@@ -30,10 +85,5 @@
 		</div>
 	</div>
 	
-	<div th:fragment="row(fields,bean)">
-		<td th:each="field : ${fields}" th:remove="tag">
-			<td th:text="${bean.__${field}__}" th:classappend="${field == 'id'} ? text-center : ''"></td>
-		</td>
-	</div>
 </body>
 </html>

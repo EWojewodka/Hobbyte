@@ -3,6 +3,7 @@
  */
 package com.webrest.hobbyte.core.dao;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.webrest.hobbyte.core.model.DatabaseObject;
@@ -13,6 +14,7 @@ import com.webrest.hobbyte.core.model.DatabaseObject;
  * @since 24 mar 2018
  */
 @Component
+@Scope("prototype")
 public class AbsoluteGenericDao<T extends DatabaseObject> extends GenericDao<T> {
 
 	private Class<? extends DatabaseObject> genericType;

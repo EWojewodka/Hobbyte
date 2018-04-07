@@ -5,7 +5,6 @@ package com.webrest.hobbyte.core.menuTree;
 
 import java.util.List;
 
-import com.webrest.hobbyte.core.xml.FromNodeSource;
 
 /**
  * Menu tree element. It's object represent of a XML node from
@@ -15,7 +14,7 @@ import com.webrest.hobbyte.core.xml.FromNodeSource;
  *
  * @since 31 mar 2018
  */
-public interface IMenuTreeElement extends FromNodeSource<IMenuTreeElement> {
+public interface IMenuTreeElement {
 
 	/**
 	 * Return label name of a element.

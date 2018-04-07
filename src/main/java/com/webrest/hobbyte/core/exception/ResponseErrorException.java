@@ -16,7 +16,7 @@ import com.webrest.hobbyte.core.http.context.IHttpContext;
  *             (https://www.youtube.com/watch?v=4pu-lKgm-dg)
  * @since 9 mar 2018
  */
-public abstract class ResponseErrorException extends Exception {
+public abstract class ResponseErrorException extends NoStackTraceException {
 
 	private static final long serialVersionUID = -3653985554579728330L;
 

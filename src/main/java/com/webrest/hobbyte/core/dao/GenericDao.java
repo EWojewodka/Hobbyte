@@ -125,8 +125,9 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 			criteria.setMaxResults(limit);
 
 		String orderBy = criteriaFilter.getOrderBy();
-		if (!StringUtils.isEmpty(orderBy))
+		if (!StringUtils.isEmpty(orderBy)) {
 			criteria.addOrder(Order.asc(orderBy));
+		}
 		
 		if (criteriaFilter.isDistinct())
 			criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

@@ -6,27 +6,27 @@ import org.w3c.dom.Element;
 
 import com.webrest.hobbyte.core.xml.XMLParser;
 
-public class ConsoleBuilder extends XMLParser<IAdminConsole> {
+public class ConsoleBuilder extends XMLParser<IConsole> {
 
 	private static final String CONSOLES_SCHEMA = "config/consoles.xml";
 
-	private static List<IAdminConsole> elements;
+	private static List<IConsole> elements;
 
 	public ConsoleBuilder(){
 		super(CONSOLES_SCHEMA);
 	}
 
-	public IAdminConsole[] getConsoles() {
+	public IConsole[] getConsoles() {
 		if (elements != null)
-			return elements.toArray(new IAdminConsole[elements.size()]);
+			return elements.toArray(new IConsole[elements.size()]);
 		elements = process();
-		return elements.toArray(new IAdminConsole[elements.size()]);
+		return elements.toArray(new IConsole[elements.size()]);
 	}
 
 	@Override
 	protected void processSingle(Element element) {
 		try {
-			addToList(new AdminConsole().initFromNode(element));
+			addToList(ConsoleFactory.createFromElement(element));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

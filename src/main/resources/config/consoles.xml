@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <consoles>
+	<!-- EXTRANET USERS -->
 	<console 
 		id="users-list"
-		uri="/sys/users/list"
+		type="list"
 		bean="com.webrest.hobbyte.app.user.model.ExtranetUser"
-		fields="id,login,email"
-		/>
+		view="sys/hobbyte/extranetUser/users_list"
+		fields="id,login,email,createdAt#created"
+		sort="all"
+		sort-default="id"
+		new="true"
+		name="Users"
+		remove="true"
+		actions="users-details"
+	/>
+	
+	<console 
+		id="users-details"
+		parent-id="users-list"
+		type="details"
+		short-name="details"
+		view="sys/templates/details"
+	/>
 </consoles>

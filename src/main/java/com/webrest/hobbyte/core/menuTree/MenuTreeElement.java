@@ -12,13 +12,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.webrest.hobbyte.core.utils.Asserts;
+import com.webrest.hobbyte.core.xml.NodeSource;
 
 /**
  * @author Emil Wojewódka
  *
  * @since 31 mar 2018
  */
-public class MenuTreeElement implements IMenuTreeElement {
+public class MenuTreeElement extends NodeSource implements IMenuTreeElement {
 
 	private String name;
 
@@ -38,7 +39,7 @@ public class MenuTreeElement implements IMenuTreeElement {
 	}
 
 	public MenuTreeElement(Element node) throws Exception {
-		initFromNode(node);
+		super(node);
 	}
 
 	protected void setName(String name) {
@@ -92,10 +93,10 @@ public class MenuTreeElement implements IMenuTreeElement {
 	}
 
 	@Override
-	public IMenuTreeElement initFromNode(Element element) throws Exception {
+	public void init() throws Exception {
 		this.children = new ArrayList<>();
 
-		NamedNodeMap attrs = element.getAttributes();
+		NamedNodeMap attrs = getElement().getAttributes();
 		Asserts.notEmpty(attrs, "Node attributes cannot be empty.");
 		int len = attrs.getLength();
 		for (int i = 0; i < len; i++) {
@@ -117,11 +118,16 @@ public class MenuTreeElement implements IMenuTreeElement {
 			case "icon":
 				setIcon(attrValue);
 				break;
+			case "console-id":
+				if (uri != null)
+					throw new IllegalArgumentException("You can't set uri and console-id in menu tree leaf!");
+				setUri(String.format("/sys/console?console-id=%s", attrValue));
+				break;
 			}
 		}
 
-		if (element.hasChildNodes()) {
-			NodeList children = element.getChildNodes();
+		if (getElement().hasChildNodes()) {
+			NodeList children = getElement().getChildNodes();
 			len = children.getLength();
 			for (int i = 0; i < len; i++) {
 				Node chilNode = children.item(i);
@@ -131,7 +137,6 @@ public class MenuTreeElement implements IMenuTreeElement {
 			}
 		}
 
-		return this;
 	}
 
 	private String getError(String fieldName) {
@@ -143,6 +148,5 @@ public class MenuTreeElement implements IMenuTreeElement {
 		return "MenuTreeElement [name=" + name + ", uri=" + uri + ", icon=" + icon + ", parent=" + parent + ", id=" + id
 				+ ", children=" + (children == null ? 0 : children.size()) + "]";
 	}
-	
 
 }

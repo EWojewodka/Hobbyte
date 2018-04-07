@@ -195,5 +195,5 @@ public class ExtranetUser extends DatabaseObjectImpl {
 		this.userPolicy = new ExtranetUserPolicy(this);
 		return userPolicy;
 	}
-
+	
 }

@@ -17,7 +17,7 @@ import com.webrest.hobbyte.core.http.controllers.BaseController;
  */
 @Controller
 public class IndexController extends BaseController{
-
+	
 	@RequestMapping(value = "/")
 	public String index(Model model) throws RedirectException {
 		return "index";

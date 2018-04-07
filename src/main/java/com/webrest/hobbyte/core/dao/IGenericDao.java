@@ -71,10 +71,24 @@ public interface IGenericDao<T extends DatabaseObject, ID extends Serializable> 
 	 */
 	boolean exists(ID id) throws Exception;
 
+	/**
+	 * Return instance of {@link DatabaseObject} with specified ID.
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	T getById(ID id) throws Exception;
 
+	/**
+	 * Return {@link List} of entities which are in database where fieldName=value
+	 * 
+	 * @param fieldName
+	 * @param value
+	 * @return
+	 */
 	List<T> findAllBy(String fieldName, Object value);
-
+	
 	List<T> find(ICriteriaFilter<?> criteriaFilter);
 
 	T findBy(String fieldName, Object value);

@@ -58,6 +58,7 @@ public class UserLoginService extends FormValidator {
 
 		Cookie cookie = new Cookie(ExtranetUserUtils.REMEMBER_ME_COOKIE_NAME, code);
 		HttpUtils.setMaxAgeCookie(cookie);
+		cookie.setPath("/");
 		context.getResponse().addCookie(cookie);
 }
 

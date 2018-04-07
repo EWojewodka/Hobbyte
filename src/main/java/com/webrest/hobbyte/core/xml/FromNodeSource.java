@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
  *
  * @since 31 mar 2018
  */
-public interface FromNodeSource<T> {
+public interface FromNodeSource {
 
 	/**
 	 * Return parsed object from node element.
@@ -21,6 +21,24 @@ public interface FromNodeSource<T> {
 	 * @return
 	 * @throws Exception
 	 */
-	T initFromNode(Element element) throws Exception;
+	void init() throws Exception;
+
+	/**
+	 * Return attribute of {@link Element}
+	 * 
+	 * @see #getAttribute(String)
+	 * @return
+	 */
+	String getAttribute(String attributeName);
+
+	/**
+	 * Return attribute of {@link Element} or if is null or blank return
+	 * defaultValue
+	 * 
+	 * @see #getAttribute() 
+	 * @param defaultValue
+	 * @return
+	 */
+	String getAttribute(String attributeName, String defaultValue);
 
 }

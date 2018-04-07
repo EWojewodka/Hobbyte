@@ -3,8 +3,8 @@ package com.webrest.hobbyte.core.http.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.http.context.HttpContext;
-import com.webrest.hobbyte.core.http.context.IHttpContext;
 
 /**
  * Helper class for store a {@link HttpContext}.
@@ -17,13 +17,13 @@ import com.webrest.hobbyte.core.http.context.IHttpContext;
 public abstract class BaseController {
 
 	@Autowired
-	private IHttpContext context;
+	private ExtranetUserContext context;
 
 	protected BaseController() {
 		// for higher class
 	}
 
-	protected IHttpContext getContext() {
+	protected ExtranetUserContext getContext() {
 		return context;
 	}
 

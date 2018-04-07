@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.webrest.hobbyte.core.exception.ResponseErrorException;
 import com.webrest.hobbyte.core.exception.response.GenericResponseErrorException;
 
 /**
@@ -28,7 +29,7 @@ public class ExceptionModelFactory {
 	 * @return
 	 */
 	public IExceptionModel getModel(Exception e) {
-		if (e instanceof GenericResponseErrorException)
+		if (e instanceof ResponseErrorException)
 			return new GenericResponseErrorExceptionModel((GenericResponseErrorException) e, env);
 		else
 			return new DefaultExceptionModel(e, env);
