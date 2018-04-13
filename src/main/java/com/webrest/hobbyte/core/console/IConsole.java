@@ -6,10 +6,11 @@ package com.webrest.hobbyte.core.console;
 import java.util.List;
 
 import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
-import com.webrest.hobbyte.core.console.handler.Handler;
+import com.webrest.hobbyte.core.console.handler.ViewHandler;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 import com.webrest.hobbyte.core.utils.EnumUtils;
 import com.webrest.hobbyte.core.utils.WithCode;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * @author Emil Wojewódka
@@ -59,11 +60,11 @@ public interface IConsole {
 	 * new from cached console.
 	 * 
 	 * @see ConsoleHandler
-	 * @see Handler
+	 * @see ViewHandler
 	 * @return
 	 * @throws Exception
 	 */
-	ConsoleHandler initHandler() throws Exception;
+	ConsoleHandler initHandler(DependencyResolver dependencyResolver) throws Exception;
 	
 	String getName();
 	

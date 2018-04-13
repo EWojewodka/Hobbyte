@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <consoles>
+	<!-- COMMONS CONSOLE ATTRIBUTE
+		In java look at com.webrest.hobbyte.core.console.IConsole interface 
+		and com.webrest.hobbyte.core.console.Console class.
+		
+		id - should be unique. 
+		type - look at ConsoleType enum
+		bean - define which types are handle by this console
+		view - define view file
+		fields - if it list, by this attr you can easy get and show values in table
+		sort - can use 'all' for make clickable all of list header
+		sort-default - default column sort
+		new - >>boolean<< - in list views you can manage a button in toolbar
+		remove - as under
+		name - console title
+		short-name - for action description
+		actions - in list view it add hyperlink on end of row
+		handler - dedicated handler for all of view actions. 
+	 -->
+	
+	
 	<!-- EXTRANET USERS -->
 	<console 
 		id="users-list"
@@ -13,6 +33,7 @@
 		name="Users"
 		remove="true"
 		actions="users-details"
+		handler="com.webrest.hobbyte.core.console.handler.ExtranetUserViewHandler"
 	/>
 	
 	<console 
@@ -22,4 +43,14 @@
 		short-name="details"
 		view="sys/templates/details"
 	/>
+	
+	<console 
+		id="users-new"
+		bean="com.webrest.hobbyte.app.user.model.ExtranetUser"
+		type="details"
+		view="sys/hobbyte/extranetUser/new_user"
+		save="true"
+		handler="com.webrest.hobbyte.core.console.handler.ExtranetUserViewHandler"
+	/>
+	
 </consoles>

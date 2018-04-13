@@ -43,4 +43,10 @@ public class ExtranetUserUtils {
 		return (ExtranetUser) session.getAttribute(USER_SESSION_NAME);
 	}
 
+	public static void logoutUser(HttpServletRequest request) {
+		if(request == null)
+			return;
+		
+	}
+	
 }

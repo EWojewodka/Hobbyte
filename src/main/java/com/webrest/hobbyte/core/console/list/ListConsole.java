@@ -128,7 +128,7 @@ public class ListConsole extends Console implements IListConsole {
 			return result;
 
 		if (elementAttribute.equals("all"))
-			result.addAll(Arrays.asList(fields));
+			result.addAll(fieldColumnName.values());
 		else
 			result.addAll(Arrays.asList(elementAttribute.split(",")));
 		return result;

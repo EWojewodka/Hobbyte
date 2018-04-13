@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="head :: head" th:remove="tag"></head>
-<body>
+<body th:fragment="profile-page">
 	<div class="header-obscure"></div>
 	<div th:include="normal_header :: header" th:remove="tag"></div>
 	 <div class="container-fluid one-page">
@@ -30,7 +30,21 @@
           		left bar
           	</div>
           	<div class="col-lg-offset-1 col-lg-6 block profile-center-bar">
-				some content
+          		<div th:if="${extranetContext.isUserLogged()} AND (${extranetContext.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
+					<div class="row">
+						<div class="col-lg-offset-1 col-lg-10">
+							<form class="form-horizontal" role="form" id="new-post" method="POST" onsubmit="sendAjaxWithUrl('/post/new', this, somecallback); return false;">
+								<div class="form-description">
+									<small>Publish your first post!</small>
+								</div>
+								<div class="form-group">
+									<textarea rows="3" cols="9" class="form-control" name="content"></textarea>
+									<button class="btn setting-btn">change email</button>
+								</div>
+							</form>
+						</div>
+					</div>
+          		</div>
           	</div>
           	<div class="col-lg-offset-1 col-lg-2 block profile-right-bar">
           		right bar

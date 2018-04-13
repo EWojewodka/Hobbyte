@@ -12,6 +12,7 @@ import com.webrest.hobbyte.core.adminPanel.service.ConsoleFinder;
 import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 import com.webrest.hobbyte.core.xml.NodeSource;
 
 /**
@@ -89,9 +90,12 @@ public class Console extends NodeSource implements IConsole {
 	}
 
 	@Override
-	public ConsoleHandler initHandler() throws Exception {
+	public ConsoleHandler initHandler(DependencyResolver dependencyResolver) throws Exception {
 		Constructor<? extends ConsoleHandler> console = consoleHandler.getConstructor(IConsole.class);
-		return console.newInstance(this);
+		ConsoleHandler handler = console.newInstance(this);
+		if (dependencyResolver != null)
+			dependencyResolver.resolve(handler);
+		return handler;
 	}
 
 	public String getName() {

@@ -11,6 +11,7 @@ import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * @author Emil Wojewódka
@@ -19,13 +20,11 @@ import com.webrest.hobbyte.core.exception.AjaxMessageException;
  */
 public abstract class UserAjaxForm extends AjaxDynamicForm {
 
-	private ExtranetUser user;
-
-	private ExtranetUserDao userDao;
-
-	public UserAjaxForm(ExtranetUserDao userDao) {
-		this.userDao = userDao;
+	public UserAjaxForm(DependencyResolver dependencyResolver) {
+		super(dependencyResolver);
 	}
+
+	private ExtranetUser user;
 
 	/**
 	 * Throw exception if session user is not logged TODO: Bad implementation. This
@@ -47,7 +46,12 @@ public abstract class UserAjaxForm extends AjaxDynamicForm {
 	}
 
 	public ExtranetUserDao getUserDao() {
-		return userDao;
+		return getDependency(ExtranetUserDao.class);
+	}
+
+	@Override
+	public Class<?>[] getDependencies() {
+		return new Class[] { ExtranetUserDao.class };
 	}
 
 }

@@ -91,5 +91,10 @@ public class AuthController extends BaseController {
 		((IExtranetUserContext) getContext()).loginUser(loginService.getUser());
 		return "redirect:/";
 	}
+	
+	public String getLogout() {
+		
+		return "redirect:/";
+	}
 
 }

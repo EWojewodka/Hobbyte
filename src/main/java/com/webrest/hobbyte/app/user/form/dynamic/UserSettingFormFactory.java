@@ -11,8 +11,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * TODO: It's not well designed. Forms should be loaded without parameters.
@@ -23,16 +23,16 @@ import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
  */
 @Service
 public class UserSettingFormFactory {
-
+	
 	@Autowired
-	private ExtranetUserDao userDao;
+	private DependencyResolver resolver;
 
 	private static final Map<String, AjaxDynamicForm> FORM_BUFFER = new HashMap<>();
 
 	@PostConstruct
 	protected void init() {
-		registerForm(new ChangeEmailForm(userDao));
-		registerForm(new ChangePhoneForm(userDao));
+		registerForm(new ChangeEmailForm(resolver));
+		registerForm(new ChangePhoneForm(resolver));
 	}
 
 	protected static void registerForm(AjaxDynamicForm form) {

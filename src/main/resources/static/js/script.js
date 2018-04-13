@@ -70,7 +70,7 @@ function handleDynamicForms() {
 	});
 }
 
-function sendAjaxWithUrl(url, _form) {
+function sendAjaxWithUrl(url, _form,callback) {
 	var form = $(_form);
 	prepareFormDescription(form);
 	$.post({
@@ -78,7 +78,9 @@ function sendAjaxWithUrl(url, _form) {
 		url : url + "?type=" + form.attr('id'),
 		success : function(data) {
 			var jsonObj = JSON.parse(data);
+			console.log(jsonObj);
 			showSuccessAfterAjax(form, jsonObj.msg);
+			callback();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			if (xhr === undefined || xhr.responseJSON === undefined)
@@ -90,6 +92,10 @@ function sendAjaxWithUrl(url, _form) {
 
 function sendAjax(_form) {
 	sendAjaxWithUrl(window.location.href, _form);
+}
+
+function blurOther(focused){
+	
 }
 
 function prepareFormDescription(form) {

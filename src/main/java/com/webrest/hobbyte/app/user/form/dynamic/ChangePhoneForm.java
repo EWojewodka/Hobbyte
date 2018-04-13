@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * @author Emil Wojewódka
@@ -20,8 +20,8 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  */
 public class ChangePhoneForm extends UserAjaxForm {
 
-	public ChangePhoneForm(ExtranetUserDao userDao) {
-		super(userDao);
+	public ChangePhoneForm(DependencyResolver dependencyResolver) {
+		super(dependencyResolver);
 	}
 
 	@Override

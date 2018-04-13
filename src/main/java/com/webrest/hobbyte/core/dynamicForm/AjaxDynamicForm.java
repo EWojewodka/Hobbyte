@@ -10,6 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
+import com.webrest.hobbyte.core.http.context.IHttpContext;
+import com.webrest.hobbyte.core.utils.spring.DependencyRequired;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
+import com.webrest.hobbyte.core.utils.spring.IDependencyRequired;
 
 /**
  * Abstract class for expanding if you want to use simple, ajax form on front
@@ -20,12 +24,20 @@ import com.webrest.hobbyte.core.exception.AjaxMessageException;
  *
  * @since 15 mar 2018
  */
-public abstract class AjaxDynamicForm {
+public abstract class AjaxDynamicForm extends DependencyRequired implements IDependencyRequired{
+
+	public AjaxDynamicForm(DependencyResolver dependencyResolver) {
+		super(dependencyResolver);
+	}
 
 	private HttpServletRequest request;
 
 	private HttpServletResponse response;
-
+	
+	public String run(IHttpContext context) {
+		return run(context.getRequest(), context.getResponse());
+	}
+	
 	public String run(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
@@ -73,5 +85,6 @@ public abstract class AjaxDynamicForm {
 	protected void addMessage(JSONObject jsonObject, String message) throws JSONException {
 		jsonObject.put("msg", message);
 	}
+
 
 }

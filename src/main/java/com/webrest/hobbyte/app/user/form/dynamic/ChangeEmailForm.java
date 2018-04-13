@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * @author Emil Wojewódka
@@ -19,8 +19,8 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  */
 public class ChangeEmailForm extends UserAjaxForm {
 
-	public ChangeEmailForm(ExtranetUserDao userDao) {
-		super(userDao);
+	public ChangeEmailForm(DependencyResolver dependencyResolver) {
+		super(dependencyResolver);
 	}
 
 	@Override

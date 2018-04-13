@@ -11,7 +11,27 @@
 </head>
 <body>
 	<div layout:fragment="toolbar">
-		dsadsada
+		<div th:if="${console.canSave()}" th:remove="tag">
+			<a th:href="@{${detailsURL}(action=('save'),console-id=(__${console.id}__))}">
+				<button>
+					<i class="fa fa-plus-square"></i>&nbsp;save
+				</button>
+			</a>
+		</div>
+		<div th:if="${console.canRemove()}" th:remove="tag">
+			<a th:href="@{${detailsURL}(action=('remove'),console-id=(__${console.id}__))}">
+				<button>
+					<i class="fa fa-times-circle"></i>&nbsp;remove
+				</button>
+			</a>
+		</div>
+		<div th:if="${console.canClone()}" th:remove="tag">
+			<a th:href="@{${detailsURL}(action=('clone'),console-id=(__${console.id}__))}">
+				<button>
+					<i class="fa fa-clone"></i>&nbsp;clone
+				</button>
+			</a>
+		</div>
 	</div>
 	<div layout:fragment="content">
 		<div class="row">
