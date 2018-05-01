@@ -3,6 +3,7 @@
  */
 package com.webrest.hobbyte.core.utils;
 
+import java.lang.reflect.Array;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Iterator;
@@ -19,6 +20,8 @@ import java.util.regex.Pattern;
 public class StringUtils {
 
 	private static final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+	public static final String EMPTY_STRING = "";
 
 	/**
 	 * Return <code>true</code> if value paramter matches with {@value #EMAIL_REGEX}
@@ -76,7 +79,7 @@ public class StringUtils {
 		try {
 			Double.parseDouble(value);
 		} catch (Exception e) {
-			// Maybe there is too much chars and cannot be parset to double. Let's check
+			// Maybe there is too much chars and cannot be parsed to double. Let's check
 			// every char.
 			char[] chars = value.toCharArray();
 			for (Character _char : chars) {
@@ -156,6 +159,45 @@ public class StringUtils {
 	public static String generateRandom(int length) {
 		String s = generateRandom();
 		return s.length() > length ? s.substring(0, length) : s;
+	}
+
+	/**
+	 * Return index of a {@code null} value in array. If there is no {@code null}
+	 * value return -1.
+	 * 
+	 * @param objs
+	 * @return
+	 */
+	public static int getNullIndex(Object[] objs) {
+		if (objs == null || objs.length == 0)
+			return -1;
+
+		int len = objs.length;
+		for (int i = 0; i < len; i++) {
+			if (objs[i] == null)
+				return i;
+		}
+		return -1;
+	}
+
+	/**
+	 * Return false if {@link Array} is null, has not length or if {@link Object} is
+	 * null. </br>
+	 * Note that if {@code obj} is null and you want to check {@code obj} contains a
+	 * {@code null} value use {@link #getNullIndex(Object[])}
+	 * 
+	 * @param objs
+	 * @param obj
+	 * @return
+	 */
+	public static boolean contains(Object[] objs, Object obj) {
+		if (objs == null || objs.length == 0 || obj == null)
+			return false;
+		for (Object _obj : objs) {
+			if (_obj.equals(obj))
+				return true;
+		}
+		return false;
 	}
 
 }

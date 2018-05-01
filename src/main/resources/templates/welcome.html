@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:include="head :: head" th:remove="tag"></head>
+  <body>
+    <div id="header" class="container-fluid">
+      <div class="row header-row">
+        <div class="col-lg-6 left-col">
+          <div class="row top-margin-row">
+            &nbsp;
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h1 class="display-1 title">
+                    <span class="logo-contrast">Hobbyte</span>
+                  </h1>
+                </div>
+              </div>
+              <div class="row top-margin-row">
+                <div class="col-lg-12">
+                  <h4 class="display-4 sub-title">
+                    <span class="logo-contrast">Meet people</span>
+                  </h4>
+                </div>
+              </div>
+              <div class="row top-margin-row">
+                <div class="col-lg-12">
+                  <h4 class="display-4 sub-title">
+                    <span class="logo-contrast">Create competition</span>
+                  </h4>
+                </div>
+              </div>
+              <div class="row top-margin-row">
+                <div class="col-lg-12">
+                  <h4 class="display-4 sub-title">
+                    <span class="logo-contrast">Upload your promo videos</span>
+                  </h4>
+                </div>
+              </div>
+              <div class="row top-margin-row">
+                <div class="col-lg-12">
+                  <h4 class="display-4 sub-title">
+                    <span class="logo-contrast">Enjoy</span>
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 white-red right-col">
+          <div class="row">
+            <h3 class="display-3">
+              <span class="black-text">Make your hobby easier</span>
+            </h3>
+          </div>
+          <div class="row">
+            <div class="col-lg-3">
+              &nbsp;
+            </div>
+            <div class="col-lg-6">
+				<form role="form" th:object="${registrationForm}" method="POST" action="/auth/sign-in">
+					<div th:include="fragments/formErrors :: errors(${#fields})" th:remove="tag"></div>
+	                <div class="form-group">
+	                  <label for="login">Username</label>
+	                  <input type="text" class="form-control" id="login" name="login" th:value="${registrationForm.login}"/>
+	                </div>
+	                <div class="form-group">
+	                  <label for="email">Email</label>
+	                  <input type="email" class="form-control" id="email" name="email" th:value="${registrationForm.email}"/>
+	                </div>
+	                <div class="form-group">
+	                  <label for="password">Password</label>
+	                  <input type="password" class="form-control" id="password" name="password" />
+	                </div>
+	                <div class="form-group">
+	                	<small class="text-muted small">By signing up, you agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy-policy">Privacy Policy</a>, including <a href="/cookie">Cookie Use</a>. </small>
+	                </div>
+	                <button type="submit" class="border-button">Sign in</button>
+            	</form>
+            </div>
+            <div class="col-lg-2">
+              &nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div th:include="header :: sign-up"></div>
+  </body>
+  <div class="container-fluid" id="footer">
+        <div class="row">
+            <div class="col-lg-12 text-right">
+                <a href="#"><span class="footer-item">Cookies</span></a>
+                <a href="#"><span class="footer-item">Contact</span></a>
+                <a href="#"><span class="footer-item">Terms</span></a>
+                <a href="#"><span class="footer-item">Privacy policy</span></a>
+            </div>
+        </div>
+    </div>
+</html>

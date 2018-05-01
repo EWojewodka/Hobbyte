@@ -21,6 +21,8 @@ import com.webrest.hobbyte.core.utils.ClassUtils;
 public abstract class DependencyRequired implements IDependencyRequired {
 
 	private Map<Class<?>, Object> dependencyBuffer = new HashMap<>();
+	
+	private DependencyResolver resolver;
 
 	public DependencyRequired(DependencyResolver dependencyResolver) {
 		dependencyResolver.resolve(this);
@@ -40,6 +42,10 @@ public abstract class DependencyRequired implements IDependencyRequired {
 	@Override
 	public <T> T getDependency(Class<T> clazz) {
 		return (T) dependencyBuffer.get(clazz);
+	}
+	
+	public DependencyResolver getDependencyResolver() {
+		return resolver;
 	}
 
 }

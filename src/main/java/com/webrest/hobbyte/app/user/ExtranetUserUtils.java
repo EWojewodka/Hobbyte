@@ -8,7 +8,7 @@ import com.webrest.hobbyte.app.user.model.ExtranetUser;
 public class ExtranetUserUtils {
 
 	public static final String USER_SESSION_NAME = "logged-user";
-	
+
 	public static final String REMEMBER_ME_COOKIE_NAME = "remember-me";
 
 	public static boolean isLogged(HttpServletRequest request) {
@@ -43,10 +43,27 @@ public class ExtranetUserUtils {
 		return (ExtranetUser) session.getAttribute(USER_SESSION_NAME);
 	}
 
+	/**
+	 * Remove {@link ExtranetUser} from {@link HttpSession}
+	 * 
+	 * @param request
+	 */
 	public static void logoutUser(HttpServletRequest request) {
-		if(request == null)
+		if (request == null)
 			return;
-		
+		logoutUser(request.getSession(false));
 	}
-	
+
+	/**
+	 * Remove {@link ExtranetUser} from {@link HttpSession}.
+	 * 
+	 * @param session
+	 */
+	public static void logoutUser(HttpSession session) {
+		if (session == null)
+			return;
+		session.removeAttribute(USER_SESSION_NAME);
+		session.invalidate();
+	}
+
 }

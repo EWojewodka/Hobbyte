@@ -1,9 +1,11 @@
 $(document).ready(function() {
 	$('.navbar-left').hide();
 	$('.header-obscure').hide();
+	$('.post-attachments-preview').hide();
 
 	$('.header-obscure').click(function() {
 		toggleMenu(false);
+		minimizeImage();
 	});
 
 	handleDynamicForms();
@@ -73,19 +75,22 @@ function handleDynamicForms() {
 function sendAjaxWithUrl(url, _form,callback) {
 	var form = $(_form);
 	prepareFormDescription(form);
+	var formData = new FormData(_form);
 	$.post({
-		data : form.serialize(),
+		data : formData,
 		url : url + "?type=" + form.attr('id'),
+		data: formData,
+		processData: false,
+	    contentType: false,
 		success : function(data) {
 			var jsonObj = JSON.parse(data);
-			console.log(jsonObj);
-			showSuccessAfterAjax(form, jsonObj.msg);
+			showResultAfterAjax(form, jsonObj.msg, true);
 			callback();
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			if (xhr === undefined || xhr.responseJSON === undefined)
 				return;
-			showFailAfterAjax(form, xhr.responseJSON.message);
+			showResultAfterAjax(form, xhr.responseJSON.message, false);
 		}
 	});
 }
@@ -94,26 +99,18 @@ function sendAjax(_form) {
 	sendAjaxWithUrl(window.location.href, _form);
 }
 
-function blurOther(focused){
-	
-}
 
 function prepareFormDescription(form) {
 	var formDescription = form.find('.form-description');
 	formDescription.removeClass('success');
 	formDescription.removeClass('fail');
+	formDescription.removeClass('hidden');
 }
 
-function showSuccessAfterAjax(form, content) {
+function showResultAfterAjax(form, content, isSuccess){
 	var formDescription = form.find('.form-description');
 	formDescription.html("<small>" + content + "</small>");
-	formDescription.addClass('success');
-}
-
-function showFailAfterAjax(form, content) {
-	var formDescription = form.find('.form-description');
-	formDescription.html("<small>" + content + "</small>");
-	formDescription.addClass('fail');
+	formDescription.addClass(isSuccess ? 'success' : 'fail');
 }
 
 function smoothScroll() {
@@ -175,4 +172,96 @@ function loadIFrame(_source){
 	if(src === undefined || src.length == 0)
 		return;
 	$('iframe').prop('src', src);
+}
+
+var availablePhotoFormats = ['jpg','jpeg','gif','png'];
+
+function removeFileFromInput(input){
+	if(input === undefined)
+		return;
+	
+	var file = input.files[0];
+	if(file === undefined)
+		return;
+	
+	input.files[0] = null;
+}
+
+function showMiniPhoto(_input) {
+	
+	//Check its correct file for upload
+	var file = _input.files[0];
+	console.log(availablePhotoFormats.indexOf(file.name.split('.').pop()));
+	if(availablePhotoFormats.indexOf(file.name.split('.').pop()) == -1){
+		removeFileFromInput(_input);
+		return false;
+	}
+
+	var currentMiniPhoto = $('.attach-wrapper #photo-mini-preview');
+	if(!currentMiniPhoto !== undefined) {
+		currentMiniPhoto.remove();
+	}
+	
+	var input = $(_input);
+	var previewBlock = $('.post-attachments-preview');
+	previewBlock.prepend(
+			'<div class="attach-wrapper">'
+			+'<img id="photo-mini-preview" src="" width="100px" height="100px" onclick="maximizePhoto(this)" />'
+			+'</div>');
+	var reader = new FileReader();
+	
+	reader.onloadend = function () {
+		$('#photo-mini-preview').prop('src', reader.result);
+		previewBlock.show(200);
+    }
+	
+	if (file) {
+        reader.readAsDataURL(file); //reads the data as a URL
+    } else {
+        $('#photo-mini-preview').prop('src', '');
+    }
+}
+
+function setProportionalImageSize(image, maxSize){
+	if(image === undefined)
+		return;
+	var width = image.width;
+	var height = image.height;
+	var toWidth = height > width;
+	
+	if(toWidth)
+		image.width = maxSize;
+	else
+		image.height = maxSize;
+	
+	var ratio = maxSize / (toWidth ? width : height);
+	
+	if(toWidth)
+		image.height = height * ratio;
+	else
+		image.width = width * ratio;
+}
+
+function maximizePhoto(photo){
+	toggleHeaderObscure();
+	var _photoPreview = document.getElementById('photo-mini-preview');
+	var photoPreview = $('#photo-mini-preview');
+	photoPreview.toggleClass('max-photo');
+	if(!(_photoPreview.width == 300) && !(_photoPreview.height == 300)) {
+		setProportionalImageSize(_photoPreview, 300);
+	} else{
+		_photoPreview.width = 100;
+		_photoPreview.height = 100;
+	}
+}
+
+function minimizeImage(){
+	var photoPreview = $('#photo-mini-preview');
+	photoPreview.toggleClass('max-photo');
+}
+
+function toggleHeaderObscure(){
+	var headerObscure = $('.header-obscure');
+	headerObscure.toggleClass('fullscreen');
+	headerObscure.toggle();
 }

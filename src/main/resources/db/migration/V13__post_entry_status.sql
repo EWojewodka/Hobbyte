@@ -1,0 +1,1 @@
+ALTER TABLE hb_post_entries ADD COLUMN status INTEGER;

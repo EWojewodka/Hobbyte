@@ -3,7 +3,12 @@
  */
 package com.webrest.hobbyte.core.platform;
 
+import java.io.File;
+
+import org.slf4j.Logger;
 import org.springframework.core.env.Environment;
+
+import com.webrest.hobbyte.core.logger.LoggerFactory;
 
 /**
  * @author Emil Wojewódka
@@ -11,6 +16,29 @@ import org.springframework.core.env.Environment;
  * @since 10 mar 2018
  */
 public class PlatformUtils {
+
+	private static final String TMP_DIR_NAME = "hobbyte_tmp";
+
+	public static final File TMP_DIR = new File(TMP_DIR_NAME);
+
+	public static final Logger LOGGER = LoggerFactory.getLogger();
+
+	static {
+		createTmpDir();
+	}
+
+	/* Create directory for temporary files. Delete if exists on start. */
+	private static void createTmpDir() {
+		File file = new File(TMP_DIR_NAME);
+		if (file.exists()) {
+			file.delete();
+			LOGGER.info("Delete exists {} temporary file directory", file.getAbsolutePath());
+		}
+		if (file.mkdir())
+			LOGGER.info("Create {} temporary file directory", file.getAbsolutePath());
+		else
+			LOGGER.info("Cannot create {} temporary file directory", file.getAbsolutePath());
+	}
 
 	public static boolean isDevelopment(Environment environment) {
 		return isActiveMode(environment, AvailablePlatformProfiles.DEVELOPMENT);

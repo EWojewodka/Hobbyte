@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.webrest.hobbyte.app.user.form.LoginForm;
 import com.webrest.hobbyte.app.user.form.RegistrationForm;
@@ -19,6 +20,7 @@ import com.webrest.hobbyte.core.http.controllers.BaseController;
 import com.webrest.hobbyte.core.utils.MessageUtils;
 
 @Controller
+@RequestMapping(value = "/auth")
 public class AuthController extends BaseController {
 
 	@Autowired
@@ -27,16 +29,9 @@ public class AuthController extends BaseController {
 	@Autowired
 	private UserLoginService loginService;
 
-	/**
-	 * Render registration form
-	 * 
-	 * @param model
-	 * @return
-	 */
-	@GetMapping(value = "/auth/sign-in")
+	@GetMapping(value = "/sign-in")
 	public String getSignIn(Model model) {
-		model.addAttribute("registrationForm", new RegistrationForm());
-		return "auth/sign_in";
+		return "redirect:/";
 	}
 
 	/**
@@ -48,11 +43,11 @@ public class AuthController extends BaseController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@PostMapping(value = "/auth/sign-in")
-	public String postSignIn(@Valid @ModelAttribute RegistrationForm form, final BindingResult binding, Model model) throws Exception {
+	@PostMapping(value = "/sign-in")
+	public String postSignIn(@Valid @ModelAttribute("registrationForm") RegistrationForm form, final BindingResult binding, Model model) throws Exception {
 		registrationService.addForm(form);
 		if (binding.hasErrors() || !registrationService.isValid(binding)) {
-			return "auth/sign_in";
+			return "welcome";
 		}
 		
 		// Auto login after registration
@@ -62,16 +57,9 @@ public class AuthController extends BaseController {
 		return "info/success";
 	}
 
-	/**
-	 * Render login form
-	 * 
-	 * @param model
-	 * @return
-	 */
-	@GetMapping(value = "/auth/sign-up")
+	@GetMapping(value = "/sign-up")
 	public String getSignUp(Model model) {
-		model.addAttribute("loginForm", new LoginForm());
-		return "auth/sign_up";
+		return "redirect:/";
 	}
 
 	/**
@@ -81,19 +69,14 @@ public class AuthController extends BaseController {
 	 * @param binding
 	 * @return
 	 */
-	@PostMapping(value = "/auth/sign-up")
-	public String postSignUp(@Valid @ModelAttribute LoginForm form, final BindingResult binding) {
+	@PostMapping(value = "/sign-up")
+	public String postSignUp(@Valid @ModelAttribute("loginForm") LoginForm form, final BindingResult binding) {
 		loginService.addForm(form);
 		if (binding.hasErrors() || !loginService.isValid(binding)) {
-			return "auth/sign_up";
+			return "welcome";
 		}
 		loginService.handleRememberMe();
 		((IExtranetUserContext) getContext()).loginUser(loginService.getUser());
-		return "redirect:/";
-	}
-	
-	public String getLogout() {
-		
 		return "redirect:/";
 	}
 

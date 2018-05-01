@@ -1,5 +1,7 @@
 package com.webrest.hobbyte.core.http.context;
 
+import javax.servlet.http.HttpSession;
+
 import com.webrest.hobbyte.app.user.ExtranetUserUtils;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
@@ -35,5 +37,12 @@ public interface IExtranetUserContext extends IHttpContext {
 	 * @param user
 	 */
 	void loginUser(ExtranetUser user);
+
+	/**
+	 * Remove {@link ExtranetUser} from {@link HttpSession}.
+	 * 
+	 * @see ExtranetUserUtils#logoutUser(HttpSession)
+	 */
+	void logoutUser();
 
 }

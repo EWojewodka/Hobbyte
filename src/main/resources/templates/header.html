@@ -3,22 +3,50 @@
 <body>
 	<div th:fragment="header">
 		<div class="container-fluid" id="header">
-	    	<div class="header-image"></div>
-	     	<div class="header-obscure"></div>
-	        <div class="menu-btn-wrapper">
-	            <button class="btn btn-default" onclick="toggleMenu(true)">
-	               <svg  height="20px"
-	                      id="Layer_1"
-	                      style="enable-background:new 0 0 32 32;"
-	                      version="1.1"
-	                      viewBox="0 0 32 32"
-	                      width="20px"
-	                      xml:space="preserve"
-	                      xmlns="http://www.w3.org/2000/svg"
-	                      xmlns:xlink="http://www.w3.org/1999/xlink">
-	                        <path d="M4,10h24c1.104,0,2-0.896,2-2s-0.896-2-2-2H4C2.896,6,2,6.896,2,8S2.896,10,4,10z M28,14H4c-1.104,0-2,0.896-2,2  s0.896,2,2,2h24c1.104,0,2-0.896,2-2S29.104,14,28,14z M28,22H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h24c1.104,0,2-0.896,2-2  S29.104,22,28,22z"/>
-	                     </svg>&nbsp;&nbsp;MENU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
-	            </button>
+	     	<div class="header-obscure fullscreen"></div>
+	     	<div class="row menu-row">
+		     	<div class="col-lg-offset-1 col-lg-1">
+		     		<button class="btn btn-default" onclick="toggleMenu(true)">
+		     			<i class="fa fa-bars menu-icon"></i>
+	            	</button>
+		     	</div>
+	     	</div>
+	     	<div class="row">
+	     		<div class="col-lg-12">
+	     			<div class="row">
+	     				<div class="col-lg-12">
+			     			<h1 class="display-1 title text-center">
+			     				HOBBYTE
+			     			</h1>
+	     				</div>
+	     			</div>
+	     			<div class="row">
+	     				<div class="col-lg-12 text-center">
+	     					<h3 class="display-3 title text-center">
+				     			Join to the best minds around the world!
+			     			</h3>
+	     				</div>
+	     			</div>
+	     		</div>
+	     	</div>
+	     	<div class="row button-row">
+     			<div class="col-lg-12 text-center">
+					<div th:switch="${extranetContext.isUserLogged()}" th:remove="tag"> 
+						<a th:case="true" th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}">
+		     				<button class="main-button">
+		                    	Explore
+		     				</button>
+						</a>
+						<a th:case="*" href="/auth/sign-in">
+			            	<button class="main-button">
+		                    	Sign in
+		     				</button>
+						</a> 
+					</div>
+     			</div>
+	     	</div>
+	        <!-- <div class="menu-btn-wrapper">
+	            
 	        </div>
 		        <div th:switch="${extranetContext.isUserLogged()}"> 
 				  <div th:case="true">
@@ -40,7 +68,7 @@
 				</div>
 	        <a href="/" class="header-slogan">
 	                Join to the best minds around the world!
-	        </a>
+	        </a>-->
 	        <div class="navbar navbar-left">
 	            <button class="close" onclick="toggleMenu(false)">&#10006;</button>
 	            <ul>
@@ -49,7 +77,10 @@
 	                <a href="#"><li>Last</li></a>
 	                <a href="#"><li>Categories</li></a>
 	                <a href="#"><li>Help</li></a>
-	                <li><a href="/profile/settings">Settings</a></li>
+	                <div th:if="${extranetContext.isUserLogged()}" th:remove="tag">
+		                <li><a href="/profile/settings">Settings</a></li>
+						<li><a href="/logout">Logout</a></li>	                
+	                </div>
 	                <li th:if="${extranetContext.isUserLogged()} AND ${#strings.equals('ADMIN', #strings.toString(extranetContext.getUser().getRole()))}"><a href="/sys"> Admin panel</a></li>
 	            </ul>
 	            <div class="socials">
@@ -58,9 +89,33 @@
 	                <a class="linkedin" href="#"><i class="fa fa-linkedin-square"></i> linkedin</a> <br/>
 	                <a class="snapchat" href="#"><i class="fa fa-snapchat-square"></i> snapchat</a>
 	            </div>
-	        </div>
+	        </div> 
 	 	</div>
     </div>
-	
+	<div th:fragment="sign-up" th:remove="tag">
+		<div class="sign-in-header">
+			<div class="row">
+				<div class="col-lg-6">
+					&nbsp;
+				</div>
+				<div class="col-lg-6">
+					<form class="form-inline text-right" role="form" method="POST" action="/auth/sign-up" th:object="${loginForm}">
+						<input type="hidden" name="rememberMe" value="1" />
+						<div class="form-group">
+		                  <input type="text" class="form-control" id="header-login" name="login" placeholder="username" th:value="${loginForm.login}"/>
+		                </div>
+		                 <div class="form-group">
+							<input type="password" class="form-control" id="header-password" name="password" placeholder="password" th:value="${loginForm.password}"/>
+		                 </div>
+		                 <div class="form-group">
+							<input type="submit" class="form-control btn" value="sign up"/>
+		                 </div>
+						<div th:include="fragments/formErrors :: errors(${#fields})" th:remove="tag"></div>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

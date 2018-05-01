@@ -4,6 +4,10 @@
 package com.webrest.hobbyte.core.model;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.Transient;
 
 import com.webrest.hobbyte.core.dao.GenericDao;
 
@@ -13,6 +17,40 @@ import com.webrest.hobbyte.core.dao.GenericDao;
  * @since 24 mar 2018
  */
 public abstract class DatabaseObjectImpl implements DatabaseObject {
+
+	@Transient
+	private Map<Object, Object> parameters = new HashMap<>();
+
+	/**
+	 * Put parameter to {@link DatabaseObjectImpl}. If you want to get it, let use
+	 * {@link #getParameter(Object)} and cast it to type which you need. </br>
+	 * <i><b>Note that:</b> that parameters won't be stored in database. It's only for
+	 * transport some data and store it here!</i>
+	 * 
+	 * @see #getParameter(Object)
+	 * @param key
+	 * @param value
+	 */
+	public void putParameter(Object key, Object value) {
+		parameters.put(key, value);
+	}
+
+	/**
+	 * Return object from {@link DatabaseObjectImpl} parameters which can be cast of
+	 * any of type.
+	 * 
+	 * @see #putParameter(Object, Object)
+	 * @param object
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getParameter(Object object) {
+		return (T) parameters.get(object);
+	}
+	
+	public Map<Object, Object> getParameters(){
+		return parameters;
+	}
 
 	/** {@inheritDoc}} */
 	public boolean isNew() {
@@ -46,12 +84,13 @@ public abstract class DatabaseObjectImpl implements DatabaseObject {
 	 * phoneNumber -> null</br>
 	 * gender -> 1</br>
 	 * newsletter -> 0</br>
-	 * userPolicy -> </br>
+	 * userPolicy -> <b>(sub entity!)</b></br>
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;userId -> 0</br>
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;profileVisibilty -> 1</br>
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user -> <b>this</b></br>
 	 * </code> </br>
-	 * <i>Note: <b>>>this<<</b> is when object value is a parent. It's a recursive breaker.</i>
+	 * <i>Note: <b>>>this<<</b> is when object value is a parent. It's a recursive
+	 * breaker.</i>
 	 * 
 	 * @param parent
 	 * @return
@@ -98,7 +137,7 @@ public abstract class DatabaseObjectImpl implements DatabaseObject {
 	public void save(GenericDao<DatabaseObject> dao) {
 		dao.save(this);
 	}
-	
+
 	public Object getProperty(String name) {
 		try {
 			Field field = getClass().getDeclaredField(name);

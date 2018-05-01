@@ -45,6 +45,15 @@ public class SpringProperties extends EnvironmentProperties {
 	@Value(value = "${profile.mode}")
 	private String profile;
 
+	@Value(value = "${cdn.name}")
+	private String cdnName;
+	
+	@Value(value = "${cdn.key-api}")
+	private String cdnKeyApi;
+	
+	@Value(value = "${cdn.secret-key}")
+	private String cdnSecretKey;
+	
 	private SpringProperties() {
 		// Only for inject
 	}
@@ -101,6 +110,21 @@ public class SpringProperties extends EnvironmentProperties {
 
 	public boolean isProfile(AvailablePlatformProfiles profile) {
 		return this.profile.equals(profile.getCode());
+	}
+
+	@Override
+	public String getCdnName() {
+		return cdnName;
+	}
+
+	@Override
+	public String getCdnApkiKey() {
+		return cdnKeyApi;
+	}
+
+	@Override
+	public String getCdnSecretKey() {
+		return cdnSecretKey;
 	}
 
 }

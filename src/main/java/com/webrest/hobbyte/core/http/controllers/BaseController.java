@@ -34,5 +34,6 @@ public abstract class BaseController {
 	protected DependencyResolver getDependencyResolver() {
 		return dependencyResolver;
 	}
+	
 
 }

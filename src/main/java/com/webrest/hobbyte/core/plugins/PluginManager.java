@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 import com.webrest.hobbyte.core.logger.IActionLogger;
 import com.webrest.hobbyte.core.logger.LoggerFactory;
@@ -13,10 +11,10 @@ import com.webrest.hobbyte.core.plugins.enums.PluginInvokeAppState;
 import com.webrest.hobbyte.core.plugins.interfaces.IPlugin;
 import com.webrest.hobbyte.core.utils.ClassUtils;
 
-@Service
-@Scope("prototype")
-public class PluginManager {
+public enum PluginManager {
 
+	INSTANCE;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger();
 
 	private Map<PluginInvokeAppState, IPlugin[]> plugins;
@@ -27,6 +25,10 @@ public class PluginManager {
 		PluginSort sorter = new PluginSort(_plugins);
 		sorter.sort();
 		plugins = sorter.getPlugins();
+	}
+	
+	public static PluginManager getInstance() {
+		return PluginManager.INSTANCE;
 	}
 	
 	/**

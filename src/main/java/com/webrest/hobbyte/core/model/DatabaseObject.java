@@ -22,12 +22,12 @@ public interface DatabaseObject {
 	void setId(int id);
 
 	/**
-	 * Return <code>true</code> if entity wasn't stored in database.
+	 * Return <code>true</code> if entity isn't stored in database yet.
 	 * 
 	 * @return
 	 */
 	boolean isNew();
 
 	void save(GenericDao<DatabaseObject> dao);
-	
+
 }

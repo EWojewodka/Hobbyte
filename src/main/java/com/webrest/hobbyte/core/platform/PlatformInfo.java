@@ -17,7 +17,6 @@ import com.webrest.hobbyte.core.file.properties.PropertiesGetter;
  */
 @Service
 public class PlatformInfo {
-
 	
 	@Autowired
 	private ConfigurableEnvironment environment;

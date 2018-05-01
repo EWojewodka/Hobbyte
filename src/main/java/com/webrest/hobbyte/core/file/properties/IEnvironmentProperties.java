@@ -6,6 +6,8 @@ package com.webrest.hobbyte.core.file.properties;
 import com.webrest.hobbyte.core.platform.AvailablePlatformProfiles;
 
 /**
+ * TODO: Uneccessary interface - it should be handled in other way.
+ * 
  * @author Emil Wojewódka
  *
  * @since 30 mar 2018
@@ -77,5 +79,11 @@ public interface IEnvironmentProperties {
 	 * @return
 	 */
 	boolean isProduction();
+	
+	String getCdnName();
+	
+	String getCdnApkiKey();
+	
+	String getCdnSecretKey();
 
 }

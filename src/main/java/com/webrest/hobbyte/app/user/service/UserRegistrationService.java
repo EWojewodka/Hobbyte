@@ -43,9 +43,6 @@ public class UserRegistrationService extends FormValidator {
 
 	@Override
 	public boolean isValid(BindingResult binding) {
-		if (!form.isValid(binding)) {
-			return false;
-		}
 		return super.isValid(binding);
 	}
 
