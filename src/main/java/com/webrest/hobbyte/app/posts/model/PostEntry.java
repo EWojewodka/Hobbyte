@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
+import com.webrest.hobbyte.core.model.json.AsJSON;
 import com.webrest.hobbyte.core.utils.Asserts;
 import com.webrest.hobbyte.core.utils.EnumUtils;
 import com.webrest.hobbyte.core.utils.WithId;
@@ -25,6 +26,7 @@ import com.webrest.hobbyte.core.utils.WithId;
  */
 @Entity
 @Table(name = "hb_post_entries")
+@AsJSON
 public class PostEntry extends DatabaseObjectImpl {
 
 	public enum PostEntryStatus implements WithId {
@@ -124,6 +126,10 @@ public class PostEntry extends DatabaseObjectImpl {
 	public void setStatus(PostEntryStatus status) {
 		this.status = status.getId();
 	}
+	
+	public PostEntry() {
+		
+	}
 
 	@Override
 	public int getId() {
@@ -134,5 +140,5 @@ public class PostEntry extends DatabaseObjectImpl {
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
 }

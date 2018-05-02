@@ -64,14 +64,14 @@ public class PostEntryAjax extends AjaxDynamicForm {
 
 	private String uploadImage(HttpServletRequest request) throws Exception {
 		Part photo = request.getPart("photo");
-		if (photo == null)
+		String fileName = photo.getSubmittedFileName();
+		if (photo == null || StringUtils.isEmpty(fileName))
 			return null;
-		String name = photo.getSubmittedFileName();
-		String extension = FileUtils.getExtension(name);
+		String extension = FileUtils.getExtension(fileName);
 		if (!StringUtils.contains(AVAILABLE_PHOTO_EXTENSION, extension)) {
 			throw new AjaxMessageException(WRONG_EXTENSION_MSG, HttpServletResponse.SC_BAD_REQUEST);
 		}
-		File dest = new File(PlatformUtils.TMP_DIR, "tmp_" + name);
+		File dest = new File(PlatformUtils.TMP_DIR, "tmp_" + fileName);
 		// Write file as a temporary file.
 		FileUtils.writeFile(photo.getInputStream(), dest);
 		CloudinaryUploader uploader = getDependency(CloudinaryUploader.class);

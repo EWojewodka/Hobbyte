@@ -1,60 +1,46 @@
 package com.webrest.hobbyte.app.user.http;
 
-import javax.validation.Valid;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.json.JSONObject;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.webrest.hobbyte.app.user.form.LoginForm;
-import com.webrest.hobbyte.app.user.form.RegistrationForm;
-import com.webrest.hobbyte.app.user.service.UserLoginService;
-import com.webrest.hobbyte.app.user.service.UserRegistrationService;
-import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
+import com.webrest.hobbyte.app.user.ExtranetUserUtils;
+import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
+import com.webrest.hobbyte.app.user.model.ExtranetUser;
+import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
+import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
+import com.webrest.hobbyte.core.exception.AjaxMessageException;
+import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
-import com.webrest.hobbyte.core.utils.MessageUtils;
+import com.webrest.hobbyte.core.utils.HttpUtils;
+import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 @Controller
 @RequestMapping(value = "/auth")
 public class AuthController extends BaseController {
-
-	@Autowired
-	private UserRegistrationService registrationService;
-
-	@Autowired
-	private UserLoginService loginService;
 
 	@GetMapping(value = "/sign-in")
 	public String getSignIn(Model model) {
 		return "redirect:/";
 	}
 
-	/**
-	 * Validate registration form and create user.
-	 * 
-	 * @param form
-	 * @param binding
-	 * @param model
-	 * @return
-	 * @throws Exception 
-	 */
 	@PostMapping(value = "/sign-in")
-	public String postSignIn(@Valid @ModelAttribute("registrationForm") RegistrationForm form, final BindingResult binding, Model model) throws Exception {
-		registrationService.addForm(form);
-		if (binding.hasErrors() || !registrationService.isValid(binding)) {
-			return "welcome";
-		}
-		
-		// Auto login after registration
-		((IExtranetUserContext) getContext()).loginUser(registrationService.createFromForm());
-		//Render success registration message
-		model.addAttribute("message", MessageUtils.getSimpleMessage("/registration.txt"));
-		return "info/success";
+	@ResponseBody
+	public String postSignIn() throws Exception {
+		RegistrationAjaxFrom registrationAjaxFrom = new RegistrationAjaxFrom(getContext(), getDependencyResolver());
+		String result = registrationAjaxFrom.run(getContext());
+		return result;
 	}
 
 	@GetMapping(value = "/sign-up")
@@ -62,22 +48,140 @@ public class AuthController extends BaseController {
 		return "redirect:/";
 	}
 
-	/**
-	 * Check login form and login user.
-	 * 
-	 * @param form
-	 * @param binding
-	 * @return
-	 */
 	@PostMapping(value = "/sign-up")
-	public String postSignUp(@Valid @ModelAttribute("loginForm") LoginForm form, final BindingResult binding) {
-		loginService.addForm(form);
-		if (binding.hasErrors() || !loginService.isValid(binding)) {
-			return "welcome";
+	@ResponseBody
+	public String postSignUp() {
+		LoginAjaxForm loginAjaxForm = new LoginAjaxForm(getContext(), getDependencyResolver());
+		String result = loginAjaxForm.run(getContext());
+		ExtranetUser user = loginAjaxForm.getUser();
+		if (user != null)
+			getContext().loginUser(user);
+		return result;
+	}
+
+}
+
+class LoginAjaxForm extends AjaxDynamicForm {
+
+	private ExtranetUserContext context;
+
+	private ExtranetUser user;
+
+	public LoginAjaxForm(ExtranetUserContext context, DependencyResolver dependencyResolver) {
+		super(dependencyResolver);
+		this.context = context;
+	}
+
+	@Override
+	protected JSONObject process(HttpServletRequest request) throws Exception {
+		JSONObject resultJson = new JSONObject();
+		boolean isLogged = ExtranetUserUtils.isLogged(request);
+		if (isLogged) {
+			setRedirect(resultJson, "/");
+			return resultJson;
 		}
-		loginService.handleRememberMe();
-		((IExtranetUserContext) getContext()).loginUser(loginService.getUser());
-		return "redirect:/";
+
+		this.user = findUser(request);
+		if (user == null)
+			throw new AjaxMessageException("The login or password you entered is incorrect", HttpServletResponse.SC_BAD_REQUEST);
+
+		if (!getDependency(PasswordEncoder.class).matches(request.getParameter("password"), user.getPassword()))
+			throw new AjaxMessageException("The login or password you entered is incorrect", HttpServletResponse.SC_BAD_REQUEST);
+
+		if (user.getStatus() != ExtranetUserStatus.ACTIVE)
+			throw new AjaxMessageException("UserNotActive", HttpServletResponse.SC_BAD_REQUEST);
+
+		handleRememberMe(request, user);
+		setRedirect(resultJson, "/");
+		return resultJson;
+	}
+
+	@Override
+	public Class<?>[] getDependencies() {
+		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class };
+	}
+
+	private ExtranetUser findUser(HttpServletRequest request) {
+		return getDependency(ExtranetUserDao.class).findByLoginOrEmail(request.getParameter("login"));
+	}
+
+	public void handleRememberMe(HttpServletRequest request, ExtranetUser user) {
+		HttpUtils.removeCookieIfExists(ExtranetUserUtils.REMEMBER_ME_COOKIE_NAME, context);
+
+		String code = StringUtils.generateRandom(250);
+		user.setRememberMeCode(code);
+		getDependency(ExtranetUserDao.class).save(user);
+
+		Cookie cookie = new Cookie(ExtranetUserUtils.REMEMBER_ME_COOKIE_NAME, code);
+		HttpUtils.setMaxAgeCookie(cookie);
+		cookie.setPath("/");
+		context.getResponse().addCookie(cookie);
+	}
+
+	public ExtranetUser getUser() {
+		return user;
+	}
+
+	@Override
+	public String getCode() {
+		return "header-sign-in";
+	}
+
+}
+
+class RegistrationAjaxFrom extends AjaxDynamicForm {
+
+	private ExtranetUserContext context;
+	
+	public RegistrationAjaxFrom(ExtranetUserContext context, DependencyResolver dependencyResolver) {
+		super(dependencyResolver);
+		this.context = context;
+	}
+
+	@Override
+	@Transactional(rollbackOn = Exception.class)
+	protected JSONObject process(HttpServletRequest request) throws Exception {
+		ExtranetUserDao userDao = getDependency(ExtranetUserDao.class);
+		
+		String login = request.getParameter("login");
+		if (StringUtils.isEmpty(login) || login.length() < 6)
+			throw new AjaxMessageException("Login cannot be shorter than 6 characters",
+					HttpServletResponse.SC_BAD_REQUEST);
+	
+		String email = request.getParameter("email");
+		if (StringUtils.isEmpty(email) || !StringUtils.isEmail(email))
+			throw new AjaxMessageException("Wrong email format", HttpServletResponse.SC_BAD_REQUEST);
+	
+		String password = request.getParameter("password");
+		if (StringUtils.isEmpty(password) || password.length() < 8)
+			throw new AjaxMessageException("Password cannot be shorter than 8 characters",
+					HttpServletResponse.SC_BAD_REQUEST);
+		
+		if(userDao.findByLogin(login) != null)
+			throw new AjaxMessageException("This login is not available", HttpServletResponse.SC_BAD_REQUEST);
+		
+		if(userDao.findByEmail(email) != null)
+			throw new AjaxMessageException("This email is not available", HttpServletResponse.SC_BAD_REQUEST);
+
+		ExtranetUser user = new ExtranetUser();
+		user.setLogin(login);
+		user.setEmail(email);
+		user.setPassword(getDependency(PasswordEncoder.class).encode(password));
+		userDao.save(user);
+		context.loginUser(user);
+		JSONObject result = new JSONObject();
+		setRedirect(result, "/");
+		return result;
+	}
+
+	@Override
+	public Class<?>[] getDependencies() {
+		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class };
+	}
+
+	@Override
+	public String getCode() {
+		return "registration";
 	}
 
 }

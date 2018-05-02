@@ -1,248 +1,247 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:include="head :: head" th:remove="tag"></head>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="index">
 <body>
-	<div class="container-fluid one-page">
-		<div class="row">
-			<div th:include="normal_header :: header" th:remove="tag"></div>
-		</div>
-		<div
-			th:include="user/settings/fragments/setting_list_type :: setting-type-list"
-			th:with="active='account'"></div>
-		<div class="row">
-			<div class="col-lg-2 settings-nav">
-				<div class="list-title">
-					<h4 class="display-4">Categories</h4>
+	<div layout:fragment="content :: content-page">
+		<div class="container-fluid one-page">
+			<div
+				th:include="user/settings/fragments/setting_list_type :: setting-type-list"
+				th:with="active='account'"></div>
+			<div class="row">
+				<div class="col-lg-2 settings-nav">
+					<div class="list-title">
+						<h4 class="display-4">Categories</h4>
+					</div>
+					<ul>
+						<li><a href="#login-and-security" class="formShower">Login
+								and security</a></li>
+						<li><a href="#preferences" class="formShower">Preferences</a></li>
+						<li><a href="#account-management" class="formShower">Account
+								management</a></li>
+					</ul>
 				</div>
-				<ul>
-					<li><a href="#login-and-security" class="formShower">Login
-							and security</a></li>
-					<li><a href="#preferences" class="formShower">Preferences</a></li>
-					<li><a href="#account-management" class="formShower">Account
-							management</a></li>
-				</ul>
-			</div>
-			<div class="col-lg-offset-1 col-lg-6 settings-content">
-				<div id="setting-module account">
-					<div class="description">
-						Lorem ipsum dolores
-					</div>
-					<div class="mega-title" id="login-and-security">
-						Login
-					</div>
-					<div class="row dynamic-form" id="email">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Email
-									</div>
-									<small class="pale">
-										<p th:text="${extranetContext.getUser().getEmail()}" th:remove="tag"></p>
-									</small>								
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" id="email" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description">
-											<small>After submit we are going to send mail to you with confirmation link.</small>
-										</div>
-										<div class="form-group">
-											<label class="control-label text-left"><small>New email</small></label>
-											<input type="email" class="form-control" name="email" th:value="${extranetContext.getUser().getEmail()}"/>
-											<button class="btn setting-btn">change email</button>
-										</div>
-									</form>
-								</div>
-							</div>
+				<div class="col-lg-offset-1 col-lg-6 settings-content">
+					<div id="setting-module account">
+						<div class="description">
+							Lorem ipsum dolores
 						</div>
-					</div>
-					<div class="row dynamic-form" id="phone-number">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Phone number
-									</div>
-									<small class="pale">
-										<p th:text="${#strings.defaultString(extranetContext.getUser().getPhoneNumber(), 'Enter your phone number so that we can communicate')}" th:remove="tag"></p>
-									</small>								
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description">
-											<small>After submit we are going to send SMS. Be sure phone number is correct.</small>
-										</div>
-										<div class="form-group">
-											<label class="control-label text-left"><small>Phone number</small></label>
-											<input type="tel" class="form-control" name="phone-number" th:value="${extranetContext.getUser().getPhoneNumber()}"/>
-											<button class="btn setting-btn">add phone number</button>
-										</div>
-									</form>
-								</div>
-							</div>
+						<div class="mega-title" id="login-and-security">
+							Login
 						</div>
-					</div>
-					
-					<div class="mega-title">
-						Security
-					</div>
-					<div class="row dynamic-form" id="password">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Password
+						<div class="row dynamic-form" id="email">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Email
+										</div>
+										<small class="pale">
+											<p th:text="${extranetContext.getUser().getEmail()}" th:remove="tag"></p>
+										</small>								
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" id="email" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description">
+												<small>After submit we are going to send mail to you with confirmation link.</small>
+											</div>
+											<div class="form-group">
+												<label class="control-label text-left"><small>New email</small></label>
+												<input type="email" class="form-control" name="email" th:value="${extranetContext.getUser().getEmail()}"/>
+												<button class="btn setting-btn">change email</button>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description">
-											<small>After submit you will must pass current password for authentication</small>
-										</div>
-										<div class="form-group">
-											<label class="control-label text-left"><small>New password</small></label>
-											<input type="password" class="form-control" name="new-password"/>
-											<button class="btn setting-btn">change password</button>
-										</div>
-									</form>
-								</div>
-							</div>
 						</div>
-					</div>
-					
-					<div class="mega-title" id="preferences">
-						Preferences
-					</div>
-					<div class="row dynamic-form" id="gender">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Gender
+						<div class="row dynamic-form" id="phone-number">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Phone number
+										</div>
+										<small class="pale">
+											<p th:text="${#strings.defaultString(extranetContext.getUser().getPhoneNumber(), 'Enter your phone number so that we can communicate')}" th:remove="tag"></p>
+										</small>								
 									</div>
-									<small class="pale">
-										<p th:text="${#strings.defaultString(extranetContext.getUser().getGender(), 'Who are you?')}" th:remove="tag"></p>
-									</small>								
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" id="gender" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description">
-											<small>It will facilitate communication.</small>
-										</div>
-										<div class="form-group">
-											<label class="control-label text-left"><small>Gender</small></label>
-											 <select class="form-control" id="gender">
-											 	<option>Male</option>
-											 	<option>Female</option>
-											 </select>
-											<button class="btn setting-btn">change gender</button>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row dynamic-form" id="phone-number">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Name
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description">
+												<small>After submit we are going to send SMS. Be sure phone number is correct.</small>
+											</div>
+											<div class="form-group">
+												<label class="control-label text-left"><small>Phone number</small></label>
+												<input type="tel" class="form-control" name="phone-number" th:value="${extranetContext.getUser().getPhoneNumber()}"/>
+												<button class="btn setting-btn">add phone number</button>
+											</div>
+										</form>
 									</div>
-									<small class="pale">
-										<p th:text="${#strings.defaultString(extranetContext.getUser().getName(), 'What''s your name?')}" th:remove="tag"></p>
-									</small>								
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" id="name" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description">
-											<small>Hello! My name is Hobbyte and you?</small>
-										</div>
-										<div class="form-group">
-											<label class="control-label text-left"><small>Name</small></label>
-											<input type="text" class="form-control" name="name"/>
-											<button class="btn setting-btn">introduce yourself</button>
-										</div>
-									</form>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row dynamic-form" id="phone-number">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Lastname
+						
+						<div class="mega-title">
+							Security
+						</div>
+						<div class="row dynamic-form" id="password">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Password
+										</div>
 									</div>
-									<small class="pale">
-										<p th:text="${#strings.defaultString(extranetContext.getUser().getLastname(), 'What''s your lastname?')}" th:remove="tag"></p>
-									</small>								
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" id="lastname" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description">
-										</div>
-										<div class="form-group">
-											<label class="control-label text-left"><small>Lastname</small></label>
-											<input type="text" class="form-control" name="lastname"/>
-											<button class="btn setting-btn">introduce yourself</button>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="mega-title" id="account-management">
-						Account management
-					</div>
-					<div class="row dynamic-form" id="gender">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Delete account
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description">
+												<small>After submit you will must pass current password for authentication</small>
+											</div>
+											<div class="form-group">
+												<label class="control-label text-left"><small>New password</small></label>
+												<input type="password" class="form-control" name="new-password"/>
+												<button class="btn setting-btn">change password</button>
+											</div>
+										</form>
 									</div>
-									<small class="pale">
-										Please, dooooooon't!
-									</small>								
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" id="delete-account" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description fail">
-											<small>Don't do this!.</small>
-										</div>
-										<div class="form-group">
-											<label class="control-label text-left"><small>Password</small></label>
-											<input type="password" class="form-control" name="password"/>
-											<button class="btn setting-btn">Yes, I thought about it</button>
-										</div>
-									</form>
 								</div>
 							</div>
 						</div>
+						
+						<div class="mega-title" id="preferences">
+							Preferences
+						</div>
+						<div class="row dynamic-form" id="gender">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Gender
+										</div>
+										<small class="pale">
+											<p th:text="${#strings.defaultString(extranetContext.getUser().getGender(), 'Who are you?')}" th:remove="tag"></p>
+										</small>								
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" id="gender" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description">
+												<small>It will facilitate communication.</small>
+											</div>
+											<div class="form-group">
+												<label class="control-label text-left"><small>Gender</small></label>
+												 <select class="form-control" id="gender">
+												 	<option>Male</option>
+												 	<option>Female</option>
+												 </select>
+												<button class="btn setting-btn">change gender</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row dynamic-form" id="phone-number">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Name
+										</div>
+										<small class="pale">
+											<p th:text="${#strings.defaultString(extranetContext.getUser().getName(), 'What''s your name?')}" th:remove="tag"></p>
+										</small>								
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" id="name" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description">
+												<small>Hello! My name is Hobbyte and you?</small>
+											</div>
+											<div class="form-group">
+												<label class="control-label text-left"><small>Name</small></label>
+												<input type="text" class="form-control" name="name"/>
+												<button class="btn setting-btn">introduce yourself</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row dynamic-form" id="phone-number">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Lastname
+										</div>
+										<small class="pale">
+											<p th:text="${#strings.defaultString(extranetContext.getUser().getLastname(), 'What''s your lastname?')}" th:remove="tag"></p>
+										</small>								
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" id="lastname" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description">
+											</div>
+											<div class="form-group">
+												<label class="control-label text-left"><small>Lastname</small></label>
+												<input type="text" class="form-control" name="lastname"/>
+												<button class="btn setting-btn">introduce yourself</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="mega-title" id="account-management">
+							Account management
+						</div>
+						<div class="row dynamic-form" id="gender">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Delete account
+										</div>
+										<small class="pale">
+											Please, dooooooon't!
+										</small>								
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" id="delete-account" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description fail">
+												<small>Don't do this!.</small>
+											</div>
+											<div class="form-group">
+												<label class="control-label text-left"><small>Password</small></label>
+												<input type="password" class="form-control" name="password"/>
+												<button class="btn setting-btn">Yes, I thought about it</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						
 					</div>
-					
 				</div>
+				<div class="col-lg-offset-1 col-lg-2"></div>
 			</div>
-			<div class="col-lg-offset-1 col-lg-2"></div>
 		</div>
 	</div>
-	<div th:include="footer :: footer" th:remove="tag"></div>
-
 </body>
 </html>

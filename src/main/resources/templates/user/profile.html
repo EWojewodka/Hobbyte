@@ -1,50 +1,59 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:include="head :: head" th:remove="tag"></head>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="index">
 <body>
-	<div class="header-obscure"></div>
-	<div th:include="normal_header :: header" th:remove="tag"></div>
-	 <div class="container-fluid one-page">
-        <div class="row user-presentation">
-            <div class="col-lg-10 profile">
-                <div class="row">
-                    <div class="image-profile-wrapper">
-                            <img src="/images/gandalf.jpg" class="profile-image oryginal default"/>
-                            <img src="/images/gandalf.jpg" class="profile-image default blur"/>
-		                    <div th:if="${extranetContext.isUserLogged()} AND (${extranetContext.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
-			                    <a href="/profile/settings/account" class="misc user-settings"><i class="fa fa-cogs"></i></a>
-		                    </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 profile-nav">
-            	<ul>
-            		<li><a href="#">Information</a></li>
-            		<li><a href="#">Information</a></li>
-            		<li><a href="#">Information</a></li>
-            	</ul>
-            </div>
-        </div>
-        <div class="row profile-content">
-        	<div class="container">
-        		<div class="row">
-		          	<div class="col-lg-2 block profile-left-bar">
-		          		left bar
-		          	</div>
-		          	<div class="col-lg-offset-1 col-lg-6 profile-center-bar">
-		          		<div th:if="${extranetContext.isUserLogged()} AND (${extranetContext.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
-							<div th:include="user/post_area :: post"></div>
-		          		</div>
-			          	<div class=" block">
-			          	&nbsp;
+	<div layout:fragment="content :: content-page">
+		<div class="header-obscure"></div>
+		 <div class="container-fluid one-page">
+	        <div class="row user-presentation">
+	            <div class="col-lg-10 profile">
+	                <div class="row">
+	                    <div class="image-profile-wrapper">
+	                            <img th:src="${userProfile.getImageUrl()}" class="profile-image oryginal default"/>
+	                            <img th:src="${userProfile.getImageUrl()}" class="profile-image default blur"/>
+			                    <div th:if="${extranetContext.isUserLogged()} AND (${extranetContext.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
+				                    <a href="/profile/settings/account" class="misc user-settings"><i class="fa fa-cogs"></i></a>
+			                    </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-lg-2 profile-nav">
+	            	<ul>
+	            		<li><a href="#">Information</a></li>
+	            		<li><a href="#">Information</a></li>
+	            		<li><a href="#">Information</a></li>
+	            	</ul>
+	            </div>
+	        </div>
+	        <div class="row profile-content">
+	        	<div class="container">
+	        		<div class="row">
+			          	<div class="col-lg-2 block profile-left-bar">
+			          		left bar
 			          	</div>
-		          	</div>
-		          	<div class="col-lg-offset-1 col-lg-2 block profile-right-bar">
-		          		right bar
-		          	</div>
-        		</div>
-        	</div>
-        </div>
-    </div>
+			          	<div class="col-lg-offset-1 col-lg-6 profile-center-bar">
+			          		<div th:if="${extranetContext.isUserLogged()} AND (${extranetContext.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
+								<div class="row">
+									<div class="col-lg-12">
+										<div th:include="user/post_area :: post"></div>
+									</div>
+								</div>
+			          		</div>
+				          	<div class="row">
+				          		<div class="col-lg-12 block">
+						          	&nbsp;
+				          		</div>
+				          	</div>
+			          	</div>
+			          	<div class="col-lg-offset-1 col-lg-2 block profile-right-bar">
+			          		right bar
+			          	</div>
+	        		</div>
+	        	</div>
+	        </div>
+	    </div>
+	</div>
 </body>
 </html>

@@ -1,77 +1,76 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:include="head :: head" th:remove="tag"></head>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="index">
 <body>
-	<div class="container-fluid one-page">
-		<div class="row">
-			<div th:include="normal_header :: header" th:remove="tag"></div>
-		</div>
-		<div
-			th:include="user/settings/fragments/setting_list_type :: setting-type-list"
-			th:with="active='privacy'"></div>
-		<div class="row">
-			<div class="col-lg-2 settings-nav">
-				<div class="list-title">
-					<h4 class="display-4">Categories</h4>
+	<div layout:fragment="content :: content-page">
+		<div class="container-fluid one-page">
+			<div
+				th:include="user/settings/fragments/setting_list_type :: setting-type-list"
+				th:with="active='privacy'"></div>
+			<div class="row">
+				<div class="col-lg-2 settings-nav">
+					<div class="list-title">
+						<h4 class="display-4">Categories</h4>
+					</div>
+					<ul>
+						<li><a href="#account-visibility" class="formShower">Account visibility</a></li>
+					</ul>
 				</div>
-				<ul>
-					<li><a href="#account-visibility" class="formShower">Account visibility</a></li>
-				</ul>
-			</div>
-			<div class="col-lg-offset-1 col-lg-6 settings-content">
-				<div id="setting-module account">
-					<div class="description">
-					</div>
-					<div class="mega-title" id="login-and-security">
-						Account visiblity
-					</div>
-					<div class="row dynamic-form" id="email">
-						<div class="col-lg-12 dynamic-form-wrapper">
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="title btn">
-										Account visiblity
+				<div class="col-lg-offset-1 col-lg-6 settings-content">
+					<div id="setting-module account">
+						<div class="description">
+						</div>
+						<div class="mega-title" id="login-and-security">
+							Account visiblity
+						</div>
+						<div class="row dynamic-form" id="email">
+							<div class="col-lg-12 dynamic-form-wrapper">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="title btn">
+											Account visiblity
+										</div>
+										<small class="pale">
+											<p th:text="${extranetContext.getUser().createOrGetUserPolicy().getProfileVisibilty()}" th:remove="tag"></p>
+										</small>								
 									</div>
-									<small class="pale">
-										<p th:text="${extranetContext.getUser().createOrGetUserPolicy().getProfileVisibilty()}" th:remove="tag"></p>
-									</small>								
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-offset-1 col-lg-10">
-									<form class="form-horizontal" role="form" method="POST" id="profile-visibility" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
-										<div class="form-description">
-											<small>Decide who can see your profile</small>
-										</div>
-										<div class="form-group one-checkbox">
-											<div class="checkbox">
-												<label class="custom-checkbox">
-													<input type="checkbox" name="public" />
-			                                        <span class="checkmark"></span>
-			                                        <span>&nbsp;&nbsp;&nbsp;Everyone</span>
-												</label>
+								<div class="row">
+									<div class="col-lg-offset-1 col-lg-10">
+										<form class="form-horizontal" role="form" method="POST" id="profile-visibility" onsubmit="sendAjaxWithUrl('/profile/settings', this); return false;">
+											<div class="form-description">
+												<small>Decide who can see your profile</small>
 											</div>
-											<div class="checkbox">
-												<label class="custom-checkbox">
-													<input type="checkbox" name="for_friends" />
-			                                        <span class="checkmark"></span>
-			                                        <span>&nbsp;&nbsp;&nbsp;Only friends</span>
-												</label>
+											<div class="form-group one-checkbox">
+												<div class="checkbox">
+													<label class="custom-checkbox">
+														<input type="checkbox" name="public" />
+				                                        <span class="checkmark"></span>
+				                                        <span>&nbsp;&nbsp;&nbsp;Everyone</span>
+													</label>
+												</div>
+												<div class="checkbox">
+													<label class="custom-checkbox">
+														<input type="checkbox" name="for_friends" />
+				                                        <span class="checkmark"></span>
+				                                        <span>&nbsp;&nbsp;&nbsp;Only friends</span>
+													</label>
+												</div>
+												<button class="btn setting-btn">change visibility</button>
 											</div>
-											<button class="btn setting-btn">change visibility</button>
-										</div>
-									</form>
+										</form>
+									</div>
 								</div>
 							</div>
 						</div>
+						
 					</div>
-					
 				</div>
+				<div class="col-lg-offset-1 col-lg-2"></div>
 			</div>
-			<div class="col-lg-offset-1 col-lg-2"></div>
 		</div>
 	</div>
-	<div th:include="footer :: footer" th:remove="tag"></div>
-
 </body>
 </html>

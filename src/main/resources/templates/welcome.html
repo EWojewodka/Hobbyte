@@ -58,15 +58,15 @@
               &nbsp;
             </div>
             <div class="col-lg-6">
-				<form role="form" th:object="${registrationForm}" method="POST" action="/auth/sign-in">
-					<div th:include="fragments/formErrors :: errors(${#fields})" th:remove="tag"></div>
+				<form role="form" id="header-sign-in" class="dyanmic-form" method="POST" onsubmit="sendAjaxWithUrl('/auth/sign-in', this); return false;">
+					<div class="form-description hide"></div>
 	                <div class="form-group">
 	                  <label for="login">Username</label>
-	                  <input type="text" class="form-control" id="login" name="login" th:value="${registrationForm.login}"/>
+	                  <input type="text" class="form-control" id="login" name="login"/>
 	                </div>
 	                <div class="form-group">
 	                  <label for="email">Email</label>
-	                  <input type="email" class="form-control" id="email" name="email" th:value="${registrationForm.email}"/>
+	                  <input type="email" class="form-control" id="email" name="email"/>
 	                </div>
 	                <div class="form-group">
 	                  <label for="password">Password</label>
@@ -85,7 +85,7 @@
         </div>
       </div>
     </div>
-    <div th:include="header :: sign-up"></div>
+    <div th:include="header :: top-header"></div>
   </body>
   <div class="container-fluid" id="footer">
         <div class="row">

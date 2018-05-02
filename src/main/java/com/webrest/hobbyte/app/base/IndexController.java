@@ -26,13 +26,12 @@ public class IndexController extends BaseController {
 	@RequestMapping(value = "/")
 	public String index(Model model) throws RedirectException {
 		if (getContext().isUserLogged())
-			return "index";
+			return "user/board";
 
 		if (!model.containsAttribute("registrationForm"))
 			model.addAttribute("registrationForm", new RegistrationForm());
 		if (!model.containsAttribute("loginForm"))
 			model.addAttribute("loginForm", new LoginForm());
-		System.out.println(model.asMap());
 		return "welcome";
 	}
 

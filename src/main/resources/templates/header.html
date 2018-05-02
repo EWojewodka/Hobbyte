@@ -45,30 +45,6 @@
 					</div>
      			</div>
 	     	</div>
-	        <!-- <div class="menu-btn-wrapper">
-	            
-	        </div>
-		        <div th:switch="${extranetContext.isUserLogged()}"> 
-				  <div th:case="true">
-		            <div class="buttons-wrapper" id="sign-buttons">
-		                <a th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}">
-		                    <button class="btn btn-default"><i class="fa fa-user"></i> Profile</button>
-		                </a>
-		            </div>
-				  </div>
-				  <div th:case="*">
-		        	<div class="buttons-wrapper" id="sign-buttons">
-		                <a href="/auth/sign-in">
-		                    <button class="btn btn-default">
-		                        <i class="fa fa-lock"></i> SIGN IN
-		                    </button>
-		                </a>
-		        	</div>
-				  </div> 
-				</div>
-	        <a href="/" class="header-slogan">
-	                Join to the best minds around the world!
-	        </a>-->
 	        <div class="navbar navbar-left">
 	            <button class="close" onclick="toggleMenu(false)">&#10006;</button>
 	            <ul>
@@ -99,22 +75,64 @@
 					&nbsp;
 				</div>
 				<div class="col-lg-6">
-					<form class="form-inline text-right" role="form" method="POST" action="/auth/sign-up" th:object="${loginForm}">
+					<form class="form-inline text-right" id="header-sign-in" role="form" method="POST" onsubmit="sendAjaxWithUrl('/auth/sign-up', this); return false;">
+						<div class="form-description hide"></div>
 						<input type="hidden" name="rememberMe" value="1" />
 						<div class="form-group">
-		                  <input type="text" class="form-control" id="header-login" name="login" placeholder="username" th:value="${loginForm.login}"/>
+		                  <input type="text" class="form-control" id="header-login" name="login" placeholder="username"/>
 		                </div>
 		                 <div class="form-group">
-							<input type="password" class="form-control" id="header-password" name="password" placeholder="password" th:value="${loginForm.password}"/>
+							<input type="password" class="form-control" id="header-password" name="password" placeholder="password" />
 		                 </div>
 		                 <div class="form-group">
 							<input type="submit" class="form-control btn" value="sign up"/>
 		                 </div>
-						<div th:include="fragments/formErrors :: errors(${#fields})" th:remove="tag"></div>
 					</form>
 					
 				</div>
 			</div>
+		</div>
+	</div>
+	<div th:fragment="logged">
+	    <div class="container-fluid" id="normal-header">
+	        <div class="row">
+	        	<div class="col-lg-1">
+		        	<a href="/">
+		        	<span class="hobbyte-title"><b>hobbyte</b></span>
+		        	</a>
+	        	</div>
+	        	<div class="col-lg-3">
+					<form action="/search" method="GET" class="form form-inline" id="search-form">
+						<div class="input-group">
+						    <input type="text" class="form-control" name="search" id="search" placeholder="search" />
+							<div class="input-group-addon">
+								<button class="btn"><i class="fa fa-search"></i></button>
+							</div>
+						</div>
+					</form>
+	        	</div>
+	        	<div class="offset-lg-4 col-lg-3">
+	        		<ul class="social-nav">
+	        			<li>
+	        				<a th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}">
+	        					<img th:src="${extranetContext.getUser().getImageUrl()}" class="header-profile"></img>
+	        					<span th:text="${extranetContext.getUser().getLogin()}" class="header-profile-name"></span>
+	        				</a>
+	        			</li>
+		        		<li><a href="#friends"><i class="fa fa-users"></i></a></li>
+		        		<li><a href="#messages"><i class="fa fa-comments"></i></a></li>
+		        		<li><a href="#notifications"><i class="fa fa-globe"></i></a></li>	
+		        		<li><a href="#top"><i class="fa fa-fire"></i></a></li>	
+	        		</ul>
+	        	</div>
+	        </div>
+	    </div>
+	</div>
+	
+	<div th:fragment="top-header" th:remove="tag">
+		<div th:switch="${extranetContext.isUserLogged()}" th:remove="tag">
+			<div th:case="false" th:include="header :: sign-up"></div>
+			<div th:case="*" th:include="header :: logged" th:remove="tag"></div>
 		</div>
 	</div>
 </body>

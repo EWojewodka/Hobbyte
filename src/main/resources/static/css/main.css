@@ -129,14 +129,34 @@ a:hover, a:active, a:focus {
 	position: fixed;
 	width: 100%;
 	height: 5%;
-	top:15px;
+	top:5px;
 	right: 15px;
 	font-size: 10px !important;
 }
 
 .sign-in-header form {
-	float: right;
+	display: flex;
+	align-items:center;
+	flex-flow: row;
 	font-family: 'Segoe UI';
+	justify-content: end;
+}
+
+.sign-in-header .form-description {
+	margin-right: 15px;
+	margin-left: 15px;
+	font-size: 12px !important;
+}
+
+.width_50 {
+	width: 50%;
+}
+.width_70 {
+	width: 70%;
+}
+
+.width_30 {
+	width: 30%;
 }
 
 .sign-in-header input{
@@ -202,6 +222,18 @@ a:hover, a:active, a:focus {
 	display: flex;
 	flex-flow: row;
 	justify-content: space-between;
+	line-height: 35px;
+}
+
+img.header-profile {
+	width: 35px;
+	height: auto;
+	border-radius: 6px;
+	border: solid white 1px;
+}
+
+span.header-profile-name {
+	font-size: 12px;
 }
 
 #normal-header ul.social-nav li {
@@ -727,6 +759,7 @@ div.profile-content {
 .block {
 	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0
 		rgba(0, 0, 0, 0.19);
+	background-color: #F3F6F8;
 }
 
 .settings-type-list {
@@ -854,6 +887,10 @@ li a {
 	transition-duration: 0.2s;
 }
 
+.form-description.hide {
+	display: none;
+}
+
 .form-description.success {
 	background-color: #DFF0D8;
 	border: solid #D6E9C6 1px;
@@ -967,7 +1004,6 @@ iframe {
 
 .row div.post-area {
 	position: relative;
-	top: -50px;
 	padding-bottom: 15px;
 	border-radius: 5px;
 }
@@ -1134,6 +1170,17 @@ iframe {
 	#header, #header > * {
 		height: auto;
 	}
+	
+	.sign-in-header {
+		width: 100%;
+		top:0;
+		right: 0;
+	}
+	
+	.sign-in-header > *{
+		background-color: rgba(0,0,0,0.5)
+	}
+	
 }
 
 @media only screen and (max-width:480px) {

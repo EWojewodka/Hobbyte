@@ -16,6 +16,7 @@ import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.app.user.model.enums.Gender;
 import com.webrest.hobbyte.app.user.model.enums.NewsletterStatus;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
+import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Entity
 @Table(name = "hb_extranet_users")
@@ -45,10 +46,10 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private String lastname;
 
 	@Column
-	private int status;
+	private int status = ExtranetUserStatus.ACTIVE.getId();
 
 	@Column
-	private int agreement = ExtranetUserAgreement.NOT_ACCEPT.getId();
+	private int agreement = ExtranetUserAgreement.ACCEPT.getId();
 
 	@Column
 	private Date born;
@@ -70,6 +71,9 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	
 	@Column(name = "remember_me_code", nullable = true, unique=true)
 	private String rememberMeCode;
+	
+	@Column(name ="image_url")
+	private String imageUrl;
 
 	@Override
 	public int getId() {
@@ -83,6 +87,16 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	public String getLogin() {
 		return login;
+	}
+	
+	public String getImageUrl() {
+		if(StringUtils.isEmpty(imageUrl))
+			return "/images/gandalf.jpg";
+		return imageUrl;
+	}
+	
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public void setLogin(String login) {

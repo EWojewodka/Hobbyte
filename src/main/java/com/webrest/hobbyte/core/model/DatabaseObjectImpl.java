@@ -9,18 +9,23 @@ import java.util.Map;
 
 import javax.persistence.Transient;
 
+import org.json.JSONObject;
+
 import com.webrest.hobbyte.core.dao.GenericDao;
+import com.webrest.hobbyte.core.model.json.JSONable;
+import com.webrest.hobbyte.core.model.json.JsonConverter;
 
 /**
  * @author Emil Wojewódka
  *
  * @since 24 mar 2018
  */
-public abstract class DatabaseObjectImpl implements DatabaseObject {
+public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
+	
 
 	@Transient
 	private Map<Object, Object> parameters = new HashMap<>();
-
+	
 	/**
 	 * Put parameter to {@link DatabaseObjectImpl}. If you want to get it, let use
 	 * {@link #getParameter(Object)} and cast it to type which you need. </br>
@@ -148,5 +153,17 @@ public abstract class DatabaseObjectImpl implements DatabaseObject {
 		}
 		return null;
 	}
+
+	@Override
+	public JSONObject getAsJSON() {
+		return JsonConverter.toJson(this);
+	}
+
+	@Override
+	public String getJSONAsString() {
+		return getAsJSON().toString();
+	}
+	
+	
 
 }

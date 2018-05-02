@@ -51,6 +51,7 @@ function moveHeaderImage(toRight) {
 function handleDynamicForms() {
 	$('.dynamic-form').each(function() {
 		$(this).find('form').hide();
+		console.log($(this))
 	});
 
 	$('.dynamic-form').click(function() {
@@ -72,7 +73,7 @@ function handleDynamicForms() {
 	});
 }
 
-function sendAjaxWithUrl(url, _form,callback) {
+function sendAjaxWithUrl(url, _form) {
 	var form = $(_form);
 	prepareFormDescription(form);
 	var formData = new FormData(_form);
@@ -85,7 +86,8 @@ function sendAjaxWithUrl(url, _form,callback) {
 		success : function(data) {
 			var jsonObj = JSON.parse(data);
 			showResultAfterAjax(form, jsonObj.msg, true);
-			callback();
+			if(jsonObj.redirect !== undefined)
+				window.location.href = jsonObj.redirect;
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			if (xhr === undefined || xhr.responseJSON === undefined)
@@ -104,11 +106,12 @@ function prepareFormDescription(form) {
 	var formDescription = form.find('.form-description');
 	formDescription.removeClass('success');
 	formDescription.removeClass('fail');
-	formDescription.removeClass('hidden');
 }
 
 function showResultAfterAjax(form, content, isSuccess){
 	var formDescription = form.find('.form-description');
+	formDescription.fadeIn(100);
+	formDescription.removeClass('hidden');
 	formDescription.html("<small>" + content + "</small>");
 	formDescription.addClass(isSuccess ? 'success' : 'fail');
 }

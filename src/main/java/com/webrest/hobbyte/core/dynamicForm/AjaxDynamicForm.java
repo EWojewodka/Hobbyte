@@ -24,7 +24,7 @@ import com.webrest.hobbyte.core.utils.spring.IDependencyRequired;
  *
  * @since 15 mar 2018
  */
-public abstract class AjaxDynamicForm extends DependencyRequired implements IDependencyRequired{
+public abstract class AjaxDynamicForm extends DependencyRequired implements IDependencyRequired {
 
 	public AjaxDynamicForm(DependencyResolver dependencyResolver) {
 		super(dependencyResolver);
@@ -33,11 +33,11 @@ public abstract class AjaxDynamicForm extends DependencyRequired implements IDep
 	private HttpServletRequest request;
 
 	private HttpServletResponse response;
-	
+
 	public String run(IHttpContext context) {
 		return run(context.getRequest(), context.getResponse());
 	}
-	
+
 	public String run(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
@@ -81,10 +81,17 @@ public abstract class AjaxDynamicForm extends DependencyRequired implements IDep
 	}
 
 	public abstract String getCode();
-	
+
 	protected void addMessage(JSONObject jsonObject, String message) throws JSONException {
-		jsonObject.put("msg", message);
+		addJsonValue(jsonObject, "msg", message);
 	}
 
+	protected void setRedirect(JSONObject jsonObject, String redirectPath) throws JSONException {
+		addJsonValue(jsonObject, "redirect", redirectPath);
+	}
+
+	protected void addJsonValue(JSONObject jsonObject, String key, String value) throws JSONException {
+		jsonObject.put(key, value);
+	}
 
 }
