@@ -1,19 +1,28 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html 	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
 <body>
-	<head th:fragment="head">
-		<!-- STYLES -->
-		<link rel="stylesheet" type="text/css" href="/css/main.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/app.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
-		<!--JS  -->
+	<head layout:fragment="head">
+		<link layout:include="head :: styles" th:remove="tag"></link>			
+		<link layout:include="head :: scripts" th:remove="tag"></link>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+	
+	<div layout:fragment="scripts" th:remove="tag">
 		<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="/js/typeahead.js"></script>
 		<script type="text/javascript" src="/js/script.js"></script>
-		
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    </head>
-
+		<script type="text/javascript" src="/js/prototype.min.js"></script>
+		<script type="text/javascript" src="/js/AjaxRequest.js"></script>
+	</div>
+	
+	<div layout:fragment="styles" th:remove="tag">
+		<link rel="stylesheet" type="text/css" href="/css/main.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/app.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
+	</div>
+	
 </body>
 </html>

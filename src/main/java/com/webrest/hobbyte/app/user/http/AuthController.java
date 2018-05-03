@@ -80,17 +80,17 @@ class LoginAjaxForm extends AjaxDynamicForm {
 			setRedirect(resultJson, "/");
 			return resultJson;
 		}
-
-		this.user = findUser(request);
-		if (user == null)
+		ExtranetUser u = findUser(request);
+		if (u == null)
 			throw new AjaxMessageException("The login or password you entered is incorrect", HttpServletResponse.SC_BAD_REQUEST);
 
-		if (!getDependency(PasswordEncoder.class).matches(request.getParameter("password"), user.getPassword()))
+		if (!getDependency(PasswordEncoder.class).matches(request.getParameter("password"), u.getPassword()))
 			throw new AjaxMessageException("The login or password you entered is incorrect", HttpServletResponse.SC_BAD_REQUEST);
 
-		if (user.getStatus() != ExtranetUserStatus.ACTIVE)
+		if (u.getStatus() != ExtranetUserStatus.ACTIVE)
 			throw new AjaxMessageException("UserNotActive", HttpServletResponse.SC_BAD_REQUEST);
 
+		this.user = u;
 		handleRememberMe(request, user);
 		setRedirect(resultJson, "/");
 		return resultJson;

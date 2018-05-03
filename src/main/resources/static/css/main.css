@@ -377,6 +377,10 @@ small.small a {
 	color: #c14558 !important;
 }
 
+a.colored {
+	color: #c14558 !important;
+}
+
 #footer a {
 	margin-right: 15px;
 }
@@ -563,13 +567,13 @@ form .btn-primary:hover {
 	background-size: cover;
 }
 
-.profile-content .profile-right-bar, .profile-content .profile-left-bar
+.profile-right-bar, .profile-left-bar
 	{
-	height: 200px;
+	height: 400px;
 }
 
 .profile-center-bar {
-	height: 400px;
+	height: auto;
 }
 
 div.profile-nav {
@@ -1126,6 +1130,26 @@ iframe {
 	position: relative;
 	left: -10%;
 	margin-top: 10px;
+}
+
+.post-container{
+	padding: 10px;
+}
+
+.post-container .post-entry {
+	background-color: white;
+	padding: 15px;
+	margin-bottom: 7px;
+}
+
+.post-entry .header {
+	display: flex;
+	flex-flow: row;
+	font-size: 12px;
+}
+
+.post-entry .header .date{
+	text-align: right;
 }
 
 @media only screen and (max-width:961px) {

@@ -6,22 +6,16 @@
 <body>
 	<div layout:fragment="content :: content-page" th:remove="tag">
 		<script>
-			$(document).ready(function(){
-				$.get( "post/board", function( data ) {
-					var postContainer = $('.post-container');
-					var json = JSON.parse(data);
-					for(i=0; json.length > i; i++) {
-						var post = json[i];
-						postContainer.append(
-								'<div class="post-entry">'+
-									'<div class="header">'+
-									post.createdAt +
-									'</div>'+
-									''
-								'</div>');
-					}	  
-				});
-			})
+			importScript('PostEntry');
+			var ajax = new AjaxRequest('/post/board');
+			ajax.method = 'GET';
+			ajax.send(null, function(jsonObj){
+				var len = jsonObj.length;
+				for(i=0;len>i;i++) {
+					printPostEntry(jQuery('.post-container'), jsonObj[i])				
+					printPostEntry(jQuery('.post-container'), jsonObj[i])									
+				}
+			});
 		</script>
 		<div class="header-obscure"></div>
 		<div class="container-fluid one-page">
@@ -34,7 +28,7 @@
 		          	<div class="offset-lg-1 col-lg-1 block profile-left-bar">
 		          		left bar
 		          	</div>
-		          	<div class="offset-lg-1 col-lg-3 profile-center-bar">
+		          	<div class="offset-lg-1 col-lg-4 profile-center-bar">
 						<div class="row">
 							<div class="col-lg-12">
 								<div th:include="user/post_area :: post"></div>
@@ -46,7 +40,7 @@
 							</div>
 						</div>		          		
 		          	</div>
-		          	<div class="offset-lg-1 col-lg-2 pull-lg-1 block profile-right-bar">
+		          	<div class="offset-lg-1 col-lg-2 block profile-right-bar">
 		          		right bar
 		          	</div>
         		</div>

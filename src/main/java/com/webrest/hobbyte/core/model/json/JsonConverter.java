@@ -10,18 +10,21 @@ public class JsonConverter {
 
 	public static JSONObject toJson(Object object) {
 		JSONObject jsonObject = new JSONObject();
-		if(object == null)
+		if (object == null)
 			return jsonObject;
-		
+
 		Class<? extends Object> clazz = object.getClass();
-		//Get all fields if Class is annotated. Otherwise get only annotated fields.
+		// Get all fields if Class is annotated. Otherwise get only annotated fields.
 		Field[] fields = clazz.isAnnotationPresent(AsJSON.class) ? clazz.getDeclaredFields()
 				: ClassUtils.getAnnotatedFields(clazz, AsJSON.class);
-		
+
 		for (Field f : fields) {
 			f.setAccessible(true);
 			try {
-				jsonObject.put(f.getName(), f.get(object));
+				if (f.getType().isAssignableFrom(JSONable.class))
+					jsonObject.put(f.getName(), ((JSONable) f.get(object)).getAsJSON());
+				else
+					jsonObject.put(f.getName(), f.get(object));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

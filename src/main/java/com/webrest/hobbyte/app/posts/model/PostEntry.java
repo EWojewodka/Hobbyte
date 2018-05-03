@@ -73,7 +73,7 @@ public class PostEntry extends DatabaseObjectImpl {
 
 	@Column
 	private int status = PostEntryStatus.PENDING.id;
-
+	
 	public PostEntry(ExtranetUser author) {
 		Asserts.exists(author);
 		this.authorId = author.getId();

@@ -1,9 +1,10 @@
-$(document).ready(function() {
-	$('.navbar-left').hide();
-	$('.header-obscure').hide();
-	$('.post-attachments-preview').hide();
+jQuery(document).ready(function() {
+	jQuery.noConflict();
+	jQuery('.navbar-left').hide();
+	jQuery('.header-obscure').hide();
+	jQuery('.post-attachments-preview').hide();
 
-	$('.header-obscure').click(function() {
+	jQuery('.header-obscure').click(function() {
 		toggleMenu(false);
 		minimizeImage();
 	});
@@ -15,8 +16,8 @@ $(document).ready(function() {
 });
 
 function toggleMenu(show) {
-	var leftNavbar = $('.navbar-left');
-	var headerObscure = $('.header-obscure');
+	var leftNavbar = jQuery('.navbar-left');
+	var headerObscure = jQuery('.header-obscure');
 
 	if (show) {
 		leftNavbar.show("slide", {
@@ -33,7 +34,7 @@ function toggleMenu(show) {
 }
 
 function moveHeaderImage(toRight) {
-	var headerImage = $('.header-image');
+	var headerImage = jQuery('.header-image');
 	var classToAdd = 'image-to-right';
 
 	if (toRight) {
@@ -49,16 +50,16 @@ function moveHeaderImage(toRight) {
  * @returns
  */
 function handleDynamicForms() {
-	$('.dynamic-form').each(function() {
-		$(this).find('form').hide();
-		console.log($(this))
+	jQuery('.dynamic-form').each(function() {
+		jQuery(this).find('form').hide();
+		console.log(jQuery(this))
 	});
 
-	$('.dynamic-form').click(function() {
-		var toOpen = $(this);
+	jQuery('.dynamic-form').click(function() {
+		var toOpen = jQuery(this);
 		var toOpenForm = toOpen.find('form');
-		$('.dynamic-form').each(function() {
-			var other = $(this);
+		jQuery('.dynamic-form').each(function() {
+			var other = jQuery(this);
 			var otherForm = other.find('form');
 
 			if (other.attr('id') != toOpen.attr('id')) {
@@ -74,27 +75,21 @@ function handleDynamicForms() {
 }
 
 function sendAjaxWithUrl(url, _form) {
-	var form = $(_form);
+	var form = jQuery(_form);
+	var ajax = new AjaxRequest(url + "?type=" + form.attr('id'));
+	var success = function(jsonObj){
+		showResultAfterAjax(form, jsonObj.msg, true);
+		if(jsonObj.redirect !== undefined)
+			window.location.href = jsonObj.redirect;
+	}
+
+	var failure = function(xhr, ajaxOptions, thrownError) {
+		if (xhr === undefined || xhr.responseJSON === undefined)
+			return;
+		showResultAfterAjax(form, xhr.responseJSON.message, false);
+	}
 	prepareFormDescription(form);
-	var formData = new FormData(_form);
-	$.post({
-		data : formData,
-		url : url + "?type=" + form.attr('id'),
-		data: formData,
-		processData: false,
-	    contentType: false,
-		success : function(data) {
-			var jsonObj = JSON.parse(data);
-			showResultAfterAjax(form, jsonObj.msg, true);
-			if(jsonObj.redirect !== undefined)
-				window.location.href = jsonObj.redirect;
-		},
-		error : function(xhr, ajaxOptions, thrownError) {
-			if (xhr === undefined || xhr.responseJSON === undefined)
-				return;
-			showResultAfterAjax(form, xhr.responseJSON.message, false);
-		}
-	});
+	ajax.send(new FormData(_form), success, failure);
 }
 
 function sendAjax(_form) {
@@ -117,26 +112,26 @@ function showResultAfterAjax(form, content, isSuccess){
 }
 
 function smoothScroll() {
-	$('a[href*="#"]').on('click',
+	jQuery('a[href*="#"]').on('click',
 		function(event) {
 			if (location.pathname.replace(/^\//, '') == this.pathname
 					.replace(/^\//, '')
 					&& location.hostname == this.hostname) {
-				var target = $(this.hash);
-				target = target.length ? target : $('[name='
+				var target = jQuery(this.hash);
+				target = target.length ? target : jQuery('[name='
 						+ this.hash.slice(1) + ']');
 				if (target.length) {
 					event.preventDefault();
-					$('html, body').animate({
+					jQuery('html, body').animate({
 						scrollTop : target.offset().top
 					}, 500, function() {
-						var $target = $(target);
-						$target.focus();
-						if ($target.is(":focus")) {
+						var jQuerytarget = jQuery(target);
+						jQuerytarget.focus();
+						if (jQuerytarget.is(":focus")) {
 							return false;
 						} else {
-							$target.attr('tabindex', '-1');
-							$target.focus();
+							jQuerytarget.attr('tabindex', '-1');
+							jQuerytarget.focus();
 						}
 						;
 					});
@@ -146,9 +141,9 @@ function smoothScroll() {
 }
 
 function onlyOneCheckbox() {
-	$('.one-checkbox .checkbox').on('change', function(e) {
-		$(this).siblings().each(function() {
-			var toUncheck = $(this).find('input[type="checkbox"]').first();
+	jQuery('.one-checkbox .checkbox').on('change', function(e) {
+		jQuery(this).siblings().each(function() {
+			var toUncheck = jQuery(this).find('input[type="checkbox"]').first();
 			toUncheck.prop("checked", false);
 			toUncheck.prop("disabled", false);
 		});
@@ -157,24 +152,24 @@ function onlyOneCheckbox() {
 }
 
 function showNewPostModal() {
-	$('.header-obscure').slideDown(200);
+	jQuery('.header-obscure').slideDown(200);
 }
 
 function listenMenuTree(){
-	$('.menu-tree-element-wrapper').hide();
-	$('.menu-tree-element div').on('click', function(){
-		var parent = $(this);
+	jQuery('.menu-tree-element-wrapper').hide();
+	jQuery('.menu-tree-element div').on('click', function(){
+		var parent = jQuery(this);
 		parent.siblings('.menu-tree-element-wrapper').toggle();
 	});
 }
 
 function loadIFrame(_source){
-	var source = $(_source);
+	var source = jQuery(_source);
 	var navigator = source.find('.mt-navigator').first();
 	var src = navigator.attr('src');
 	if(src === undefined || src.length == 0)
 		return;
-	$('iframe').prop('src', src);
+	jQuery('iframe').prop('src', src);
 }
 
 var availablePhotoFormats = ['jpg','jpeg','gif','png'];
@@ -200,13 +195,13 @@ function showMiniPhoto(_input) {
 		return false;
 	}
 
-	var currentMiniPhoto = $('.attach-wrapper #photo-mini-preview');
+	var currentMiniPhoto = jQuery('.attach-wrapper #photo-mini-preview');
 	if(!currentMiniPhoto !== undefined) {
 		currentMiniPhoto.remove();
 	}
 	
-	var input = $(_input);
-	var previewBlock = $('.post-attachments-preview');
+	var input = jQuery(_input);
+	var previewBlock = jQuery('.post-attachments-preview');
 	previewBlock.prepend(
 			'<div class="attach-wrapper">'
 			+'<img id="photo-mini-preview" src="" width="100px" height="100px" onclick="maximizePhoto(this)" />'
@@ -214,14 +209,14 @@ function showMiniPhoto(_input) {
 	var reader = new FileReader();
 	
 	reader.onloadend = function () {
-		$('#photo-mini-preview').prop('src', reader.result);
+		jQuery('#photo-mini-preview').prop('src', reader.result);
 		previewBlock.show(200);
     }
 	
 	if (file) {
         reader.readAsDataURL(file); //reads the data as a URL
     } else {
-        $('#photo-mini-preview').prop('src', '');
+        jQuery('#photo-mini-preview').prop('src', '');
     }
 }
 
@@ -248,7 +243,7 @@ function setProportionalImageSize(image, maxSize){
 function maximizePhoto(photo){
 	toggleHeaderObscure();
 	var _photoPreview = document.getElementById('photo-mini-preview');
-	var photoPreview = $('#photo-mini-preview');
+	var photoPreview = jQuery('#photo-mini-preview');
 	photoPreview.toggleClass('max-photo');
 	if(!(_photoPreview.width == 300) && !(_photoPreview.height == 300)) {
 		setProportionalImageSize(_photoPreview, 300);
@@ -259,12 +254,18 @@ function maximizePhoto(photo){
 }
 
 function minimizeImage(){
-	var photoPreview = $('#photo-mini-preview');
+	var photoPreview = jQuery('#photo-mini-preview');
 	photoPreview.toggleClass('max-photo');
 }
 
 function toggleHeaderObscure(){
-	var headerObscure = $('.header-obscure');
+	var headerObscure = jQuery('.header-obscure');
 	headerObscure.toggleClass('fullscreen');
 	headerObscure.toggle();
+}
+
+function importScript(scriptName) {
+	var head = jQuery('head');
+	head.append('<script type="text/javascript" src="/js/'+scriptName+'.js"></script>');
+	
 }
