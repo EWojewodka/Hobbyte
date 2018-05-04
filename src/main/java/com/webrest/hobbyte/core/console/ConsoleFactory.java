@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 
 import com.webrest.hobbyte.core.console.IConsole.ConsoleType;
 import com.webrest.hobbyte.core.console.details.DetailsConsole;
+import com.webrest.hobbyte.core.console.details.ParamConsole;
 import com.webrest.hobbyte.core.console.list.ListConsole;
 
 /**
@@ -33,6 +34,8 @@ public enum ConsoleFactory {
 			return new ListConsole(element);
 		case DETAILS:
 			return new DetailsConsole(element);
+		case PARAMS:
+			return new ParamConsole(element);
 		}
 		
 		return null;

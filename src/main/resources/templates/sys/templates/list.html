@@ -61,7 +61,17 @@
 											</tr>
 										</div>
 									</div>
-							</th:block>
+							</th:block>	
+							<script>
+								jQuery('a.console-header').each(function(){
+									var url = window.location.href;
+									if(!url.includes('order='))
+										url = url + '\u0026order=asc';
+									else
+										url = url.includes('order=asc') ? url.replace('order=asc', 'order=desc') : url.replace('order=desc', 'order=asc')
+									jQuery(this).attr('href', url + '\u0026sort=' + jQuery(this).text());
+								});
+							</script>
 							<td class="console-header text-center">action</td>
 						</tr>
 						<th:block th:each="bean : ${beans}">

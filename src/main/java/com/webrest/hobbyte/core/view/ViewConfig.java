@@ -21,7 +21,6 @@ public class ViewConfig {
 
 	@PostConstruct
 	private void init() {
-		System.out.println("Das");
 		initLayoutDialect();
 	}
 

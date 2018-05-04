@@ -4,11 +4,6 @@
   	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   	layout:decorator="sys/templates/console">
 <head th:include="head :: head" th:remove="tag"></head>
-<head> 
-	<meta http-Equiv="Cache-Control" Content="no-cache" />
-    <meta http-Equiv="Pragma" Content="no-cache" />
-    <meta http-Equiv="Expires" Content="0" />
-</head>
 <body>
 	<div layout:fragment="toolbar">
 		<div th:if="${console.canSave()}" th:remove="tag">
@@ -25,10 +20,10 @@
 				</button>
 			</a>
 		</div>
-		<div th:if="${console.canClone()}" th:remove="tag">
-			<a th:href="@{${detailsURL}(action=('clone'),console-id=(__${console.id}__))}">
+		<div th:if="${console.canAdd()}" th:remove="tag">
+			<a th:href="@{${detailsURL}(action=('add'),console-id=(__${console.id}__))}">
 				<button>
-					<i class="fa fa-clone"></i>&nbsp;clone
+					<i class="fa fa-plus-square"></i>&nbsp;add
 				</button>
 			</a>
 		</div>

@@ -123,6 +123,9 @@
 		        		<li><a href="#messages"><i class="fa fa-comments"></i></a></li>
 		        		<li><a href="#notifications"><i class="fa fa-globe"></i></a></li>	
 		        		<li><a href="#top"><i class="fa fa-fire"></i></a></li>	
+		        		<li th:if="${#strings.equals('ADMIN', #strings.toString(extranetContext.getUser().getRole()))}">
+		        			<a href="/sys"><i class="fa fa-th"></i></a>	
+		        		</li>
 	        		</ul>
 	        	</div>
 	        </div>

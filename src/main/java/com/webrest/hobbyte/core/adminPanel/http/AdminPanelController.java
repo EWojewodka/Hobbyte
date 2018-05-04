@@ -12,13 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.webrest.hobbyte.core.adminPanel.service.ConsoleFinder;
 import com.webrest.hobbyte.core.console.IConsole;
 import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
-import com.webrest.hobbyte.core.criteria.CriteriaFilter;
-import com.webrest.hobbyte.core.dao.AbsoluteGenericDao;
 import com.webrest.hobbyte.core.exception.response.NotFoundException;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 import com.webrest.hobbyte.core.menuTree.IMenuTreeElement;
 import com.webrest.hobbyte.core.menuTree.MenuTreeBuilder;
-import com.webrest.hobbyte.core.model.DatabaseObject;
 import com.webrest.hobbyte.core.utils.FrameworkUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
@@ -37,9 +34,6 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 public class AdminPanelController extends BaseController {
 
 	@Autowired
-	private AbsoluteGenericDao<DatabaseObject> absoluteDao;
-
-	@Autowired
 	private DependencyResolver dependencyResolver;
 
 	@RequestMapping
@@ -55,24 +49,24 @@ public class AdminPanelController extends BaseController {
 		if (console == null)
 			throw new NotFoundException(getContext());
 
-		absoluteDao.setGenericType(console.getBeanClass());
-		CriteriaFilter cf = new CriteriaFilter();
-		cf.setOrderBy(getContext().getRequest().getParameter("sort"));
-		model.addAttribute("beans", absoluteDao.find(cf));
-
+		ConsoleHandler handler = null;
 		if (model.containsAttribute("handler")) {
-			ConsoleHandler handler = FrameworkUtils.getAttribute(model, "handler");
+			handler = FrameworkUtils.getAttribute(model, "handler");
 			// check if current handler is for this console.
 			if (!handler.getConsole().getId().equals(console.getId()))
-				model.addAttribute("handler", console.initHandler(dependencyResolver));
+				handler = console.initHandler(dependencyResolver);
 		} else {
-			model.addAttribute("handler", console.initHandler(dependencyResolver));
+			handler = console.initHandler(dependencyResolver);
 		}
+		model.addAttribute("handler", handler);
 
-		if (!StringUtils.isEmpty(getContext().getRequest().getParameter("action"))) {
-			ConsoleHandler handler = FrameworkUtils.getAttribute(model, "handler");
-			handler.handle(getContext(), model);
+		String action = getContext().getRequest().getParameter("action");
+		if (!StringUtils.isEmpty(action)) {
+			handler = FrameworkUtils.getAttribute(model, "handler");
+			handler.handle(getContext(), model, action);
 		}
+		handler.getRenderer().render(model);
+
 		model.addAttribute("console", console);
 		return console.getView();
 	}

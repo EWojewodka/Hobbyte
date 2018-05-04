@@ -23,7 +23,7 @@ public class AsterixController {
 
 	@Autowired
 	private ExtranetUserContext userContext;
-
+	
 	@ModelAttribute("extranetContext")
 	private IHttpContext getContext() {
 		return userContext;

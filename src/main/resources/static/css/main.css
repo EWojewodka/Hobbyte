@@ -973,11 +973,17 @@ iframe {
 	background-color: transparent;
 	margin-left: 5px;
 	font-size: 11px;
+	color: white;
+	cursor: pointer;
 }
 
 .console {
 	margin-top: 30px;
 	width: 100%;
+}
+
+.console tr:hover {
+	background-color: #c7c7c7 !important;
 }
 
 .console tr:nth-child(even) {

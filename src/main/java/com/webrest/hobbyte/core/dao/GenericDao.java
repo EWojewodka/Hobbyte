@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.webrest.hobbyte.core.criteria.CriteriaFilter;
 import com.webrest.hobbyte.core.criteria.ICriteriaFilter;
+import com.webrest.hobbyte.core.criteria.ICriteriaFilter.OrderDirections;
 import com.webrest.hobbyte.core.dao.DaoListener.DaoListenerState;
 import com.webrest.hobbyte.core.model.DatabaseObject;
 import com.webrest.hobbyte.core.utils.Asserts;
@@ -126,12 +127,13 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 
 		String orderBy = criteriaFilter.getOrderBy();
 		if (!StringUtils.isEmpty(orderBy)) {
-			criteria.addOrder(Order.asc(orderBy));
+			criteria.addOrder(criteriaFilter.getOrderDirection() == OrderDirections.ASC ? Order.asc(orderBy)
+					: Order.desc(orderBy));
 		}
-		
+
 		if (criteriaFilter.isDistinct())
 			criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		
+
 		return criteria.list();
 	}
 

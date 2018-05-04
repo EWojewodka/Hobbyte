@@ -27,6 +27,8 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 
 	private String orderBy;
 	
+	private OrderDirections orderDirection = OrderDirections.DESC;
+	
 	public CriteriaFilter() {
 	}
 
@@ -95,4 +97,15 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 		return this;
 	}
 
+	@Override
+	public CriteriaFilter setOrderDirection(OrderDirections direction) {
+		this.orderDirection = direction;
+		return this;
+	}
+
+	@Override
+	public OrderDirections getOrderDirection() {
+		return orderDirection;
+	}
+	
 }

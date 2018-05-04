@@ -91,11 +91,8 @@ public class Console extends NodeSource implements IConsole {
 
 	@Override
 	public ConsoleHandler initHandler(DependencyResolver dependencyResolver) throws Exception {
-		Constructor<? extends ConsoleHandler> console = consoleHandler.getConstructor(IConsole.class);
-		ConsoleHandler handler = console.newInstance(this);
-		if (dependencyResolver != null)
-			dependencyResolver.resolve(handler);
-		return handler;
+		Constructor<? extends ConsoleHandler> console = consoleHandler.getConstructor(DependencyResolver.class, IConsole.class);
+		return console.newInstance(dependencyResolver, this);
 	}
 
 	public String getName() {
@@ -125,7 +122,7 @@ public class Console extends NodeSource implements IConsole {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends DatabaseObjectImpl> initBeanClass(String beanClassAttribute) throws Exception {
+	protected Class<? extends DatabaseObjectImpl> initBeanClass(String beanClassAttribute) throws Exception {
 		if (StringUtils.isEmpty(beanClassAttribute))
 			return null;
 		return (Class<? extends DatabaseObjectImpl>) Class.forName(beanClassAttribute);

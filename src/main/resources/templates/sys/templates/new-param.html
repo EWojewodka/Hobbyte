@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+  	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  	layout:decorator="sys/templates/console">
+<head th:include="head :: head" th:remove="tag"></head>
+<body>
+	<div layout:fragment="toolbar">
+		<div th:if="${console.canSave()}" th:remove="tag">
+			<a th:href="@{${detailsURL}(action=('save'),console-id=(__${console.id}__))}">
+				<button>
+					<i class="fa fa-plus-square"></i>&nbsp;save
+				</button>
+			</a>
+		</div>
+	</div>
+	<div layout:fragment="content">
+		<form>
+			<input type="text" name="group" th:value="${extranetContext.request.getParameter('group')}"></input>
+		</form>
+	</div>
+</body>
+</html>

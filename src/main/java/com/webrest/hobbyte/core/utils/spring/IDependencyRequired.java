@@ -37,4 +37,6 @@ public interface IDependencyRequired {
 	 * @return
 	 */
 	<T> T getDependency(Class<T> clazz);
+	
+	
 }

@@ -1,0 +1,1 @@
+ALTER TABLE app_params ADD COLUMN app_group VARCHAR(255), ADD CONSTRAINT app_param_unique_pair UNIQUE(app_group, code);

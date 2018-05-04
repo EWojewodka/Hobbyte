@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menutree>
+	<folder name="Site" id="site" icon="fa fa-folder">
+		<leaf 
+			name="Welcome page" 
+			console-id="welcome-page" 
+			id="welcome_page" 
+			icon="fa fa-columns"
+		/>
+	</folder>
 	<folder name="Extranet users" id="users" icon="fa fa-folder">
 		<leaf 
 			name="Users" 

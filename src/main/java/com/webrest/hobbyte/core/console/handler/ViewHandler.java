@@ -15,6 +15,6 @@ import com.webrest.hobbyte.core.utils.spring.IDependencyRequired;
  */
 public interface ViewHandler extends IDependencyRequired {
 
-	void handle(ExtranetUserContext context, Model model) throws Exception;
+	void handle(ExtranetUserContext context, Model model, String action) throws Exception;
 
 }

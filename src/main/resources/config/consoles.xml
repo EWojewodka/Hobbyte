@@ -18,7 +18,28 @@
 		actions - in list view it add hyperlink on end of row
 		handler - dedicated handler for all of view actions. 
 	 -->
+	<!-- SITE  -->
+	<console 
+		id="welcome-page"
+		type="params"
+		group="welcome_page"
+		view="sys/site/welcome_page"
+		save="true"
+		new="true"
+		remove="false"
+		name="Welcome page"
+		handler="com.webrest.hobbyte.core.console.handler.AppParamViewHandler"
+	/>
 	
+	<console 
+		id="app-param-new"
+		type="params"
+		view="sys/templates/new-param"
+		save="true"
+		new="false"
+		handler="com.webrest.hobbyte.core.console.handler.AppParamViewHandler"
+		group="generic"
+	/>
 	
 	<!-- EXTRANET USERS -->
 	<console 

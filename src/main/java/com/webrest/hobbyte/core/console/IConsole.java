@@ -20,7 +20,7 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 public interface IConsole {
 
 	public static enum ConsoleType implements WithCode {
-		CONSOLE("console"), LIST("list"), DETAILS("details");
+		CONSOLE("console"), LIST("list"), DETAILS("details"), PARAMS("params");
 		private String code;
 
 		private ConsoleType(String code) {

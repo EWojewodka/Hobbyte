@@ -2,12 +2,16 @@ package com.webrest.hobbyte.core.exception;
 
 import java.io.IOException;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import com.webrest.hobbyte.core.exception.prepare.ExceptionModelFactory;
 import com.webrest.hobbyte.core.exception.prepare.IExceptionModel;
@@ -36,11 +40,13 @@ public class ExceptionController {
 	 * 
 	 * @param e
 	 * @throws IOException
+	 * @throws ServletException 
 	 */
 	@ExceptionHandler(value = RedirectException.class)
 	@ResponseStatus(code = HttpStatus.PERMANENT_REDIRECT)
-	public void redirectException(RedirectException e) throws IOException {
-		e.getContext().getResponse().sendRedirect(e.getUrl());
+	public void redirectException(RedirectException e) throws IOException, ServletException {
+		HttpServletRequest req = e.getContext().getRequest();
+		req.getRequestDispatcher(e.getUrl()).forward(req, e.getContext().getResponse());
 	}
 
 	/**

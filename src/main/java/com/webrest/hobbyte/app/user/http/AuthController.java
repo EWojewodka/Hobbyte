@@ -22,6 +22,7 @@ import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
+import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
 import com.webrest.hobbyte.core.utils.HttpUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
@@ -81,14 +82,15 @@ class LoginAjaxForm extends AjaxDynamicForm {
 			return resultJson;
 		}
 		ExtranetUser u = findUser(request);
+		MessageSourceHelper messageHelper = getDependency(MessageSourceHelper.class);
 		if (u == null)
-			throw new AjaxMessageException("The login or password you entered is incorrect", HttpServletResponse.SC_BAD_REQUEST);
+			throw new AjaxMessageException(messageHelper.getMessage("IncorrectLogin", context), HttpServletResponse.SC_BAD_REQUEST);
 
 		if (!getDependency(PasswordEncoder.class).matches(request.getParameter("password"), u.getPassword()))
-			throw new AjaxMessageException("The login or password you entered is incorrect", HttpServletResponse.SC_BAD_REQUEST);
+			throw new AjaxMessageException(messageHelper.getMessage("IncorrectLogin", context), HttpServletResponse.SC_BAD_REQUEST);
 
 		if (u.getStatus() != ExtranetUserStatus.ACTIVE)
-			throw new AjaxMessageException("UserNotActive", HttpServletResponse.SC_BAD_REQUEST);
+			throw new AjaxMessageException(messageHelper.getMessage("UserNotActive", context), HttpServletResponse.SC_BAD_REQUEST);
 
 		this.user = u;
 		handleRememberMe(request, user);
@@ -98,7 +100,7 @@ class LoginAjaxForm extends AjaxDynamicForm {
 
 	@Override
 	public Class<?>[] getDependencies() {
-		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class };
+		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class, MessageSourceHelper.class };
 	}
 
 	private ExtranetUser findUser(HttpServletRequest request) {
@@ -142,26 +144,27 @@ class RegistrationAjaxFrom extends AjaxDynamicForm {
 	@Transactional(rollbackOn = Exception.class)
 	protected JSONObject process(HttpServletRequest request) throws Exception {
 		ExtranetUserDao userDao = getDependency(ExtranetUserDao.class);
-		
+		MessageSourceHelper messageHelper = getDependency(MessageSourceHelper.class);
+
 		String login = request.getParameter("login");
 		if (StringUtils.isEmpty(login) || login.length() < 6)
-			throw new AjaxMessageException("Login cannot be shorter than 6 characters",
+			throw new AjaxMessageException(messageHelper.getMessage("Min", context, messageHelper.getMessage("username", context),6),
 					HttpServletResponse.SC_BAD_REQUEST);
 	
 		String email = request.getParameter("email");
 		if (StringUtils.isEmpty(email) || !StringUtils.isEmail(email))
-			throw new AjaxMessageException("Wrong email format", HttpServletResponse.SC_BAD_REQUEST);
+			throw new AjaxMessageException(messageHelper.getMessage("NotEmail", context), HttpServletResponse.SC_BAD_REQUEST);
 	
 		String password = request.getParameter("password");
 		if (StringUtils.isEmpty(password) || password.length() < 8)
-			throw new AjaxMessageException("Password cannot be shorter than 8 characters",
+			throw new AjaxMessageException(messageHelper.getMessage("Min", context, messageHelper.getMessage("password", context), 8),
 					HttpServletResponse.SC_BAD_REQUEST);
 		
 		if(userDao.findByLogin(login) != null)
-			throw new AjaxMessageException("This login is not available", HttpServletResponse.SC_BAD_REQUEST);
+			throw new AjaxMessageException(messageHelper.getMessage("NotAvailableLogin", context), HttpServletResponse.SC_BAD_REQUEST);
 		
 		if(userDao.findByEmail(email) != null)
-			throw new AjaxMessageException("This email is not available", HttpServletResponse.SC_BAD_REQUEST);
+			throw new AjaxMessageException(messageHelper.getMessage("NotAvailableEmail", context), HttpServletResponse.SC_BAD_REQUEST);
 
 		ExtranetUser user = new ExtranetUser();
 		user.setLogin(login);
@@ -176,7 +179,7 @@ class RegistrationAjaxFrom extends AjaxDynamicForm {
 
 	@Override
 	public Class<?>[] getDependencies() {
-		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class };
+		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class, MessageSourceHelper.class };
 	}
 
 	@Override

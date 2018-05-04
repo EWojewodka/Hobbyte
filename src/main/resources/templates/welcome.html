@@ -61,21 +61,21 @@
 				<form role="form" id="header-sign-in" class="dyanmic-form" method="POST" onsubmit="sendAjaxWithUrl('/auth/sign-in', this); return false;">
 					<div class="form-description hide"></div>
 	                <div class="form-group">
-	                  <label for="login">Username</label>
+	                  <label for="login" th:text="#{username}"></label>
 	                  <input type="text" class="form-control" id="login" name="login"/>
 	                </div>
 	                <div class="form-group">
-	                  <label for="email">Email</label>
+	                  <label for="email" th:text="#{email}"></label>
 	                  <input type="email" class="form-control" id="email" name="email"/>
 	                </div>
 	                <div class="form-group">
-	                  <label for="password">Password</label>
+	                  <label for="password" th:text="#{password}"></label>
 	                  <input type="password" class="form-control" id="password" name="password" />
 	                </div>
 	                <div class="form-group">
-	                	<small class="text-muted small">By signing up, you agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy-policy">Privacy Policy</a>, including <a href="/cookie">Cookie Use</a>. </small>
+	                	<small class="text-muted small" th:utext="#{sign-in.agreement}"></small>
 	                </div>
-	                <button type="submit" class="border-button">Sign in</button>
+	                <button type="submit" class="border-button" th:text="#{sign-in}"></button>
             	</form>
             </div>
             <div class="col-lg-2">
@@ -89,11 +89,15 @@
   </body>
   <div class="container-fluid" id="footer">
         <div class="row">
-            <div class="col-lg-12 text-right">
-                <a href="#"><span class="footer-item">Cookies</span></a>
-                <a href="#"><span class="footer-item">Contact</span></a>
-                <a href="#"><span class="footer-item">Terms</span></a>
-                <a href="#"><span class="footer-item">Privacy policy</span></a>
+        	<div class="col-lg-6 text-left">
+        		<a href="/?lang=pl"><span class="footer-item" th:text="#{lang.pl}"></span></a>
+                <a href="/?lang=us"><span class="footer-item" th:text="#{lang.us}"></span></a>
+        	</div>
+            <div class="col-lg-6 text-right">
+                <a href="#"><span class="footer-item" th:text="#{cookies}"></span></a>
+                <a href="#"><span class="footer-item" th:text="#{contact}"></span></a>
+                <a href="#"><span class="footer-item" th:text="#{terms}"></span></a>
+                <a href="#"><span class="footer-item" th:text="#{privacy-policy}"></span></a>
             </div>
         </div>
     </div>
