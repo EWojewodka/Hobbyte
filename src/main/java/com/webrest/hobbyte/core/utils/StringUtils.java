@@ -8,6 +8,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringJoiner;
 import java.util.Base64.Encoder;
 import java.util.regex.Pattern;
@@ -145,7 +146,7 @@ public class StringUtils {
 	public static String generateRandom() {
 		String unixCode = String.valueOf(new Date().getTime());
 		Encoder encoder = Base64.getEncoder();
-		return encoder.encodeToString(unixCode.getBytes());
+		return encoder.encodeToString(unixCode.getBytes()) + new Random().nextInt(99999);
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class StringUtils {
 	 */
 	public static String generateRandom(int length) {
 		String s = generateRandom();
-		return s.length() > length ? s.substring(0, length) : s;
+		return s.length() > length ? s.substring(10, 10 + length) : s;
 	}
 
 	/**

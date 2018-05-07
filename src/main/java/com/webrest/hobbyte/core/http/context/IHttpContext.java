@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@Scope(scopeName = "session")
+@Scope(scopeName = "request")
 public interface IHttpContext {
 
 	/**
@@ -46,4 +46,5 @@ public interface IHttpContext {
 	 * @return
 	 */
 	HttpSession getSession(boolean force);
+	
 }

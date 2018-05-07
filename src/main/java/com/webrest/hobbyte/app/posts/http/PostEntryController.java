@@ -17,6 +17,7 @@ import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.form.PostEntryAjax;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
+import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 
 /**
@@ -48,7 +49,8 @@ public class PostEntryController extends BaseController{
 		PostEntry[] relatedPosts = dao.getRelatedPosts(null);
 		for(PostEntry p : relatedPosts) {
 			JSONObject json = p.getAsJSON();
-			json.put("author", userDao.getById(p.getAuthorId()).getLogin());
+			ExtranetUser author = userDao.getById(p.getAuthorId());
+			json.put("author", author.getAsJSON());
 			array.put(json);
 		}
 		return array.toString();

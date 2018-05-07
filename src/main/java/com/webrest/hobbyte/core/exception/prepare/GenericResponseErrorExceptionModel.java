@@ -30,20 +30,20 @@ public class GenericResponseErrorExceptionModel extends DefaultExceptionModel {
 
 	@Override
 	public void addToModel(Model model) {
-		GenericResponseErrorException ex = (GenericResponseErrorException) getException();
-		model.addAttribute("title", ex.getTitle());
-		model.addAttribute("errorMessage", ex.getMessage());
+		GenericResponseErrorException throwable = getThrowable();
+		model.addAttribute("title", throwable.getTitle());
+		model.addAttribute("errorMessage", throwable.getMessage());
 	}
 
 	@Override
 	public String getTemplate() {
-		int errorCode = getException().getErrorCode();
+		int errorCode = getThrowable().getErrorCode();
 		return "error/" + (FileUtils.existsErrorPage(errorCode) ? errorCode : 500);
 	}
 
 	@Override
-	public GenericResponseErrorException getException() {
-		return (GenericResponseErrorException) super.getException();
+	public GenericResponseErrorException getThrowable() {
+		return (GenericResponseErrorException) super.getThrowable();
 	}
 
 }

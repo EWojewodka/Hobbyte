@@ -4,6 +4,8 @@
 package com.webrest.hobbyte.core.adminPanel.http;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +33,7 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
  */
 @Controller
 @RequestMapping(value = "/sys")
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class AdminPanelController extends BaseController {
 
 	@Autowired
@@ -43,7 +46,7 @@ public class AdminPanelController extends BaseController {
 		return "sys/index";
 	}
 
-	@GetMapping(value = "/console")
+	@RequestMapping(value = "/console")
 	public String getConsole(Model model) throws Exception {
 		IConsole console = ConsoleFinder.getByContext(getContext());
 		if (console == null)

@@ -27,9 +27,7 @@ public class AppParam extends DatabaseObjectImpl {
 	@Column(nullable = false, name = "app_group")
 	private String group;
 
-	public AppParam(String code, String group) {
-		this.code = code;
-		this.group = group;
+	public AppParam() {
 	}
 
 	public String getCode() {

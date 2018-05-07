@@ -1,5 +1,6 @@
 package com.webrest.hobbyte.core.exception;
 
+import com.webrest.hobbyte.core.http.context.HttpContext;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
 
 public class RedirectException extends NoStackTraceException{
@@ -11,13 +12,13 @@ public class RedirectException extends NoStackTraceException{
 
 	private String url;
 
-	private IHttpContext context;
+	private HttpContext context;
 
-	public RedirectException(IHttpContext context, String url) {
+	public RedirectException(HttpContext context, String url) {
 		this(context, url, null);
 	}
 
-	public RedirectException(IHttpContext context, String url, String message) {
+	public RedirectException(HttpContext context, String url, String message) {
 		super(message);
 		this.url = url;
 		this.context = context;

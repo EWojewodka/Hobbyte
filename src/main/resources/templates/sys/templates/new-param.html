@@ -7,16 +7,25 @@
 <body>
 	<div layout:fragment="toolbar">
 		<div th:if="${console.canSave()}" th:remove="tag">
-			<a th:href="@{${detailsURL}(action=('save'),console-id=(__${console.id}__))}">
-				<button>
-					<i class="fa fa-plus-square"></i>&nbsp;save
-				</button>
-			</a>
+			<button onclick="jQuery('#new-param-form').submit();">
+				<i class="fa fa-plus-square"></i>&nbsp;save
+			</button>
 		</div>
 	</div>
 	<div layout:fragment="content">
-		<form>
-			<input type="text" name="group" th:value="${extranetContext.request.getParameter('group')}"></input>
+		<form role="form" id="new-param-form" class="dyanmic-form" method="POST" th:action="@{${detailsURL}(action=('save'),console-id=(__${console.id}__))}">
+		    <div class="form-group">
+		      <label for="group">App param group</label>
+		      <input type="text" class="form-control" id="group" name="group" th:value="${extranetContext.getObject('app-param') == null ? '' : extranetContext.getObject('app-param').group}"/>
+		    </div>
+		    <div class="form-group">
+		      <label for="key">App param key</label>
+		      <input type="text" class="form-control" id="key" name="key" th:value="${extranetContext.getObject('app-param') == null ? '' : extranetContext.getObject('app-param').code}"/>
+		    </div>
+		    <div class="form-group">
+		      <label for="value">App param value</label>
+		      <input type="text" class="form-control" id="value" name="value" th:value="${extranetContext.getObject('app-param') == null ? '' : extranetContext.getObject('app-param').value}"/>
+		    </div>
 		</form>
 	</div>
 </body>

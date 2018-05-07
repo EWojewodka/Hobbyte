@@ -3,7 +3,6 @@ package com.webrest.hobbyte.core.exception;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import com.webrest.hobbyte.core.exception.prepare.ExceptionModelFactory;
 import com.webrest.hobbyte.core.exception.prepare.IExceptionModel;
@@ -45,8 +43,7 @@ public class ExceptionController {
 	@ExceptionHandler(value = RedirectException.class)
 	@ResponseStatus(code = HttpStatus.PERMANENT_REDIRECT)
 	public void redirectException(RedirectException e) throws IOException, ServletException {
-		HttpServletRequest req = e.getContext().getRequest();
-		req.getRequestDispatcher(e.getUrl()).forward(req, e.getContext().getResponse());
+		e.getContext().getResponse().sendRedirect(e.getUrl());
 	}
 
 	/**
@@ -59,15 +56,15 @@ public class ExceptionController {
 	 * @param model
 	 * @return
 	 */
-	@ExceptionHandler(value = Exception.class)
-	public String runtimeException(Exception e, Model model) {
+	@ExceptionHandler(value = {Exception.class, Throwable.class})
+	public String runtimeException(Throwable e, Model model) {
 		printException(e);
 		IExceptionModel service = exceptionModelFactory.getModel(e);
 		service.addToModel(model);
 		return service.getTemplate();
 	}
 
-	private void printException(Exception e) {
+	private void printException(Throwable e) {
 		e.printStackTrace();
 	}
 }

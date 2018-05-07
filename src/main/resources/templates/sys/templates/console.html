@@ -9,6 +9,22 @@
     <meta http-Equiv="Expires" Content="0" />
 </head>
 <body>
+	<div id="messages-container">
+		<div id="error-pop-up-container" th:if="${extranetContext.getMessageHandler().hasErrors()}">
+			<div th:each="err : ${extranetContext.getMessageHandler().popErrors()}" class="alert alert-danger error-pop-up alert-dismissible">
+				<span th:remove="tag" th:text="${err}" />
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			</div>
+		</div>
+		<div id="success-pop-up-container" th:if="${extranetContext.getMessageHandler().hasSuccess()}">
+			<div th:each="suc : ${extranetContext.getMessageHandler().popSuccess()}" class="alert alert-success success-pop-up alert-dismissible">
+				<span th:remove="tag" th:text="${suc}" />
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			</div>
+		</div>
+	</div>
+	
+
 	<div class="container-fluid">
 		<div class="row toolbar">
 			<div class="col-lg-12 text-left">

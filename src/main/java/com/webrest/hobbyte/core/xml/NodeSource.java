@@ -4,10 +4,13 @@
 package com.webrest.hobbyte.core.xml;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import com.webrest.hobbyte.core.menuTree.MenuTreeElement;
 import com.webrest.hobbyte.core.utils.Asserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.collection.ParameterContainer;
 
 /**
  * Abstract class for easier convert xml node to java object.
@@ -18,7 +21,7 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  *
  * @since 5 kwi 2018
  */
-public abstract class NodeSource implements FromNodeSource {
+public abstract class NodeSource extends ParameterContainer implements FromNodeSource {
 
 	private Element element;
 
@@ -30,7 +33,7 @@ public abstract class NodeSource implements FromNodeSource {
 
 	@Override
 	public String getAttribute(String attributeName) {
-		return element.getAttribute(attributeName);
+		return getOrDefault(attributeName, element.getAttribute(attributeName));
 	}
 
 	@Override
@@ -41,6 +44,17 @@ public abstract class NodeSource implements FromNodeSource {
 
 	protected Element getElement() {
 		return element;
+	}
+	
+	protected void fillAttributeMap() {
+		NamedNodeMap attributes = element.getAttributes();
+		if(attributes == null)
+			return;
+		int len = attributes.getLength();
+		for(int i=0; i<len; i++) {
+			Node attribute = attributes.item(i);
+			put(attribute.getNodeName(), attribute.getNodeValue());
+		}
 	}
 
 }

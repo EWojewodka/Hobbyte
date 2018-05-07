@@ -19,7 +19,7 @@ public class ExceptionUtils {
 	 * @param e
 	 * @return
 	 */
-	public static String catchStackTrace(Exception e) {
+	public static String catchStackTrace(Throwable e) {
 		StringWriter writer = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(writer);
 		e.printStackTrace(printWriter);

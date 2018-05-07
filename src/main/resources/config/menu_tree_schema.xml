@@ -17,5 +17,12 @@
 		/>
 		
 	</folder>
-	<folder name="Application" id="application" icon="fa fa-folder"/>
+	<folder name="Application" id="application" icon="fa fa-folder">
+		<leaf 
+			name="Application parameters" 
+			console-id="app-param-list" 
+			id="app-param-list" 
+			icon="fa fa-columns"
+		/>
+	</folder>
 </menutree>

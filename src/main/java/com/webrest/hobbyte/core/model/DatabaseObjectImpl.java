@@ -4,10 +4,6 @@
 package com.webrest.hobbyte.core.model;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.Transient;
 
 import org.json.JSONObject;
 
@@ -22,41 +18,6 @@ import com.webrest.hobbyte.core.model.json.JsonConverter;
  */
 public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 	
-
-	@Transient
-	private Map<Object, Object> parameters = new HashMap<>();
-	
-	/**
-	 * Put parameter to {@link DatabaseObjectImpl}. If you want to get it, let use
-	 * {@link #getParameter(Object)} and cast it to type which you need. </br>
-	 * <i><b>Note that:</b> that parameters won't be stored in database. It's only for
-	 * transport some data and store it here!</i>
-	 * 
-	 * @see #getParameter(Object)
-	 * @param key
-	 * @param value
-	 */
-	public void putParameter(Object key, Object value) {
-		parameters.put(key, value);
-	}
-
-	/**
-	 * Return object from {@link DatabaseObjectImpl} parameters which can be cast of
-	 * any of type.
-	 * 
-	 * @see #putParameter(Object, Object)
-	 * @param object
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getParameter(Object object) {
-		return (T) parameters.get(object);
-	}
-	
-	public Map<Object, Object> getParameters(){
-		return parameters;
-	}
-
 	/** {@inheritDoc}} */
 	public boolean isNew() {
 		return getId() <= 0;
@@ -164,6 +125,15 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 		return getAsJSON().toString();
 	}
 	
-	
+	public DatabaseObjectImpl cloneDBO() {
+		try {
+			DatabaseObjectImpl clone = (DatabaseObjectImpl) clone();
+			clone.setId(0);
+			return clone;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

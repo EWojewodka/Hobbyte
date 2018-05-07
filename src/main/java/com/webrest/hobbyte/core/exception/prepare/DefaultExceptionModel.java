@@ -18,9 +18,9 @@ public class DefaultExceptionModel implements IExceptionModel {
 
 	private Environment env;
 
-	private Exception ex;
+	private Throwable ex;
 
-	public DefaultExceptionModel(Exception ex, Environment env) {
+	public DefaultExceptionModel(Throwable ex, Environment env) {
 		this.ex = ex;
 		this.env = env;
 	}
@@ -37,7 +37,7 @@ public class DefaultExceptionModel implements IExceptionModel {
 		return env;
 	}
 
-	public Exception getException() {
+	public Throwable getThrowable() {
 		return ex;
 	}
 

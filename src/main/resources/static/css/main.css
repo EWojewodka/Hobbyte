@@ -982,6 +982,10 @@ iframe {
 	width: 100%;
 }
 
+.console-title {
+	margin-bottom: 50px;
+}
+
 .console tr:hover {
 	background-color: #c7c7c7 !important;
 }
@@ -1154,8 +1158,49 @@ iframe {
 	font-size: 12px;
 }
 
+.post-entry .header .post-profile-image {
+	border-radius: 99px;
+	width: 35px;
+	height: auto;
+}
+
 .post-entry .header .date{
 	text-align: right;
+}
+
+#messages-container {
+	position: absolute;
+	top: 50px;
+	right: 15px;
+	display: flex;
+	flex-flow: column;
+	max-width: 20%;
+}
+
+#messages-container .alert {
+	font-size: 16px !important;
+}
+
+.error-pop-up {
+	height: auto;
+	padding: 15px;
+}
+
+.bean-row {
+	border-bottom: solid 1px #e6ecf0;
+	margin-bottom: 10px;
+}
+
+.bean-row .row {
+	margin-bottom: 5px;
+}
+
+.label-col {
+	border-right: solid 1px #e6ecf0;
+}
+
+.app-param-action button {
+	background-color: transparent;
 }
 
 @media only screen and (max-width:961px) {

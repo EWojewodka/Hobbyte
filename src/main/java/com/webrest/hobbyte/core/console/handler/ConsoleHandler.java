@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 
 import com.webrest.hobbyte.core.console.IConsole;
 import com.webrest.hobbyte.core.console.render.ConsoleRenderer;
-import com.webrest.hobbyte.core.dao.AbsoluteGenericDao;
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.utils.Asserts;
 import com.webrest.hobbyte.core.utils.spring.DependencyRequired;
@@ -50,16 +49,14 @@ public class ConsoleHandler extends DependencyRequired implements ViewHandler {
 			break;
 		case "save":
 			onSave(context, model);
+			break;
+		case "clone":
+			onClone(context, model);
 		}
 	}
 
 	public IConsole getConsole() {
 		return console;
-	}
-
-	@Override
-	public Class<?>[] getDependencies() {
-		return new Class<?>[] { AbsoluteGenericDao.class };
 	}
 
 	public void onAdd(ExtranetUserContext context, Model model) throws Exception {
@@ -71,6 +68,10 @@ public class ConsoleHandler extends DependencyRequired implements ViewHandler {
 	}
 
 	public void onSave(ExtranetUserContext context, Model model) throws Exception {
+
+	}
+	
+	public void onClone(ExtranetUserContext context, Model model) throws Exception {
 
 	}
 

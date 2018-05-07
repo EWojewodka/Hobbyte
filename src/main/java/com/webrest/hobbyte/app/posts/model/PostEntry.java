@@ -60,6 +60,7 @@ public class PostEntry extends DatabaseObjectImpl {
 	private String content;
 
 	@Column(name = "created_at")
+	@AsJSON
 	private Date createdAt = new Date();
 
 	@Column(name = "image_url")

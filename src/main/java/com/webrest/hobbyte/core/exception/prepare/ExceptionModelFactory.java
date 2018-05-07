@@ -28,7 +28,7 @@ public class ExceptionModelFactory {
 	 * @param e
 	 * @return
 	 */
-	public IExceptionModel getModel(Exception e) {
+	public IExceptionModel getModel(Throwable e) {
 		if (e instanceof ResponseErrorException)
 			return new GenericResponseErrorExceptionModel((GenericResponseErrorException) e, env);
 		else

@@ -269,3 +269,9 @@ function importScript(scriptName) {
 	head.append('<script type="text/javascript" src="/js/'+scriptName+'.js"></script>');
 	
 }
+
+function addAction(_button, actionCode) {
+	var button = jQuery(_button);
+	var form = button.closest('form');
+	form.attr('action', form.attr('action') + '&action=' +actionCode);
+}

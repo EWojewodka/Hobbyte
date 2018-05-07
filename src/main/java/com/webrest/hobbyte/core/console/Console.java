@@ -106,6 +106,7 @@ public class Console extends NodeSource implements IConsole {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init() throws Exception {
+		fillAttributeMap();
 		this.id = getAttribute("id");
 		this.beanClass = initBeanClass(getAttribute("bean"));
 		this.view = getAttribute("view", "sys/templates/console");

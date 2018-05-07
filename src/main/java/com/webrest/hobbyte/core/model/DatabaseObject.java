@@ -15,7 +15,7 @@ import com.webrest.hobbyte.core.dao.GenericDao;
  *
  * @since 24 mar 2018
  */
-public interface DatabaseObject {
+public interface DatabaseObject extends Cloneable{
 
 	int getId();
 

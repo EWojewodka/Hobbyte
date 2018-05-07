@@ -33,6 +33,9 @@ public class UserSettingFormFactory {
 	protected void init() {
 		registerForm(new ChangeEmailForm(resolver));
 		registerForm(new ChangePhoneForm(resolver));
+		registerForm(new ChangeNameForm(resolver));
+		registerForm(new ChangeLastnameForm(resolver));
+
 	}
 
 	protected static void registerForm(AjaxDynamicForm form) {

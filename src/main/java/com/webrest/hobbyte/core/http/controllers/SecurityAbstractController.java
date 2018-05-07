@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 
 import com.webrest.hobbyte.core.exception.RedirectException;
+import com.webrest.hobbyte.core.http.context.HttpContext;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
 import com.webrest.hobbyte.core.http.filter.BasicSecurityFilter;
 import com.webrest.hobbyte.core.security.Accessible;
@@ -22,7 +23,7 @@ import com.webrest.hobbyte.core.security.Accessible;
 @Controller
 public abstract class SecurityAbstractController implements Accessible {
 
-	private IHttpContext context;
+	private HttpContext context;
 
 	/**
 	 * Create instance of security controller. </br>
@@ -32,7 +33,7 @@ public abstract class SecurityAbstractController implements Accessible {
 	 * @param context
 	 * @throws Exception
 	 */
-	public SecurityAbstractController(IHttpContext context) throws Exception {
+	public SecurityAbstractController(HttpContext context) throws Exception {
 		this.context = context;
 	}
 

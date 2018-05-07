@@ -9,4 +9,7 @@ import java.lang.annotation.Retention;
 @Target({ElementType.FIELD, ElementType.TYPE})
 public @interface AsJSON {
 
+	String defaultValue() default "";
+
+	String defaultDateFormat() default "yyyy-MM-dd HH:mm";
 }

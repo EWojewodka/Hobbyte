@@ -16,6 +16,7 @@ import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.app.user.model.enums.Gender;
 import com.webrest.hobbyte.app.user.model.enums.NewsletterStatus;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
+import com.webrest.hobbyte.core.model.json.AsJSON;
 import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Entity
@@ -31,6 +32,7 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private Date createdAt = new Date();
 
 	@Column(nullable = false, unique = true)
+	@AsJSON
 	private String login;
 
 	@Column(nullable = false, unique = true)
@@ -40,9 +42,11 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private String password;
 
 	@Column
+	@AsJSON
 	private String name;
 
 	@Column
+	@AsJSON
 	private String lastname;
 
 	@Column
@@ -58,6 +62,7 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private String phoneNumber;
 
 	@Column(nullable = true)
+	@AsJSON
 	private Integer gender;
 
 	@Column
@@ -73,6 +78,7 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private String rememberMeCode;
 	
 	@Column(name ="image_url")
+	@AsJSON(defaultValue = "/images/gandalf.jpg")
 	private String imageUrl;
 
 	@Override
@@ -201,6 +207,10 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	public void setRememberMeCode(String rememberMeCode) {
 		this.rememberMeCode = rememberMeCode;
+	}
+	
+	public String getFullName() {
+		return name + " " + lastname;
 	}
 
 	public ExtranetUserPolicy createOrGetUserPolicy() {

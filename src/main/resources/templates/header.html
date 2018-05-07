@@ -116,7 +116,7 @@
 	        			<li>
 	        				<a th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}">
 	        					<img th:src="${extranetContext.getUser().getImageUrl()}" class="header-profile"></img>
-	        					<span th:text="${extranetContext.getUser().getLogin()}" class="header-profile-name"></span>
+	        					<span th:text="${extranetContext.getUser().getFullName()}" class="header-profile-name"></span>
 	        				</a>
 	        			</li>
 		        		<li><a href="#friends"><i class="fa fa-users"></i></a></li>

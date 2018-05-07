@@ -17,18 +17,33 @@
 		short-name - for action description
 		actions - in list view it add hyperlink on end of row
 		handler - dedicated handler for all of view actions. 
+		
+		You can add custom attribute and get it in handler by com.webrest.hobbyte.core.console.Console#getObject([key])
 	 -->
 	<!-- SITE  -->
 	<console 
 		id="welcome-page"
 		type="params"
 		group="welcome_page"
-		view="sys/site/welcome_page"
-		save="true"
+		view="sys/templates/param"
+		save="false"
 		new="true"
 		remove="false"
 		name="Welcome page"
 		handler="com.webrest.hobbyte.core.console.handler.AppParamViewHandler"
+	/>
+	
+	<console 
+		id="app-param-list"
+		type="list"
+		bean="com.webrest.hobbyte.core.appParams.AppParam"
+		view="sys/templates/list"
+		fields="id,group,code,value"
+		sort="all"
+		sort-default="group"
+		new="false"
+		name="Application parameters"
+		remove="false"
 	/>
 	
 	<console 
