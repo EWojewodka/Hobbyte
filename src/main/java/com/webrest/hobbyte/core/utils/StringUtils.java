@@ -5,12 +5,13 @@ package com.webrest.hobbyte.core.utils;
 
 import java.lang.reflect.Array;
 import java.util.Base64;
+import java.util.Base64.Encoder;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringJoiner;
-import java.util.Base64.Encoder;
 import java.util.regex.Pattern;
 
 /**
@@ -44,6 +45,24 @@ public class StringUtils {
 	}
 
 	/**
+	 * Return true if all of array elements are null or empty. If at least one of
+	 * them is not a null or empty - return false.
+	 * 
+	 * @see #isEmpty(String)
+	 * @param strs
+	 * @return
+	 */
+	public static boolean onlyEmpty(String... strs) {
+		if (strs == null)
+			return true;
+		for (String s : strs) {
+			if (!StringUtils.isEmpty(s))
+				return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Return string with concat objects. </br>
 	 * All of these objects are convert to {@link String} by
 	 * {@link String#valueOf(Object)}. For example if passed objects is a
@@ -65,6 +84,31 @@ public class StringUtils {
 		StringJoiner joiner = new StringJoiner(splitter);
 		for (Object obj : objs)
 			joiner.add(String.valueOf(obj)); // not use toString(), cause we don't check object is not null.
+		return joiner.toString();
+	}
+
+	public static String toGenericString(Collection<?> collection, String splitter) {
+		if (collection == null || collection.isEmpty())
+			return "";
+		return toGenericString(collection.toArray(new Object[collection.size()]), splitter);
+	}
+
+	/**
+	 * Return string from concated {@link Collection} elements. Value of element is
+	 * a {@link WithCode#getCode()}
+	 * 
+	 * @param profileList
+	 * @param splitter
+	 * @return
+	 */
+	public static String toGenericStringCodes(Collection<? extends WithCode> profileList, String splitter) {
+		if (profileList == null)
+			return "";
+		if (splitter == null)
+			splitter = ",";
+
+		StringJoiner joiner = new StringJoiner(splitter);
+		profileList.forEach(c -> joiner.add(c.getCode()));
 		return joiner.toString();
 	}
 
@@ -136,6 +180,12 @@ public class StringUtils {
 		if (!isNumeric(obj.toString()))
 			return defaultValue;
 		return Integer.valueOf(obj.toString());
+	}
+
+	public static String getAsString(Object obj, String defaultValue) {
+		if (obj == null)
+			return defaultValue;
+		return obj.toString();
 	}
 
 	/**

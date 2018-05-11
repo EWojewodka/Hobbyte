@@ -23,8 +23,9 @@ public abstract class DependencyRequired implements IDependencyRequired {
 	private Map<Class<?>, Object> dependencyBuffer = new HashMap<>();
 	
 	private DependencyResolver resolver;
-
+	
 	public DependencyRequired(DependencyResolver dependencyResolver) {
+		this.resolver = dependencyResolver;
 		dependencyResolver.resolve(this);
 	}
 	

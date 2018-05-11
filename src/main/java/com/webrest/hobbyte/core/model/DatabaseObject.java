@@ -28,6 +28,4 @@ public interface DatabaseObject extends Cloneable{
 	 */
 	boolean isNew();
 
-	void save(GenericDao<DatabaseObject> dao);
-
 }

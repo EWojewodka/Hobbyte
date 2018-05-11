@@ -4,11 +4,10 @@
 package com.webrest.hobbyte.app.user.form.dynamic;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.webrest.hobbyte.core.exception.AjaxMessageException;
+import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
@@ -28,12 +27,8 @@ public class ChangeEmailForm extends UserAjaxForm {
 		valid(request);
 		
 		String newEmail = getParameter("email");
-		if (!StringUtils.isEmail(newEmail))
-			throw new AjaxMessageException("Invalid email format.", HttpServletResponse.SC_BAD_REQUEST);
-
-		if (getUser().getEmail().equals(newEmail))
-			throw new AjaxMessageException("Email must be different than currently.",
-					HttpServletResponse.SC_BAD_REQUEST);
+		AjaxAsserts.assertTrue(StringUtils.isEmail(newEmail), "Invalid email format.");
+		AjaxAsserts.assertFalse(getUser().getEmail().equals(newEmail), "Email must be different than currently.");
 
 		getUser().setEmail(newEmail);
 		getUserDao().save(getUser());

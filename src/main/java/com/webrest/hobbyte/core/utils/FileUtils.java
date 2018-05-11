@@ -17,6 +17,10 @@ public class FileUtils {
 
 	public static final File ROOT_FILE = getRootPath();
 
+	public static final String TMP_DIR_NAME = "hobbyte_tmp";
+
+	public static final File TMP_DIR = new File(TMP_DIR_NAME);
+
 	private static final File getRootPath() {
 		return new File(FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile());
 	}
@@ -100,7 +104,15 @@ public class FileUtils {
 	public static boolean writeFile(InputStream is, File parentFile, String fileName) {
 		return writeFile(is, new File(parentFile, fileName));
 	}
-	
+
+	/**
+	 * Write an {@link InputStream} to dest file.
+	 * 
+	 * @see #writeFile(InputStream, File, String)
+	 * @param is
+	 * @param dest
+	 * @return
+	 */
 	public static boolean writeFile(InputStream is, File dest) {
 		if (is == null || dest == null)
 			return false;
@@ -121,6 +133,16 @@ public class FileUtils {
 			close(os, is);
 		}
 		return false;
+	}
+
+	/**
+	 * Return file from {@link #TMP_DIR} directory
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static File getTemporaryFile(String name) {
+		return new File(TMP_DIR, name);
 	}
 
 }

@@ -1143,29 +1143,71 @@ iframe {
 }
 
 .post-container{
-	padding: 10px;
+	padding: 0 10px;
 }
 
 .post-container .post-entry {
 	background-color: white;
 	padding: 15px;
+	padding-top: 0;
 	margin-bottom: 7px;
+	margin-top: 15px;
+	border-radius: 4px;
 }
 
 .post-entry .header {
 	display: flex;
 	flex-flow: row;
-	font-size: 12px;
+	font-size: 16px;
+	background-color: #ffffff;
+	margin-bottom: 15px;
 }
 
 .post-entry .header .post-profile-image {
 	border-radius: 99px;
-	width: 35px;
+	width: 50px;
 	height: auto;
+	margin-right: 20px;
+	position: relative;
+	top: -5px;
 }
 
 .post-entry .header .date{
 	text-align: right;
+}
+
+.post-entry .content {
+	padding: 15px 30px;
+	background-color: #f3f6f8;
+	z-index: 1;
+}
+
+div[class*="-block"] div {
+	padding: 0;
+	height: 30px;
+}
+
+.reaction-block a {
+	color: white !important;
+	background-color: #eb4b56;
+	height: 30px;
+	display: inline;
+	padding: 5px 10px;
+	padding-top: 10px;
+	border-bottom-right-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+.comment-block .show-comments {
+	color: white !important;
+	background-color: #eb4b56;
+	height: 30px;
+	display: inline;
+	padding: 5px 10px;
+	padding-top: 10px;
+	margin-top: 15px;
+	border-bottom-right-radius: 3px;
+	border-top-right-radius: 3px;
 }
 
 #messages-container {

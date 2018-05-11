@@ -18,6 +18,8 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	private List<ICriteriaJoiner<?>> joiners = new ArrayList<>();
 
 	private Map<String, Object> whereMap = new HashMap<>();
+	
+	private Map<String, Object> whereNotMap = new HashMap<>();
 
 	private Map<String, Object[]> whereInMap = new HashMap<>();
 
@@ -50,6 +52,17 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	@Override
 	public Map<String, Object> getWhere() {
 		return whereMap;
+	}
+	
+	@Override
+	public Map<String, Object> getWhereNot() {
+		return whereNotMap;
+	}
+	
+	@Override
+	public CriteriaFilter addWhereNot(String fieldName, Object value) {
+		whereNotMap.put(fieldName, value);
+		return this;
 	}
 
 	@Override

@@ -4,12 +4,11 @@
 package com.webrest.hobbyte.app.user.form.dynamic;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
-import com.webrest.hobbyte.core.exception.AjaxMessageException;
+import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
@@ -28,9 +27,8 @@ public class ChangePhoneForm extends UserAjaxForm {
 	protected JSONObject process(HttpServletRequest request) throws Exception {
 		valid(request);
 		String phoneNumber = getParameter("phone-number");
-		if (!StringUtils.isNumeric(phoneNumber))
-			throw new AjaxMessageException("Phone number can contains only numeric.",
-					HttpServletResponse.SC_BAD_REQUEST);
+		AjaxAsserts.assertTrue(StringUtils.isNumeric(phoneNumber), "Phone number can contains only numeric.");
+		
 		ExtranetUser user = getUser();
 		user.setPhoneNumber(phoneNumber);
 		getUserDao().save(user);

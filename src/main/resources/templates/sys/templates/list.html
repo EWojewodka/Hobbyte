@@ -75,7 +75,7 @@
 							<td class="console-header text-center">action</td>
 						</tr>
 						<th:block th:each="bean : ${beans}">
-							<tr th:id="bean-id-__${bean.id}__">	
+							<tr th:id="bean-id-">	
 								<td th:each="field : ${console.fields}" th:remove="tag">
 									<div layout:fragment="single-row">
 										<td th:text="${bean.__${field}__}" th:classappend="${field == 'id'} ? text-center : ''"></td>

@@ -3,6 +3,7 @@
  */
 package com.webrest.hobbyte.app.reaction;
 
+import com.webrest.hobbyte.core.utils.EnumUtils;
 import com.webrest.hobbyte.core.utils.WithCode;
 
 /**
@@ -26,6 +27,15 @@ public interface IPostEntryReaction {
 			return code;
 		}
 		
+		
+		public static PostEntryReactions getByCode(String code) {
+			return EnumUtils.findByCode(PostEntryReactions.class, code);
+		}
+		
+		public static PostEntryReactions getByCodeOrElse(String code, PostEntryReactions defaultValue) {
+			PostEntryReactions result = getByCode(code);
+			return result == null ? defaultValue : result;
+		}
 		
 	}
 	

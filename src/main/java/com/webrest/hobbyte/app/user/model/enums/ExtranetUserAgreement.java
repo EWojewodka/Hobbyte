@@ -1,6 +1,9 @@
 package com.webrest.hobbyte.app.user.model.enums;
 
-public enum ExtranetUserAgreement {
+import com.webrest.hobbyte.core.utils.EnumUtils;
+import com.webrest.hobbyte.core.utils.WithId;
+
+public enum ExtranetUserAgreement implements WithId{
 
 	NOT_ACCEPT(0), ACCEPT(1);
 
@@ -15,12 +18,7 @@ public enum ExtranetUserAgreement {
 	}
 
 	public static ExtranetUserAgreement getById(int id) {
-		ExtranetUserAgreement[] v = values();
-		for (ExtranetUserAgreement a : v) {
-			if (id == a.getId())
-				return a;
-		}
-		return null;
+		return EnumUtils.findById(ExtranetUserAgreement.class, id);
 	}
 	
 }

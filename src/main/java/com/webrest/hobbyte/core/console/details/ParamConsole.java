@@ -34,7 +34,7 @@ public class ParamConsole extends DetailsConsole{
 	}
 
 	@Override
-	protected Class<? extends DatabaseObjectImpl> initBeanClass(String beanClassAttribute) throws Exception {
+	protected Class<? extends DatabaseObjectImpl> initObjectClass(String beanClassAttribute) throws Exception {
 		return AppParam.class;
 	}
 	

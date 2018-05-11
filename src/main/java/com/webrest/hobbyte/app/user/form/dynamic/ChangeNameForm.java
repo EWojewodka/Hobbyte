@@ -1,13 +1,11 @@
 package com.webrest.hobbyte.app.user.form.dynamic;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
-import com.webrest.hobbyte.core.exception.AjaxMessageException;
-import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 public class ChangeNameForm extends UserAjaxForm {
@@ -20,13 +18,13 @@ public class ChangeNameForm extends UserAjaxForm {
 	protected JSONObject process(HttpServletRequest request) throws Exception {
 		valid(request);
 		String name = getParameter("name");
-		if (StringUtils.isEmpty(name))
-			throw new AjaxMessageException("We don't think so you has no name!", HttpServletResponse.SC_BAD_REQUEST);
+		AjaxAsserts.notEmpty(name, "We don't think so you has no name!");
+		
 		ExtranetUser user = getUser();
 		user.setName(name);
 		getUserDao().save(user);
 		JSONObject result = new JSONObject();
-		addMessage(result, "Hello " + name + "! Your name is changed!");
+		addMessage(result, String.format("Hello %s! Your name is changed!", name));
 		return result;
 	}
 

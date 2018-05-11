@@ -67,11 +67,7 @@ public class MailSender extends JavaMailSenderImpl {
 			// Log email addresses which are not available.
 			SimpleMailMessage[] mails = (SimpleMailMessage[]) originalMessages;
 			List<String> failureEmails = Arrays.stream(mails).map(x -> x.getTo()[0]).collect(Collectors.toList());
-			StringJoiner sj = new StringJoiner(",");
-			failureEmails.forEach(mail -> {
-				sj.add(mail);
-			});
-			LOGGER.info("Cannot send mails to " + sj.toString());
+			LOGGER.info("Cannot send mails to " + StringUtils.toGenericString(failureEmails, ","));
 		}
 	}
 

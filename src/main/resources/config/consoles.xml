@@ -30,7 +30,7 @@
 		new="true"
 		remove="false"
 		name="Welcome page"
-		handler="com.webrest.hobbyte.core.console.handler.AppParamViewHandler"
+		handler="com.webrest.hobbyte.core.appParams.console.AppParamViewHandler"
 	/>
 	
 	<console 
@@ -44,6 +44,7 @@
 		new="false"
 		name="Application parameters"
 		remove="false"
+		handler="com.webrest.hobbyte.core.console.handler.DBOConsoleHandler"
 	/>
 	
 	<console 
@@ -52,7 +53,7 @@
 		view="sys/templates/new-param"
 		save="true"
 		new="false"
-		handler="com.webrest.hobbyte.core.console.handler.AppParamViewHandler"
+		handler="com.webrest.hobbyte.core.appParams.console.AppParamViewHandler"
 		group="generic"
 	/>
 	
@@ -88,5 +89,17 @@
 		save="true"
 		handler="com.webrest.hobbyte.core.console.handler.ExtranetUserViewHandler"
 	/>
+	
+	<console 
+		id="cache-list"
+		bean="com.webrest.hobbyte.core.cache.ICacheMap"
+		type="list"
+		view="sys/templates/list"
+		fields="name,description,lastInit#creation,size"
+		sort="all"
+		name="Cache maps"
+		handler="com.webrest.hobbyte.core.cache.console.CacheMapConsoleHandler"
+	/>
+	
 	
 </consoles>

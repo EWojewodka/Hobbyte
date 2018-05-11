@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.webrest.hobbyte.app.user.listeners.ExtranetUserDependencyListener;
-import com.webrest.hobbyte.app.user.listeners.RegistrationListener;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.dao.GenericDao;
 
@@ -24,13 +23,10 @@ public class ExtranetUserDao extends GenericDao<ExtranetUser> {
 	@Autowired
 	private ExtranetUserDependencyListener dependencyListener;
 	
-	@Autowired
-	private RegistrationListener registrationListener;
 	
 	@PostConstruct
 	public void init() {
 		addListener(dependencyListener);
-		addListener(registrationListener);
 	}
 	
 	public ExtranetUser findByLoginOrEmail(String loginOrEmail) {

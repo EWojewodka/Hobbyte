@@ -3,10 +3,16 @@
  */
 package com.webrest.hobbyte.core.profiler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 
 import com.webrest.hobbyte.core.logger.LoggerFactory;
 import com.webrest.hobbyte.core.platform.AvailablePlatformProfiles;
+import com.webrest.hobbyte.core.utils.EnumUtils;
+import com.webrest.hobbyte.core.utils.StringUtils;
 
 /**
  * Class which is reponsible for looking for a platform start profiles. In basic
@@ -36,16 +42,11 @@ public class EnvironmentProfiler implements IEnvironmentProfiler {
 	 */
 	private static final String SPRING_PROFILE_ARGUMENT_NAME = "spring.profiles.active";
 
-	private String profileCode;
+	private List<AvailablePlatformProfiles> profileList = new ArrayList<>();
 
-	private AvailablePlatformProfiles profile;
-
-	/**
-	 * Create instance of environment profiler.
-	 */
 	public EnvironmentProfiler() {
-		this.profileCode = System.getProperty(PROFILE_ARGUMENT_NAME);
-		this.profile = AvailablePlatformProfiles.findByCode(profileCode, AvailablePlatformProfiles.DEVELOPMENT);
+		profileList = EnumUtils.findByCodes(AvailablePlatformProfiles.class, System.getProperty(PROFILE_ARGUMENT_NAME),
+				",");
 	}
 
 	/**
@@ -53,13 +54,17 @@ public class EnvironmentProfiler implements IEnvironmentProfiler {
 	 * invoke only {@link #setProfile(AvailablePlatformProfiles)} by
 	 * {@value #PROFILE_ARGUMENT_NAME} value from {@link System#getProperty(String)}
 	 */
-	public void setOnStart() {
-		setProfile(profile);
+	public void addProfile(AvailablePlatformProfiles profile) {
+		profileList.add(profile);
+	}
+
+	public void deleteProfile(AvailablePlatformProfiles profile) {
+		profileList.remove(profile);
 	}
 
 	@Override
-	public AvailablePlatformProfiles getProfiles() {
-		return profile;
+	public AvailablePlatformProfiles[] getProfiles() {
+		return profileList.toArray(new AvailablePlatformProfiles[profileList.size()]);
 	}
 
 	/**
@@ -67,10 +72,16 @@ public class EnvironmentProfiler implements IEnvironmentProfiler {
 	 * {@value #SPRING_PROFILE_ARGUMENT_NAME}
 	 */
 	@Override
-	public void setProfile(AvailablePlatformProfiles profile) {
-		this.profile = profile;
-		System.setProperty(SPRING_PROFILE_ARGUMENT_NAME, profile.getCode());
-		LOGGER.info(String.format("Environment profile is change to: (%s)", profile.getCode()));
+	public void setProfile(AvailablePlatformProfiles... profile) {
+		if (profile == null)
+			return;
+		profileList = Arrays.asList(profile);
+	}
+	
+	public void load() {
+		String codeString = StringUtils.toGenericStringCodes(profileList, ",");
+		System.setProperty(SPRING_PROFILE_ARGUMENT_NAME, codeString);
+		LOGGER.info(String.format("Environment profile is change to: (%s)", codeString));
 	}
 
 }

@@ -29,6 +29,10 @@ public interface ICriteriaFilter<T extends ICriteriaFilter<T>> {
 	T addWhere(String fieldName, Object value);
 
 	Map<String, Object> getWhere();
+	
+	T addWhereNot(String fieldName, Object value);
+	
+	Map<String, Object> getWhereNot();
 
 	T addWhereIn(String fieldName, Object[] objects);
 

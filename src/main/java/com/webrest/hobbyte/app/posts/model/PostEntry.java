@@ -3,6 +3,7 @@
  */
 package com.webrest.hobbyte.app.posts.model;
 
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,8 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
+import com.webrest.hobbyte.app.reaction.model.PostEntryReaction;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 import com.webrest.hobbyte.core.model.json.AsJSON;
@@ -56,7 +60,7 @@ public class PostEntry extends DatabaseObjectImpl {
 	@Column(name = "author_id")
 	private int authorId;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String content;
 
 	@Column(name = "created_at")
@@ -74,6 +78,10 @@ public class PostEntry extends DatabaseObjectImpl {
 
 	@Column
 	private int status = PostEntryStatus.PENDING.id;
+	
+	@AsJSON
+	@OneToMany(mappedBy = "postEntry")
+	private Collection<PostEntryReaction> reactions;
 	
 	public PostEntry(ExtranetUser author) {
 		Asserts.exists(author);
@@ -128,10 +136,14 @@ public class PostEntry extends DatabaseObjectImpl {
 		this.status = status.getId();
 	}
 	
+	public Collection<PostEntryReaction> getReactions(){
+		return reactions;
+	}
+	
 	public PostEntry() {
 		
 	}
-
+	
 	@Override
 	public int getId() {
 		return id;

@@ -8,7 +8,8 @@ import com.webrest.hobbyte.core.model.DatabaseObject;
 /**
  * Abstract implementation of {@link DaoListener}. It's only for override all of
  * interface methods, so you can implements only what you need. Basicly this
- * 'implementation' has default 0 priority.
+ * 'implementation' has default 0 priority. </br>
+ * Priority is for set an order of execute listeners in {@link GenericDao}
  * 
  * @author Emil Wojewódka
  * @soundtrack Kękę - Nigdy Ponad Stan

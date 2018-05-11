@@ -10,7 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.reaction.IPostEntryReaction;
@@ -39,16 +42,25 @@ public class PostEntryReaction extends DatabaseObjectImpl implements IPostEntryR
 	@Column(name = "user_id")
 	private int userId;
 
-	@Column(name = "post_entry_id")
+	@Transient
 	private int postEntryId;
 	
 	@Column(name = "created_at")
 	private Date createdAt = new Date();
 
+	@ManyToOne
+	@JoinColumn(name="post_entry_id")
+	private PostEntry postEntry;
+	
+	protected PostEntryReaction() {
+		
+	}
+	
 	public PostEntryReaction(ExtranetUser user, PostEntry entry, PostEntryReactions reactionType) {
 		Asserts.exists(user);
 		Asserts.exists(entry);
 		this.userId = user.getId();
+		this.postEntry = entry;
 		this.postEntryId = entry.getId();
 		this.type = reactionType.getCode();
 	}

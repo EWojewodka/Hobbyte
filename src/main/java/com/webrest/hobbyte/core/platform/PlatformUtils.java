@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.springframework.core.env.Environment;
 
 import com.webrest.hobbyte.core.logger.LoggerFactory;
+import com.webrest.hobbyte.core.utils.FileUtils;
 
 /**
  * @author Emil Wojewódka
@@ -16,10 +17,6 @@ import com.webrest.hobbyte.core.logger.LoggerFactory;
  * @since 10 mar 2018
  */
 public class PlatformUtils {
-
-	private static final String TMP_DIR_NAME = "hobbyte_tmp";
-
-	public static final File TMP_DIR = new File(TMP_DIR_NAME);
 
 	public static final Logger LOGGER = LoggerFactory.getLogger();
 
@@ -29,7 +26,7 @@ public class PlatformUtils {
 
 	/* Create directory for temporary files. Delete if exists on start. */
 	private static void createTmpDir() {
-		File file = new File(TMP_DIR_NAME);
+		File file = new File(FileUtils.TMP_DIR_NAME);
 		if (file.exists()) {
 			file.delete();
 			LOGGER.info("Delete exists {} temporary file directory", file.getAbsolutePath());

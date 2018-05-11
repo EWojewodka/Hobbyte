@@ -13,7 +13,7 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  *
  * @since 5 kwi 2018
  */
-public class DetailsConsole extends Console implements IDetailsConsole{
+public class DetailsConsole extends Console {
 	
 	private boolean canSave;
 	

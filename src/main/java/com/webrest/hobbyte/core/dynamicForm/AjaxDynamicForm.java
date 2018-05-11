@@ -13,7 +13,6 @@ import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
 import com.webrest.hobbyte.core.utils.spring.DependencyRequired;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
-import com.webrest.hobbyte.core.utils.spring.IDependencyRequired;
 
 /**
  * Abstract class for expanding if you want to use simple, ajax form on front
@@ -24,7 +23,7 @@ import com.webrest.hobbyte.core.utils.spring.IDependencyRequired;
  *
  * @since 15 mar 2018
  */
-public abstract class AjaxDynamicForm extends DependencyRequired implements IDependencyRequired {
+public abstract class AjaxDynamicForm extends DependencyRequired {
 
 	public AjaxDynamicForm(DependencyResolver dependencyResolver) {
 		super(dependencyResolver);

@@ -1,5 +1,9 @@
 package com.webrest.hobbyte.core.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class EnumUtils {
 
 	/**
@@ -37,20 +41,32 @@ public class EnumUtils {
 	 * @return
 	 */
 	public static <T extends Enum<? extends WithCode>> T findByCode(Class<T> enumType, String code) {
-		if (StringUtils.isEmpty(code))
-			return null;
+		List<T> result = findByCodes(enumType, code, null);
+		return result.isEmpty() ? null : result.get(0);
+	}
 
-		try {
-			T[] objects = enumType.getEnumConstants();
+	@SuppressWarnings("unchecked")
+	public static <T extends Enum<? extends WithCode>> List<T> findByCodes(Class<T> enumType, String concatedCodes,
+			String splitter) {
+		if (StringUtils.isEmpty(concatedCodes))
+			return Collections.EMPTY_LIST;
+
+		List<T> resultList = new ArrayList<>();
+
+		// If splitter is null - we won't split every char. It means - if spliiter is
+		// null - concatedCodes has only one code.
+		String[] codes = splitter == null ? new String[] { concatedCodes } : concatedCodes.split(splitter);
+
+		T[] objects = enumType.getEnumConstants();
+
+		for (String code : codes) {
 			for (T _obj : objects) {
 				WithCode obj = (WithCode) _obj;
 				if (code.equals(obj.getCode()))
-					return _obj;
+					resultList.add(_obj);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return null;
+		return resultList;
 	}
 
 }

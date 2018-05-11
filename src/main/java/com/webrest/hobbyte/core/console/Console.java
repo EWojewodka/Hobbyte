@@ -6,11 +6,12 @@ package com.webrest.hobbyte.core.console;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.w3c.dom.Element;
 
 import com.webrest.hobbyte.core.adminPanel.service.ConsoleFinder;
 import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
-import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
+import com.webrest.hobbyte.core.logger.LoggerFactory;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 import com.webrest.hobbyte.core.xml.NodeSource;
@@ -24,9 +25,11 @@ import com.webrest.hobbyte.core.xml.NodeSource;
  */
 public class Console extends NodeSource implements IConsole {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger();
+	
 	private String id;
 
-	private Class<? extends DatabaseObjectImpl> beanClass;
+	private Class<?> objectClass;
 
 	private String view;
 
@@ -54,10 +57,10 @@ public class Console extends NodeSource implements IConsole {
 	}
 
 	@Override
-	public Class<? extends DatabaseObjectImpl> getBeanClass() {
-		if (beanClass == null)
-			beanClass = getParent().getBeanClass();
-		return beanClass;
+	public Class<?> getObjectClass() {
+		if (objectClass == null)
+			objectClass = getParent().getObjectClass();
+		return objectClass;
 	}
 
 	@Override
@@ -91,7 +94,8 @@ public class Console extends NodeSource implements IConsole {
 
 	@Override
 	public ConsoleHandler initHandler(DependencyResolver dependencyResolver) throws Exception {
-		Constructor<? extends ConsoleHandler> console = consoleHandler.getConstructor(DependencyResolver.class, IConsole.class);
+		Constructor<? extends ConsoleHandler> console = consoleHandler.getConstructor(DependencyResolver.class,
+				IConsole.class);
 		return console.newInstance(dependencyResolver, this);
 	}
 
@@ -103,15 +107,13 @@ public class Console extends NodeSource implements IConsole {
 		return shortName;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init() throws Exception {
 		fillAttributeMap();
 		this.id = getAttribute("id");
-		this.beanClass = initBeanClass(getAttribute("bean"));
+		this.objectClass = initObjectClass(getAttribute("bean"));
 		this.view = getAttribute("view", "sys/templates/console");
-		this.consoleHandler = (Class<? extends ConsoleHandler>) Class
-				.forName(getAttribute("handler", ConsoleHandler.class.getName()));
+		this.consoleHandler = initConsoleHandler(getAttribute("handler"));
 		this.type = ConsoleType.getByCode(getAttribute("type"));
 		this.parentConsoleId = getAttribute("parent-id");
 		this.name = getAttribute("name");
@@ -122,11 +124,27 @@ public class Console extends NodeSource implements IConsole {
 		return StringUtils.isEmpty(shortName) ? name : shortName;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Class<? extends DatabaseObjectImpl> initBeanClass(String beanClassAttribute) throws Exception {
-		if (StringUtils.isEmpty(beanClassAttribute))
+	/**
+	 * Any of object could be show in console.
+	 * 
+	 * @param objectClassAttribute
+	 * @return
+	 * @throws Exception
+	 */
+	protected Class<?> initObjectClass(String objectClassAttribute) throws Exception {
+		if (StringUtils.isEmpty(objectClassAttribute))
 			return null;
-		return (Class<? extends DatabaseObjectImpl>) Class.forName(beanClassAttribute);
+		return Class.forName(objectClassAttribute);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected Class<? extends ConsoleHandler> initConsoleHandler(String handlerClass) {
+		try {
+			return (Class<? extends ConsoleHandler>) Class.forName(handlerClass);
+		} catch (Exception e) {
+			LOGGER.error("Cannot init {} console handler!", handlerClass);
+			return ConsoleHandler.class;
+		}
 	}
 
 }

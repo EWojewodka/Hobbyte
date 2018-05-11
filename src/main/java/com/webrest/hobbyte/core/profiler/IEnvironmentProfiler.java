@@ -15,12 +15,12 @@ public interface IEnvironmentProfiler {
 	/**
 	 * @return current profile
 	 */
-	AvailablePlatformProfiles getProfiles();
+	AvailablePlatformProfiles[] getProfiles();
 
 	/**
 	 * Set new environment profile.
 	 * 
 	 * @param profile
 	 */
-	void setProfile(AvailablePlatformProfiles profile);
+	void setProfile(AvailablePlatformProfiles... profile);
 }

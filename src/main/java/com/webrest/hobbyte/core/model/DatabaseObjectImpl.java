@@ -4,10 +4,10 @@
 package com.webrest.hobbyte.core.model;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 import org.json.JSONObject;
 
-import com.webrest.hobbyte.core.dao.GenericDao;
 import com.webrest.hobbyte.core.model.json.JSONable;
 import com.webrest.hobbyte.core.model.json.JsonConverter;
 
@@ -17,7 +17,7 @@ import com.webrest.hobbyte.core.model.json.JsonConverter;
  * @since 24 mar 2018
  */
 public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
-	
+
 	/** {@inheritDoc}} */
 	public boolean isNew() {
 		return getId() <= 0;
@@ -72,6 +72,7 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 		// Every new object should be start in new line.
 		sb.append("\n");
 
+		// get subelement fields and iterate them
 		Field[] fields = clazz.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
@@ -80,11 +81,15 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 				Object value = field.get(this);
 				String valueStr = null;
 				if (value != null && value instanceof DatabaseObjectImpl) {
+					DatabaseObjectImpl dbo = (DatabaseObjectImpl) value;
 					// Recursive break
-					if (value.equals(parent))
+					if (dbo.isSameDBO(parent))
 						valueStr = "this";
 					else
 						valueStr = ((DatabaseObjectImpl) value).toString(this);
+				} else if (value != null && value instanceof Collection) {
+					Collection<?> persistentBag = (Collection<?>) value;
+					valueStr = "size -> " + persistentBag.size();
 				} else {
 					valueStr = String.valueOf(value);
 				}
@@ -99,9 +104,12 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 		return sb.toString();
 	}
 
-	@Override
-	public void save(GenericDao<DatabaseObject> dao) {
-		dao.save(this);
+	public boolean isSameDBO(DatabaseObject dbo) {
+		if (dbo == null)
+			return false;
+		if (!dbo.getClass().equals(getClass()))
+			return false;
+		return dbo.getId() == getId();
 	}
 
 	public Object getProperty(String name) {
@@ -124,13 +132,13 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 	public String getJSONAsString() {
 		return getAsJSON().toString();
 	}
-	
+
 	public DatabaseObjectImpl cloneDBO() {
 		try {
 			DatabaseObjectImpl clone = (DatabaseObjectImpl) clone();
 			clone.setId(0);
 			return clone;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

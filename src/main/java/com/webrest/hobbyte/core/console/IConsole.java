@@ -6,8 +6,8 @@ package com.webrest.hobbyte.core.console;
 import java.util.List;
 
 import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
+import com.webrest.hobbyte.core.console.handler.DBOConsoleHandler;
 import com.webrest.hobbyte.core.console.handler.ViewHandler;
-import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 import com.webrest.hobbyte.core.utils.EnumUtils;
 import com.webrest.hobbyte.core.utils.WithCode;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
@@ -40,7 +40,7 @@ public interface IConsole {
 
 	String getId();
 
-	Class<? extends DatabaseObjectImpl> getBeanClass();
+	Class<?> getObjectClass();
 
 	String getView();
 
@@ -59,7 +59,7 @@ public interface IConsole {
 	 * It should be thread-safe, if new request needs a dedicated handler it creates
 	 * new from cached console.
 	 * 
-	 * @see ConsoleHandler
+	 * @see DBOConsoleHandler
 	 * @see ViewHandler
 	 * @return
 	 * @throws Exception

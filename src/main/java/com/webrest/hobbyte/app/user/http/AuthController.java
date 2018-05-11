@@ -2,9 +2,9 @@ package com.webrest.hobbyte.app.user.http;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONObject;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -19,10 +19,10 @@ import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
-import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
+import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.HttpUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
@@ -72,35 +72,35 @@ class LoginAjaxForm extends AjaxDynamicForm {
 		super(dependencyResolver);
 		this.context = context;
 	}
+	
+	@Override
+	public Class<?>[] getDependencies() {
+		return ArrayUtils.addAll(super.getDependencies(), new Class<?>[] {ExtranetUserDao.class, PasswordEncoder.class, MessageSourceHelper.class});
+	}
 
 	@Override
 	protected JSONObject process(HttpServletRequest request) throws Exception {
 		JSONObject resultJson = new JSONObject();
-		boolean isLogged = ExtranetUserUtils.isLogged(request);
-		if (isLogged) {
+		if (ExtranetUserUtils.isLogged(request)) {
 			setRedirect(resultJson, "/");
 			return resultJson;
 		}
 		ExtranetUser u = findUser(request);
 		MessageSourceHelper messageHelper = getDependency(MessageSourceHelper.class);
-		if (u == null)
-			throw new AjaxMessageException(messageHelper.getMessage("IncorrectLogin", context), HttpServletResponse.SC_BAD_REQUEST);
 
-		if (!getDependency(PasswordEncoder.class).matches(request.getParameter("password"), u.getPassword()))
-			throw new AjaxMessageException(messageHelper.getMessage("IncorrectLogin", context), HttpServletResponse.SC_BAD_REQUEST);
+		AjaxAsserts.notNull(u, messageHelper.getMessage("IncorrectLogin", context));
 
-		if (u.getStatus() != ExtranetUserStatus.ACTIVE)
-			throw new AjaxMessageException(messageHelper.getMessage("UserNotActive", context), HttpServletResponse.SC_BAD_REQUEST);
+		boolean isPasswordMatches = getDependency(PasswordEncoder.class).matches(request.getParameter("password"),
+				u.getPassword());
+		AjaxAsserts.assertTrue(isPasswordMatches, messageHelper.getMessage("IncorrectLogin", context));
+
+		AjaxAsserts.assertTrue(u.getStatus() == ExtranetUserStatus.ACTIVE,
+				messageHelper.getMessage("UserNotActive", context));
 
 		this.user = u;
 		handleRememberMe(request, user);
 		setRedirect(resultJson, "/");
 		return resultJson;
-	}
-
-	@Override
-	public Class<?>[] getDependencies() {
-		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class, MessageSourceHelper.class };
 	}
 
 	private ExtranetUser findUser(HttpServletRequest request) {
@@ -134,10 +134,15 @@ class LoginAjaxForm extends AjaxDynamicForm {
 class RegistrationAjaxFrom extends AjaxDynamicForm {
 
 	private ExtranetUserContext context;
-	
+
 	public RegistrationAjaxFrom(ExtranetUserContext context, DependencyResolver dependencyResolver) {
 		super(dependencyResolver);
 		this.context = context;
+	}
+	
+	@Override
+	public Class<?>[] getDependencies() {
+		return ArrayUtils.addAll(super.getDependencies(), new Class<?>[] {ExtranetUserDao.class, PasswordEncoder.class, MessageSourceHelper.class});
 	}
 
 	@Override
@@ -147,25 +152,19 @@ class RegistrationAjaxFrom extends AjaxDynamicForm {
 		MessageSourceHelper messageHelper = getDependency(MessageSourceHelper.class);
 
 		String login = request.getParameter("login");
-		if (StringUtils.isEmpty(login) || login.length() < 6)
-			throw new AjaxMessageException(messageHelper.getMessage("Min", context, messageHelper.getMessage("username", context),6),
-					HttpServletResponse.SC_BAD_REQUEST);
-	
-		String email = request.getParameter("email");
-		if (StringUtils.isEmpty(email) || !StringUtils.isEmail(email))
-			throw new AjaxMessageException(messageHelper.getMessage("NotEmail", context), HttpServletResponse.SC_BAD_REQUEST);
-	
-		String password = request.getParameter("password");
-		if (StringUtils.isEmpty(password) || password.length() < 8)
-			throw new AjaxMessageException(messageHelper.getMessage("Min", context, messageHelper.getMessage("password", context), 8),
-					HttpServletResponse.SC_BAD_REQUEST);
-		
-		if(userDao.findByLogin(login) != null)
-			throw new AjaxMessageException(messageHelper.getMessage("NotAvailableLogin", context), HttpServletResponse.SC_BAD_REQUEST);
-		
-		if(userDao.findByEmail(email) != null)
-			throw new AjaxMessageException(messageHelper.getMessage("NotAvailableEmail", context), HttpServletResponse.SC_BAD_REQUEST);
+		AjaxAsserts.longerThan(login, 5,
+				messageHelper.getMessage("Min", context, messageHelper.getMessage("username", context), 6));
 
+		String email = request.getParameter("email");
+		String emailMsg = messageHelper.getMessage("NotEmail", context);
+		AjaxAsserts.assertTrue(StringUtils.isEmail(email), emailMsg);
+
+		String password = request.getParameter("password");
+		AjaxAsserts.longerThan(password, 7, messageHelper.getMessage("Min", context, messageHelper.getMessage("password", context), 8));
+
+		AjaxAsserts.assertNull(userDao.findByLogin(login), messageHelper.getMessage("NotAvailableLogin", context));
+		AjaxAsserts.assertNull(userDao.findByEmail(email), messageHelper.getMessage("NotAvailableEmail", context));
+		
 		ExtranetUser user = new ExtranetUser();
 		user.setLogin(login);
 		user.setEmail(email);
@@ -177,10 +176,6 @@ class RegistrationAjaxFrom extends AjaxDynamicForm {
 		return result;
 	}
 
-	@Override
-	public Class<?>[] getDependencies() {
-		return new Class<?>[] { ExtranetUserDao.class, PasswordEncoder.class, MessageSourceHelper.class };
-	}
 
 	@Override
 	public String getCode() {

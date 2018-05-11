@@ -30,7 +30,7 @@ public class HttpUtils {
 
 		if (cookies == null)
 			return null;
-		
+
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(cookieName))
 				return cookie;
@@ -53,7 +53,7 @@ public class HttpUtils {
 		cookie.setValue("");
 		context.getResponse().addCookie(cookie);
 	}
-	
+
 	/**
 	 * It's set for 10 years.
 	 * 

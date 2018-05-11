@@ -25,4 +25,11 @@ public class PostEntryDao extends GenericDao<PostEntry>{
 		return result.toArray(new PostEntry[result.size()]);
 	}
 	
+	public boolean isReactedByUser(int postId, int userId) {
+		CriteriaFilter cf = new CriteriaFilter();
+		cf.addWhere("id", postId);
+		cf.addWhere("authorId", userId);
+		return !find(cf).isEmpty();
+	}
+	
 }

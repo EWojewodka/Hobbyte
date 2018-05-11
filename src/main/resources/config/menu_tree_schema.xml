@@ -24,5 +24,12 @@
 			id="app-param-list" 
 			icon="fa fa-columns"
 		/>
+		
+		<leaf 
+			name="Cache list" 
+			console-id="cache-list" 
+			id="cache-list" 
+			icon="fa fa-industry"
+		/>
 	</folder>
 </menutree>

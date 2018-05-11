@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.webrest.hobbyte.core.adminPanel.service.ConsoleFinder;
@@ -56,6 +55,7 @@ public class AdminPanelController extends BaseController {
 		if (model.containsAttribute("handler")) {
 			handler = FrameworkUtils.getAttribute(model, "handler");
 			// check if current handler is for this console.
+			// It's neccessery because if it's same - we want to still keep this object.
 			if (!handler.getConsole().getId().equals(console.getId()))
 				handler = console.initHandler(dependencyResolver);
 		} else {

@@ -33,7 +33,7 @@ public abstract class XMLParser<T> {
 	private List<T> resultList = new ArrayList<>();
 
 	public XMLParser(String xmlPath) {
-		Asserts.hasLength(xmlPath, "Cannot init XMLParser for null source path");
+		Asserts.notEmpty(xmlPath, "Cannot init XMLParser for null source path");
 		this.xmlPath = xmlPath;
 		try {
 			initDocument();

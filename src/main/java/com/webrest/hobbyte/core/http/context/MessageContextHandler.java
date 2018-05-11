@@ -59,4 +59,8 @@ public class MessageContextHandler {
 		getSuccess().add(message);
 	}
 
+	public HttpContext getContext() {
+		return context;
+	}
+	
 }

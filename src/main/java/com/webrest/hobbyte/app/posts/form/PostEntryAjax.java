@@ -7,19 +7,16 @@ import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONObject;
 
 import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.upload.cdn.CloudinaryUploader;
-import com.webrest.hobbyte.app.user.ExtranetUserUtils;
-import com.webrest.hobbyte.app.user.model.ExtranetUser;
-import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
-import com.webrest.hobbyte.core.exception.AjaxMessageException;
-import com.webrest.hobbyte.core.platform.PlatformUtils;
+import com.webrest.hobbyte.app.user.form.dynamic.UserAjaxForm;
+import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.FileUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
@@ -29,7 +26,7 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
  *
  * @since 10 kwi 2018
  */
-public class PostEntryAjax extends AjaxDynamicForm {
+public class PostEntryAjax extends UserAjaxForm {
 
 	private static final String[] AVAILABLE_PHOTO_EXTENSION = { "jpg", "jpeg", "png", "gif" };
 
@@ -40,19 +37,23 @@ public class PostEntryAjax extends AjaxDynamicForm {
 	public PostEntryAjax(DependencyResolver dependencyResolver) {
 		super(dependencyResolver);
 	}
+	
+	@Override
+	public Class<?>[] getDependencies() {
+		return ArrayUtils.addAll(super.getDependencies(), new Class<?>[] {PostEntryDao.class, CloudinaryUploader.class});
+	}
 
 	@Override
 	protected JSONObject process(HttpServletRequest request) throws Exception {
-		ExtranetUser user = ExtranetUserUtils.getUser(request);
-		if (user == null)
-			throw new AjaxMessageException("You must be logged for add new post.", HttpServletResponse.SC_BAD_REQUEST);
+		valid(request);
 
 		String content = request.getParameter("content");
-		if (StringUtils.isEmpty(content))
-			throw new AjaxMessageException("Post entry content cannot be empty!", HttpServletResponse.SC_BAD_REQUEST);
+		String imageUrl = uploadImage(request);
+		// If there is no a image or text - throw exception. Zombie post are not nice.
+		AjaxAsserts.notEmpty("Post entry content cannot be empty!", content, imageUrl);
 
-		PostEntry postEntry = new PostEntry(user);
-		postEntry.setImageUrl(uploadImage(request));
+		PostEntry postEntry = new PostEntry(getUser());
+		postEntry.setImageUrl(imageUrl);
 		postEntry.setContent(content);
 
 		getDependency(PostEntryDao.class).save(postEntry);
@@ -62,20 +63,30 @@ public class PostEntryAjax extends AjaxDynamicForm {
 		return result;
 	}
 
+	/**
+	 * Process and upload file from ajax request. It's optional, so if there is on
+	 * attachments in request, return null - in otherwise return string url to
+	 * upload destination. Now we use {@link CloudinaryUploader} for uploading a
+	 * resources.
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	private String uploadImage(HttpServletRequest request) throws Exception {
 		Part photo = request.getPart("photo");
 		String fileName = photo.getSubmittedFileName();
 		if (photo == null || StringUtils.isEmpty(fileName))
 			return null;
 		String extension = FileUtils.getExtension(fileName);
-		if (!StringUtils.contains(AVAILABLE_PHOTO_EXTENSION, extension)) {
-			throw new AjaxMessageException(WRONG_EXTENSION_MSG, HttpServletResponse.SC_BAD_REQUEST);
-		}
-		File dest = new File(PlatformUtils.TMP_DIR, "tmp_" + fileName);
+
+		AjaxAsserts.assertTrue(StringUtils.contains(AVAILABLE_PHOTO_EXTENSION, extension), WRONG_EXTENSION_MSG);
+
+		File dest = FileUtils.getTemporaryFile("tmp_" + fileName);
 		// Write file as a temporary file.
 		FileUtils.writeFile(photo.getInputStream(), dest);
-		CloudinaryUploader uploader = getDependency(CloudinaryUploader.class);
-		Map<String, Object> upload = uploader.upload(dest);
+		Map<String, Object> upload = getDependency(CloudinaryUploader.class).upload(dest);
+
 		// Delete tmp file.
 		dest.delete();
 		return String.valueOf(upload.get("secure_url"));
@@ -84,11 +95,6 @@ public class PostEntryAjax extends AjaxDynamicForm {
 	@Override
 	public String getCode() {
 		return "new-post-ajax";
-	}
-
-	@Override
-	public Class<?>[] getDependencies() {
-		return new Class[] { PostEntryDao.class, CloudinaryUploader.class };
 	}
 
 }
