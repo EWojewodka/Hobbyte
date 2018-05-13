@@ -5,8 +5,6 @@ package com.webrest.hobbyte.app.user.form.dynamic;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONObject;
-
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
@@ -23,7 +21,7 @@ public class ChangeEmailForm extends UserAjaxForm {
 	}
 
 	@Override
-	protected JSONObject process(HttpServletRequest request) throws Exception {
+	protected void process(HttpServletRequest request) throws Exception {
 		valid(request);
 		
 		String newEmail = getParameter("email");
@@ -32,9 +30,7 @@ public class ChangeEmailForm extends UserAjaxForm {
 
 		getUser().setEmail(newEmail);
 		getUserDao().save(getUser());
-		JSONObject result = new JSONObject();
-		addMessage(result, "Your email has been changed.");
-		return result;
+		addMessage("Your email has been changed.");
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.json.JSONObject;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,11 +78,10 @@ class LoginAjaxForm extends AjaxDynamicForm {
 	}
 
 	@Override
-	protected JSONObject process(HttpServletRequest request) throws Exception {
-		JSONObject resultJson = new JSONObject();
+	protected void process(HttpServletRequest request) throws Exception {
 		if (ExtranetUserUtils.isLogged(request)) {
-			setRedirect(resultJson, "/");
-			return resultJson;
+			setRedirect("/");
+			return;
 		}
 		ExtranetUser u = findUser(request);
 		MessageSourceHelper messageHelper = getDependency(MessageSourceHelper.class);
@@ -99,8 +97,7 @@ class LoginAjaxForm extends AjaxDynamicForm {
 
 		this.user = u;
 		handleRememberMe(request, user);
-		setRedirect(resultJson, "/");
-		return resultJson;
+		setRedirect("/");
 	}
 
 	private ExtranetUser findUser(HttpServletRequest request) {
@@ -147,7 +144,7 @@ class RegistrationAjaxFrom extends AjaxDynamicForm {
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	protected JSONObject process(HttpServletRequest request) throws Exception {
+	protected void process(HttpServletRequest request) throws Exception {
 		ExtranetUserDao userDao = getDependency(ExtranetUserDao.class);
 		MessageSourceHelper messageHelper = getDependency(MessageSourceHelper.class);
 
@@ -171,9 +168,7 @@ class RegistrationAjaxFrom extends AjaxDynamicForm {
 		user.setPassword(getDependency(PasswordEncoder.class).encode(password));
 		userDao.save(user);
 		context.loginUser(user);
-		JSONObject result = new JSONObject();
-		setRedirect(result, "/");
-		return result;
+		setRedirect("/");
 	}
 
 

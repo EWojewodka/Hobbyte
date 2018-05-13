@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -88,6 +89,22 @@ public class ClassUtils {
 			}
 		}
 		return fields.toArray(new Field[fields.size()]);
+	}
+	
+	public static Method[] getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
+		Asserts.notNull(clazz, "Cannot get any methods from null class :<");
+		Asserts.notNull(annotation,
+				"Cannot get any methods from " + clazz.getName() + " because passed annotation is null.");
+		
+		List<Method> methods = new ArrayList<>();
+		Method[] _methods = clazz.getDeclaredMethods();
+		for (Method method : _methods) {
+			if (method.isAnnotationPresent(annotation)) {
+				method.setAccessible(true);
+				methods.add(method);
+			}
+		}
+		return methods.toArray(new Method[methods.size()]);
 	}
 
 	/**

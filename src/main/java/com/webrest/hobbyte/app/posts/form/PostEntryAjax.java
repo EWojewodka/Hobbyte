@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.json.JSONObject;
 
 import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
@@ -44,7 +43,7 @@ public class PostEntryAjax extends UserAjaxForm {
 	}
 
 	@Override
-	protected JSONObject process(HttpServletRequest request) throws Exception {
+	protected void process(HttpServletRequest request) throws Exception {
 		valid(request);
 
 		String content = request.getParameter("content");
@@ -58,9 +57,8 @@ public class PostEntryAjax extends UserAjaxForm {
 
 		getDependency(PostEntryDao.class).save(postEntry);
 
-		JSONObject result = new JSONObject();
-		addMessage(result, "Your post is published!");
-		return result;
+		addMessage("Your post is published!");
+		addJsonValue("postEntry", postEntry.getJSONAsString());
 	}
 
 	/**

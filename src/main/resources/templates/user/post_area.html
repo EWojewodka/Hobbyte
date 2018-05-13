@@ -7,8 +7,9 @@
 		<div class="row">
 			<div class="col-lg-12 post-area">
 				<div class="row">
-					<form enctype="multipart/form-data" class="form-horizontal post-form" role="form" id="new-post" method="POST" onsubmit="sendAjaxWithUrl('/post/new', this); return false;">
-						<div class="form-group">
+					<form enctype="multipart/form-data" class="form-horizontal post-form" role="form" id="new-post" method="POST" onsubmit="sendNewPost(this, addPostToBoard); return false;">
+						<img th:src="${extranetContext.getUser().imageUrl}" class="block user-form-profile-image"/>
+						<div class="form-group block">
 							<div class="title">
 								Share hobby with your friends!
 							</div>
@@ -16,6 +17,20 @@
 							</div>
 							<textarea rows="3" cols="5" class="form-control" name="content"></textarea>
 							<div class="post-attachments-preview"></div>
+							<b><a class="standard-btn" id="attachments-collapse-btn">photos&amp;videos</a></b>
+							<script>
+								jQuery(document).ready(function(){
+									jQuery('.post-attachments').hide();
+									
+									jQuery('#attachments-collapse-btn').on('click', function(){
+										jQuery('.post-attachments').slideToggle(200);
+									});
+								});
+								
+								var addPostToBoard = function(jsonObject) {
+									console.log(jsonObject);
+								}
+							</script>
 							<div class="post-attachments">
 								<div class="upload-btn-wrapper">
 									<input type="file" name="photo" onchange="showMiniPhoto(this)"/>
@@ -33,7 +48,7 @@
 									<small>document</small>
 								</div>
 							</div>
-							<button class="btn setting-btn">publish</button>
+							<button class="standard-btn block"><b>publish</b></button>
 						</div>
 					</form>
 				</div>

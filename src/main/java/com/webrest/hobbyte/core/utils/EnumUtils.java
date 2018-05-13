@@ -1,7 +1,6 @@
 package com.webrest.hobbyte.core.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class EnumUtils {
@@ -45,13 +44,11 @@ public class EnumUtils {
 		return result.isEmpty() ? null : result.get(0);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends Enum<? extends WithCode>> List<T> findByCodes(Class<T> enumType, String concatedCodes,
 			String splitter) {
-		if (StringUtils.isEmpty(concatedCodes))
-			return Collections.EMPTY_LIST;
-
 		List<T> resultList = new ArrayList<>();
+		if (StringUtils.isEmpty(concatedCodes))
+			return resultList;
 
 		// If splitter is null - we won't split every char. It means - if spliiter is
 		// null - concatedCodes has only one code.

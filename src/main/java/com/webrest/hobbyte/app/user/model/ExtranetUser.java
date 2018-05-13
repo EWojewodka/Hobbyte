@@ -1,15 +1,19 @@
 package com.webrest.hobbyte.app.user.model;
 
+import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserAgreement;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserRoles;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
@@ -67,19 +71,22 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	@Column
 	private int newsletter;
-	
+
 	@Column(name = "role_id")
 	private int roleId = ExtranetUserRoles.ADMIN.getId();
 
 	@Transient
 	private ExtranetUserPolicy userPolicy;
-	
-	@Column(name = "remember_me_code", nullable = true, unique=true)
+
+	@Column(name = "remember_me_code", nullable = true, unique = true)
 	private String rememberMeCode;
-	
-	@Column(name ="image_url")
+
+	@Column(name = "image_url")
 	@AsJSON(defaultValue = "/images/gandalf.jpg")
 	private String imageUrl;
+
+	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+	private Collection<PostEntry> postEntries;
 
 	@Override
 	public int getId() {
@@ -94,13 +101,17 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	public String getLogin() {
 		return login;
 	}
-	
+
+	public Collection<PostEntry> getPostEntries() {
+		return postEntries;
+	}
+
 	public String getImageUrl() {
-		if(StringUtils.isEmpty(imageUrl))
+		if (StringUtils.isEmpty(imageUrl))
 			return "/images/gandalf.jpg";
 		return imageUrl;
 	}
-	
+
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
@@ -208,9 +219,14 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	public void setRememberMeCode(String rememberMeCode) {
 		this.rememberMeCode = rememberMeCode;
 	}
-	
+
 	public String getFullName() {
 		return name + " " + lastname;
+	}
+	
+	@AsJSON(jsonName = "postEntriesSize")
+	public int getPostEntrySize() {
+		return postEntries.size();
 	}
 
 	public ExtranetUserPolicy createOrGetUserPolicy() {
@@ -219,5 +235,5 @@ public class ExtranetUser extends DatabaseObjectImpl {
 		this.userPolicy = new ExtranetUserPolicy(this);
 		return userPolicy;
 	}
-	
+
 }

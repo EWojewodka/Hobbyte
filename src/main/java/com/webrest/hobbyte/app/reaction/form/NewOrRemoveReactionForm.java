@@ -28,11 +28,10 @@ public class NewOrRemoveReactionForm extends UserAjaxForm {
 	}
 
 	@Override
-	protected JSONObject process(HttpServletRequest request) throws Exception {
+	protected void process(HttpServletRequest request) throws Exception {
 		valid(request);
 		PostEntry postEntry = postEntryDao.getById(StringUtils.getAsInt(getParameter("postId"), 0));
 		AjaxAsserts.notNull(postEntry, "Cannot add reaction. Internal error.");
-		JSONObject json = new JSONObject();
 		// filter reaction. if there is reaction created by current user - get it else
 		// get null.
 		PostEntryReaction reactionDBO = postEntry.getReactions().parallelStream()
@@ -46,8 +45,8 @@ public class NewOrRemoveReactionForm extends UserAjaxForm {
 		} else {
 			postEntryReactionDao.delete(reactionDBO);
 		}
-		addMessage(json, String.format("Your reaction is %s.", reactionDBO == null ? "added" : "deleted"));
-		return json;
+		addJsonValue("action",reactionDBO == null ? "added" : "deleted");
+		addJsonValue("postId", String.valueOf(postEntry.getId()));
 	}
 
 	@Override

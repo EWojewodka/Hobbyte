@@ -101,7 +101,7 @@
 		        	<span class="hobbyte-title"><b>hobbyte</b></span>
 		        	</a>
 	        	</div>
-	        	<div class="col-lg-3">
+	        	<div class="col-lg-3 d-none d-xl-block">
 					<form action="/search" method="GET" class="form form-inline" id="search-form">
 						<div class="input-group">
 						    <input type="text" class="form-control" name="search" id="search" placeholder="search" />
@@ -111,12 +111,12 @@
 						</div>
 					</form>
 	        	</div>
-	        	<div class="offset-lg-4 col-lg-3">
+	        	<div class="offset-lg-3 col-lg-4">
 	        		<ul class="social-nav">
 	        			<li>
-	        				<a th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}">
+	        				<a th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}" class="row-items">
 	        					<img th:src="${extranetContext.getUser().getImageUrl()}" class="header-profile"></img>
-	        					<span th:text="${extranetContext.getUser().getFullName()}" class="header-profile-name"></span>
+	        					<span th:text="${extranetContext.getUser().name}" class="header-profile-name"></span>
 	        				</a>
 	        			</li>
 		        		<li><a href="#friends"><i class="fa fa-users"></i></a></li>

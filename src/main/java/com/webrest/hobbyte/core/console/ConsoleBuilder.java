@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 import com.webrest.hobbyte.core.xml.XMLParser;
 
 public class ConsoleBuilder extends XMLParser<IConsole> {
@@ -12,7 +13,7 @@ public class ConsoleBuilder extends XMLParser<IConsole> {
 
 	private static List<IConsole> elements;
 
-	public ConsoleBuilder(){
+	public ConsoleBuilder() {
 		super(CONSOLES_SCHEMA);
 	}
 
@@ -25,11 +26,7 @@ public class ConsoleBuilder extends XMLParser<IConsole> {
 
 	@Override
 	protected void processSingle(Element element) {
-		try {
-			addToList(ConsoleFactory.createFromElement(element));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ExceptionStream.printOnFailure().call(() -> addToList(ConsoleFactory.createFromElement(element)));
 	}
 
 }

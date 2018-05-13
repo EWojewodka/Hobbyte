@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.criteria.CriteriaFilter;
+import com.webrest.hobbyte.core.criteria.ICriteriaFilter.OrderDirections;
 import com.webrest.hobbyte.core.dao.GenericDao;
 
 /**
@@ -21,7 +22,10 @@ import com.webrest.hobbyte.core.dao.GenericDao;
 public class PostEntryDao extends GenericDao<PostEntry>{
 	
 	public PostEntry[] getRelatedPosts(ExtranetUser user) {
-		List<PostEntry> result = find(new CriteriaFilter());
+		CriteriaFilter cf = new CriteriaFilter();
+		cf.setOrderBy("createdAt");
+		cf.setOrderDirection(OrderDirections.DESC);
+		List<PostEntry> result = find(cf);
 		return result.toArray(new PostEntry[result.size()]);
 	}
 	

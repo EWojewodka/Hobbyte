@@ -9,8 +9,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import com.webrest.hobbyte.core.cache.CacheMap;
-import com.webrest.hobbyte.core.utils.functions.FunctionStream;
-import com.webrest.hobbyte.core.utils.functions.TryStream;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 import com.webrest.hobbyte.core.xml.XMLParser;
 
 /**
@@ -41,15 +40,7 @@ public class MenuTreeBuilder extends XMLParser<IMenuTreeElement> implements IMen
 
 	@Override
 	protected void processSingle(Element element) {
-		FunctionStream.prepare(e -> {
-			e.printStackTrace();
-			return null;
-		}).call(() -> addToList(new MenuTreeElement(element)));
-		
-		try (AutoCloseable ac = () -> addToList(new MenuTreeElement(element))) {
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ExceptionStream.printOnFailure().call(() -> addToList(new MenuTreeElement(element)));
 	}
 
 }

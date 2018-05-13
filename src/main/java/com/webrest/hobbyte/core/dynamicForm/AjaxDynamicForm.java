@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 import com.webrest.hobbyte.core.utils.spring.DependencyRequired;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
@@ -32,6 +33,8 @@ public abstract class AjaxDynamicForm extends DependencyRequired {
 	private HttpServletRequest request;
 
 	private HttpServletResponse response;
+	
+	private JSONObject jsonObject = new JSONObject();
 
 	public String run(IHttpContext context) {
 		return run(context.getRequest(), context.getResponse());
@@ -40,17 +43,11 @@ public abstract class AjaxDynamicForm extends DependencyRequired {
 	public String run(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
-
-		try {
-			return process(request).toString();
-		} catch (Exception e) {
-			try {
-				return handleException(e);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-		return "";
+		String call = ExceptionStream.handle(e -> {return handleException(e);}).call(() -> {
+			process(request);
+			return null;
+		});
+		return call == null ? jsonObject.toString() : call;
 	}
 
 	// Create manual json object with one property - error.
@@ -58,13 +55,16 @@ public abstract class AjaxDynamicForm extends DependencyRequired {
 		return String.format("{\"error\" : \"%s\"}", message);
 	}
 
-	private String handleException(Exception e) throws Exception {
-		if (e instanceof AjaxMessageException) {
-			response.sendError(((AjaxMessageException) e).getErrorCode(), e.getMessage());
-		} else {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			e.printStackTrace();
-		}
+	private String handleException(Exception e) {
+		ExceptionStream.printOnFailure().call(() -> {
+			if (e instanceof AjaxMessageException) {
+				response.sendError(((AjaxMessageException) e).getErrorCode(), e.getMessage());
+				System.out.println(e.getMessage());
+			} else {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				e.printStackTrace();
+			}
+		});
 		return createJsonError(e.getMessage());
 	}
 
@@ -73,7 +73,7 @@ public abstract class AjaxDynamicForm extends DependencyRequired {
 	 * 
 	 * @return
 	 */
-	protected abstract JSONObject process(HttpServletRequest request) throws Exception;
+	protected abstract void process(HttpServletRequest request) throws Exception;
 
 	public String getParameter(String name) {
 		return request.getParameter(name);
@@ -81,16 +81,20 @@ public abstract class AjaxDynamicForm extends DependencyRequired {
 
 	public abstract String getCode();
 
-	protected void addMessage(JSONObject jsonObject, String message) throws JSONException {
-		addJsonValue(jsonObject, "msg", message);
+	protected void addMessage(String message) throws JSONException {
+		addJsonValue("msg", message);
 	}
 
-	protected void setRedirect(JSONObject jsonObject, String redirectPath) throws JSONException {
-		addJsonValue(jsonObject, "redirect", redirectPath);
+	protected void setRedirect(String redirectPath) throws JSONException {
+		addJsonValue("redirect", redirectPath);
 	}
 
-	protected void addJsonValue(JSONObject jsonObject, String key, String value) throws JSONException {
+	protected void addJsonValue(String key, String value) throws JSONException {
 		jsonObject.put(key, value);
 	}
 
+	protected JSONObject getJSON() {
+		return jsonObject;
+	}
+	
 }

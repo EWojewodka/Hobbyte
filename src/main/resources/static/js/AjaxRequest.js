@@ -16,11 +16,9 @@ AjaxRequest.prototype.send = function(data, onSuccess, onFailure) {
 	    data: data,
 		success : function(data) {
 			var jsonObj = JSON.parse(data);
-			if(typeof onSuccess === 'function')
-				onSuccess(jsonObj);
+			onSuccess(jsonObj);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
-			console.log(this.failCallback)
 			if(typeof onFailure === 'function')
 				onFailure(xhr, ajaxOptions, thrownError);
 		}

@@ -11,9 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 
 import com.webrest.hobbyte.app.reaction.model.PostEntryReaction;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
@@ -30,7 +31,6 @@ import com.webrest.hobbyte.core.utils.WithId;
  */
 @Entity
 @Table(name = "hb_post_entries")
-@AsJSON
 public class PostEntry extends DatabaseObjectImpl {
 
 	public enum PostEntryStatus implements WithId {
@@ -55,12 +55,16 @@ public class PostEntry extends DatabaseObjectImpl {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "hb_post_entry_id", nullable = false, unique = true, updatable = false)
+	@AsJSON
 	private int id;
 
-	@Column(name = "author_id")
-	private int authorId;
+	@JoinColumn(name = "author_id")
+	@OneToOne
+	@AsJSON
+	private ExtranetUser author;
 
 	@Column(nullable = true)
+	@AsJSON
 	private String content;
 
 	@Column(name = "created_at")
@@ -68,15 +72,19 @@ public class PostEntry extends DatabaseObjectImpl {
 	private Date createdAt = new Date();
 
 	@Column(name = "image_url")
+	@AsJSON
 	private String imageUrl;
 
 	@Column(name = "video_url")
+	@AsJSON
 	private String videoUrl;
 
 	@Column(name = "doc_url")
+	@AsJSON
 	private String documentUrl;
 
 	@Column
+	@AsJSON
 	private int status = PostEntryStatus.PENDING.id;
 	
 	@AsJSON
@@ -85,11 +93,11 @@ public class PostEntry extends DatabaseObjectImpl {
 	
 	public PostEntry(ExtranetUser author) {
 		Asserts.exists(author);
-		this.authorId = author.getId();
+		this.author = author;
 	}
 
-	public int getAuthorId() {
-		return authorId;
+	public ExtranetUser getAuthor() {
+		return author;
 	}
 
 	public void setContent(String content) {
@@ -153,5 +161,6 @@ public class PostEntry extends DatabaseObjectImpl {
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	
 }
