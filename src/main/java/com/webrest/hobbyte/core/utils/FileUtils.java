@@ -3,13 +3,13 @@ package com.webrest.hobbyte.core.utils;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.slf4j.Logger;
 
 import com.webrest.hobbyte.core.logger.LoggerFactory;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 public class FileUtils {
 
@@ -52,11 +52,7 @@ public class FileUtils {
 
 	public static void close(Closeable closeable) {
 		if (closeable != null)
-			try {
-				closeable.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			ExceptionStream.printOnFailure().call(() -> closeable.close());
 	}
 
 	/**

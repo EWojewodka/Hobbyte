@@ -59,8 +59,8 @@ public class DeepFileFinder {
 			if (isCorrectFile(f))
 				tmpCollection.add(f);
 			else if (f.isDirectory())
-				if(deep)
-				find(f, tmpCollection, deep);
+				if (deep)
+					find(f, tmpCollection, deep);
 		}
 		return tmpCollection.toArray(new File[tmpCollection.size()]);
 	}

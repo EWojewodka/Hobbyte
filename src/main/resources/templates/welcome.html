@@ -62,7 +62,7 @@
 					<div class="form-description hide"></div>
 	                <div class="form-group">
 	                  <label for="login" th:text="#{username}"></label>
-	                  <input type="text" class="form-control" id="login" name="login"/>
+	                  <input type="text" class="form-control validate-min-6" id="login" name="login"/>
 	                </div>
 	                <div class="form-group">
 	                  <label for="email" th:text="#{email}"></label>
@@ -70,7 +70,7 @@
 	                </div>
 	                <div class="form-group">
 	                  <label for="password" th:text="#{password}"></label>
-	                  <input type="password" class="form-control" id="password" name="password" />
+	                  <input type="password" class="form-control validate-min-8" id="password" name="password" />
 	                </div>
 	                <div class="form-group">
 	                	<small class="text-muted small" th:utext="#{sign-in.agreement}"></small>

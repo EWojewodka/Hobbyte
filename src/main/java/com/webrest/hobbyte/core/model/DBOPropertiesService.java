@@ -5,6 +5,8 @@ package com.webrest.hobbyte.core.model;
 
 import java.lang.reflect.Field;
 
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
+
 /**
  * @author Emil Wojewódka
  *
@@ -23,13 +25,11 @@ public class DBOPropertiesService {
 	}
 
 	private void init() {
-		try {
+		ExceptionStream.printOnFailure().call(() -> {
 			Field field = dbo.getClass().getField(propertiesFieldName);
 			String text = (String) field.get(dbo);
 			System.out.println(text);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		});
 	}
 
 }

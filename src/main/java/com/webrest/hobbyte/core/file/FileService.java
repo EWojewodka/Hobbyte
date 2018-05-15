@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import com.webrest.hobbyte.core.utils.Asserts;
 import com.webrest.hobbyte.core.utils.FileUtils;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * {@link FileService} for parse text files. Can extract comments and content.
@@ -186,11 +187,7 @@ public class FileService implements IFileService {
 	 * Invoke {@link #read()} and handle exception by simple try&catch
 	 */
 	protected void _read() {
-		try {
-			read();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		ExceptionStream.printOnFailure().call(() -> read());
 	}
 
 	/**

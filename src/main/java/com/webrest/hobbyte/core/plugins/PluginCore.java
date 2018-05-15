@@ -11,6 +11,7 @@ import com.webrest.hobbyte.core.plugins.enums.PluginInvokeAppState;
 import com.webrest.hobbyte.core.plugins.interfaces.Command;
 import com.webrest.hobbyte.core.plugins.interfaces.IPlugin;
 import com.webrest.hobbyte.core.utils.FileUtils;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * Abstract implementation of plugin core.
@@ -36,13 +37,10 @@ public abstract class PluginCore implements IPlugin {
 	@Override
 	public void start() {
 		for (Command cmd : commands) {
-			try {
-				cmd.run();
-			} catch (Exception e) {
+			ExceptionStream.handle(e -> {
 				LOGGER.info("Cannot run command ({}) for plugin {}", cmd.getClass().getName(),
 						this.getClass().getName());
-				e.printStackTrace();
-			}
+			}).call(() -> cmd.run());
 		}
 	}
 

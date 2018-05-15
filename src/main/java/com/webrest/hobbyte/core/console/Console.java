@@ -6,13 +6,12 @@ package com.webrest.hobbyte.core.console;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.slf4j.Logger;
 import org.w3c.dom.Element;
 
 import com.webrest.hobbyte.core.adminPanel.service.ConsoleFinder;
 import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
-import com.webrest.hobbyte.core.logger.LoggerFactory;
 import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 import com.webrest.hobbyte.core.xml.NodeSource;
 
@@ -25,8 +24,6 @@ import com.webrest.hobbyte.core.xml.NodeSource;
  */
 public class Console extends NodeSource implements IConsole {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger();
-	
 	private String id;
 
 	private Class<?> objectClass;
@@ -137,14 +134,10 @@ public class Console extends NodeSource implements IConsole {
 		return Class.forName(objectClassAttribute);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Class<? extends ConsoleHandler> initConsoleHandler(String handlerClass) {
-		try {
-			return (Class<? extends ConsoleHandler>) Class.forName(handlerClass);
-		} catch (Exception e) {
-			LOGGER.error("Cannot init {} console handler!", handlerClass);
-			return ConsoleHandler.class;
-		}
+		return ExceptionStream.printOnFailure().call(() -> {
+			return Class.forName(handlerClass);
+		}).getOrDefault(ConsoleHandler.class);
 	}
 
 }

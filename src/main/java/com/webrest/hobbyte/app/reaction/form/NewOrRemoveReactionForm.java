@@ -3,7 +3,6 @@ package com.webrest.hobbyte.app.reaction.form;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.json.JSONObject;
 
 import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.model.PostEntry;

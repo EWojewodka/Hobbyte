@@ -3,12 +3,12 @@
  */
 package com.webrest.hobbyte.core.file.properties;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.core.io.ClassPathResource;
 
 import com.webrest.hobbyte.core.exception.SilentRuntimeException;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 
 /**
@@ -35,11 +35,9 @@ public class PropertyJarService extends PropertyService {
 		if (!propertiesName.endsWith(".properties"))
 			propertiesName += ".properties";
 		ClassPathResource cpr = new ClassPathResource(propertiesName);
-		try {
-			return cpr.getInputStream();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Object call = ExceptionStream.printOnFailure().call(() -> {return cpr.getInputStream();});
+		if(call != null)
+			return (InputStream) call;
 		throw new SilentRuntimeException(String.format("Cannot get properties from jar for (%s)", propertiesName));
 	}
 

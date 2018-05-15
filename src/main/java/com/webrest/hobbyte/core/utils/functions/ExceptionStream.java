@@ -28,34 +28,37 @@ package com.webrest.hobbyte.core.utils.functions;
  *
  * @param <T>
  */
-public class ExceptionStream<T> {
+@SuppressWarnings("unchecked")
+public class ExceptionStream {
 
-	private T result;
+	private Object result;
 
 	private CallableException<?> actionOnException;
 
 	private VoidCallableException actionOnVoidException;
 
+	private boolean isThrow = false;
+
 	private ExceptionStream() {
 
 	}
 
-	public T get() {
-		return result;
+	public <T> T get() {
+		return (T) result;
 	}
 
-	public T getOrDefault(T object) {
-		return result == null ? object : result;
+	public <T> T getOrDefault(Object object) {
+		return result == null ? (T) object : (T) result;
 	}
 
-	public static <T> ExceptionStream<T> handle(CallableException<T> callable) {
-		ExceptionStream<T> es = new ExceptionStream<>();
+	public static ExceptionStream handle(CallableException<?> callable) {
+		ExceptionStream es = new ExceptionStream();
 		es.actionOnException = callable;
 		return es;
 	}
 
-	public static ExceptionStream<?> handle(VoidCallableException callable) {
-		ExceptionStream<?> es = new ExceptionStream<>();
+	public static ExceptionStream handle(VoidCallableException callable) {
+		ExceptionStream es = new ExceptionStream();
 		es.actionOnVoidException = callable;
 		return es;
 	}
@@ -66,22 +69,21 @@ public class ExceptionStream<T> {
 	 * 
 	 * @return
 	 */
-	public static ExceptionStream<?> printOnFailure() {
-		return new ExceptionStream<>();
+	public static ExceptionStream printOnFailure() {
+		return new ExceptionStream();
 	}
 
-	@SuppressWarnings("unchecked")
-	public T call(Callable<?> callable) {
+	public ExceptionStream call(Callable<?> callable) {
 		try {
-			return (T) callable.call();
+			result = callable.call();
 		} catch (Exception e) {
+			isThrow = true;
+			e.printStackTrace();
 			if (actionOnException != null) {
-				return (T) actionOnException.call(e);
-			} else {
-				e.printStackTrace();
-				return null;
+				result = actionOnException.call(e);
 			}
 		}
+		return this;
 	}
 
 	/**
@@ -95,12 +97,16 @@ public class ExceptionStream<T> {
 		try {
 			callable.call();
 		} catch (Exception e) {
+			isThrow = true;
+			e.printStackTrace();
 			if (actionOnVoidException != null) {
 				actionOnVoidException.call(e);
-			} else {
-				e.printStackTrace();
 			}
 		}
+	}
+
+	public boolean isThrow() {
+		return isThrow;
 	}
 
 }

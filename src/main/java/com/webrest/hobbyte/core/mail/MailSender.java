@@ -6,7 +6,6 @@ package com.webrest.hobbyte.core.mail;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;

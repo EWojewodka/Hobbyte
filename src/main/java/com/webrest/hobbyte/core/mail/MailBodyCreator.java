@@ -10,6 +10,7 @@ import com.webrest.hobbyte.core.creator.ICreator;
 import com.webrest.hobbyte.core.file.FileService;
 import com.webrest.hobbyte.core.utils.FileUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * @author Emil Wojewódka
@@ -25,12 +26,7 @@ public class MailBodyCreator {
 	}
 
 	public String create() {
-		try {
-			return creator.create();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "";
+		return (String) ExceptionStream.printOnFailure().call(() -> {return creator.create();}).getOrDefault("");
 	}
 
 	public String getInfo(String name) {
@@ -91,14 +87,11 @@ public class MailBodyCreator {
 		 * @return
 		 */
 		public String getMetaInfo(String name) {
-			if (metaInfos == null)
-				try {
-					create();
-				} catch (Exception e) {
-					e.printStackTrace();
-					return null;
-				}
-			return metaInfos.get(name);
+			boolean isThrow = false;
+			if (metaInfos == null) {
+				isThrow = ExceptionStream.printOnFailure().call(() -> create()).isThrow();
+			}
+			return isThrow ? null : metaInfos.get(name);
 		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Properties;
 import com.webrest.hobbyte.core.file.properties.PropertiesFacade;
 import com.webrest.hobbyte.core.file.properties.PropertyService;
 import com.webrest.hobbyte.core.utils.StringUtils;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 public class CacheManagerFactory {
 
@@ -20,13 +21,14 @@ public class CacheManagerFactory {
 			// default cache manager.
 			if (StringUtils.isEmpty(className))
 				className = CacheManager.class.getName();
+			
+			final String _className = className;
 
-			try {
-				Class<?> clazz = Class.forName(className);
+			ExceptionStream.printOnFailure().call(() -> {
+				Class<?> clazz = Class.forName(_className);
 				cacheManager = (ICacheManager) clazz.newInstance();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			});
+			
 		}
 		return cacheManager;
 	}

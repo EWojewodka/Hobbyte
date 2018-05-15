@@ -14,6 +14,7 @@ import org.w3c.dom.NodeList;
 import com.webrest.hobbyte.core.console.ConsoleBuilder;
 import com.webrest.hobbyte.core.menuTree.MenuTreeBuilder;
 import com.webrest.hobbyte.core.utils.Asserts;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * Class for parsing xml config file.
@@ -35,11 +36,7 @@ public abstract class XMLParser<T> {
 	public XMLParser(String xmlPath) {
 		Asserts.notEmpty(xmlPath, "Cannot init XMLParser for null source path");
 		this.xmlPath = xmlPath;
-		try {
-			initDocument();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		ExceptionStream.printOnFailure().call(() -> initDocument());
 	}
 
 	/**
@@ -66,11 +63,7 @@ public abstract class XMLParser<T> {
 			Node node = nodes.item(i);
 			if (node.getNodeType() != Node.ELEMENT_NODE)
 				continue;
-			try {
-				processSingle((Element) node);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			ExceptionStream.printOnFailure().call(() -> processSingle((Element) node));
 		}
 		return resultList;
 	}

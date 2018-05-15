@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import com.webrest.hobbyte.core.model.json.JSONable;
 import com.webrest.hobbyte.core.model.json.JsonConverter;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * @author Emil Wojewódka
@@ -113,14 +114,11 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 	}
 
 	public Object getProperty(String name) {
-		try {
+		return ExceptionStream.printOnFailure().call(() -> {
 			Field field = getClass().getDeclaredField(name);
 			field.setAccessible(true);
 			return field.get(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		}).get();
 	}
 
 	@Override
@@ -134,14 +132,11 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 	}
 
 	public DatabaseObjectImpl cloneDBO() {
-		try {
+		return (DatabaseObjectImpl) ExceptionStream.printOnFailure().call(() -> {
 			DatabaseObjectImpl clone = (DatabaseObjectImpl) clone();
 			clone.setId(0);
 			return clone;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		}).get();
 	}
 
 }

@@ -1,8 +1,6 @@
 package com.webrest.hobbyte.core.utils.functions;
 
 @FunctionalInterface
-public interface CallableException<T> {
-
-	T call(Exception e);
-	
+public interface VoidCallableException {
+	void call(Exception e);
 }

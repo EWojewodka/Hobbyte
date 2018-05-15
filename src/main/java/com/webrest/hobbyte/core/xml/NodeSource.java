@@ -45,13 +45,26 @@ public abstract class NodeSource extends ParameterContainer implements FromNodeS
 	protected Element getElement() {
 		return element;
 	}
-	
+
+	/**
+	 * Fill {@link ParameterContainer} map by all of xml node attributes. </br>
+	 * For example: </br>
+	 * 
+	 * <b>&lt;node attribute="some-attribute" secondAttribute= "some-other-value"
+	 * /&gt;</b> </br>
+	 * 
+	 * put to map key => attribute value => some-attribute </br>
+	 * and </br>
+	 * key => secondAttribute value => some-other-value. </br>
+	 * Attribute are getting by {@link #getObject(Object)} or
+	 * {@link #getOrDefault(Object, Object)}
+	 */
 	protected void fillAttributeMap() {
 		NamedNodeMap attributes = element.getAttributes();
-		if(attributes == null)
+		if (attributes == null)
 			return;
 		int len = attributes.getLength();
-		for(int i=0; i<len; i++) {
+		for (int i = 0; i < len; i++) {
 			Node attribute = attributes.item(i);
 			put(attribute.getNodeName(), attribute.getNodeValue());
 		}

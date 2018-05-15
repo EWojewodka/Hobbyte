@@ -3,7 +3,6 @@ package com.webrest.hobbyte.core.utils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -15,15 +14,12 @@ import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
-import org.slf4j.Logger;
 
-import com.webrest.hobbyte.core.logger.LoggerFactory;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 public class ClassUtils {
 
 	public static final Class<?>[] EMPTY_ARRAY = new Class[0];
-
-	private static final Logger LOGGER = LoggerFactory.getLogger();
 
 	/**
 	 * Return collection of subtypes of passes class. </br>
@@ -38,10 +34,7 @@ public class ClassUtils {
 		ConfigurationBuilder reflectionBuilder = new ConfigurationBuilder();
 		reflectionBuilder.addClassLoader(ClassUtils.class.getClassLoader()).forPackages("com.webrest.hobbyte")
 				.filterInputsBy(x -> x.endsWith(".class") || x.endsWith(".java")).useParallelExecutor();
-
-		Reflections reflections = new Reflections(reflectionBuilder);
-
-		return reflections.getSubTypesOf(clazz);
+		return new Reflections(reflectionBuilder).getSubTypesOf(clazz);
 	}
 
 	/**
@@ -79,7 +72,7 @@ public class ClassUtils {
 		Asserts.notNull(clazz, "Cannot get any fields from null class :<");
 		Asserts.notNull(annotation,
 				"Cannot get any fields from " + clazz.getName() + " because passed annotation is null.");
-		
+
 		List<Field> fields = new ArrayList<>();
 		Field[] _fields = clazz.getDeclaredFields();
 		for (Field field : _fields) {
@@ -90,12 +83,12 @@ public class ClassUtils {
 		}
 		return fields.toArray(new Field[fields.size()]);
 	}
-	
+
 	public static Method[] getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
 		Asserts.notNull(clazz, "Cannot get any methods from null class :<");
 		Asserts.notNull(annotation,
 				"Cannot get any methods from " + clazz.getName() + " because passed annotation is null.");
-		
+
 		List<Method> methods = new ArrayList<>();
 		Method[] _methods = clazz.getDeclaredMethods();
 		for (Method method : _methods) {
@@ -128,13 +121,9 @@ public class ClassUtils {
 
 		Constructor<?> constructor = getConstructor(constructorClass, constructorParameterClasses);
 
-		try {
+		return (T) ExceptionStream.printOnFailure().call(() -> {
 			return (T) constructor.newInstance(constructorParameters);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return null;
+		}).get();
 	}
 
 	/**
@@ -149,6 +138,7 @@ public class ClassUtils {
 	 * @param constructorParameterClasses
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Constructor<? extends T> getConstructor(Class<? extends T> constructorClass,
 			Class<?>... constructorParameterClasses) {
 		if (constructorClass == null)
@@ -156,15 +146,10 @@ public class ClassUtils {
 
 		if (constructorParameterClasses == null)
 			constructorParameterClasses = EMPTY_ARRAY;
-
-		try {
-			return constructorClass.getConstructor(constructorParameterClasses);
-		} catch (NoSuchMethodException | SecurityException e) {
-			LOGGER.info("Can't find constructor of (" + constructorClass.getName() + " ) class with parameters "
-					+ StringUtils.toGenericString(constructorParameterClasses, ","));
-			e.printStackTrace();
-		}
-		return null;
+		Class<?>[] conClazz = constructorParameterClasses;
+		return (Constructor<? extends T>) ExceptionStream.printOnFailure().call(() -> {
+			return constructorClass.getConstructor(conClazz);
+		}).get();
 	}
 
 	@SuppressWarnings("rawtypes")

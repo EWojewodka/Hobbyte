@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Component;
 
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
+
 /**
  * Basic database accessor. Can open and close connection. </br>
  * Create instance of {@link DataSource}
@@ -35,11 +37,7 @@ public class ConnectionManager implements IConnectionManager {
 	@Override
 	public void close() throws SQLException {
 		if (connection != null)
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			ExceptionStream.printOnFailure().call(() -> connection.close());
 	}
 
 	/**

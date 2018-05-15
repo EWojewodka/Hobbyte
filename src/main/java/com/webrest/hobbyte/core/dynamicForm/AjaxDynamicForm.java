@@ -43,11 +43,10 @@ public abstract class AjaxDynamicForm extends DependencyRequired {
 	public String run(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
-		String call = ExceptionStream.handle(e -> {return handleException(e);}).call(() -> {
+		return ExceptionStream.handle(e -> {return handleException(e);}).call(() -> {
 			process(request);
-			return null;
-		});
-		return call == null ? jsonObject.toString() : call;
+			return jsonObject.toString();
+		}).get();
 	}
 
 	// Create manual json object with one property - error.
@@ -59,10 +58,8 @@ public abstract class AjaxDynamicForm extends DependencyRequired {
 		ExceptionStream.printOnFailure().call(() -> {
 			if (e instanceof AjaxMessageException) {
 				response.sendError(((AjaxMessageException) e).getErrorCode(), e.getMessage());
-				System.out.println(e.getMessage());
 			} else {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				e.printStackTrace();
 			}
 		});
 		return createJsonError(e.getMessage());

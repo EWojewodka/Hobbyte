@@ -6,14 +6,13 @@ package com.webrest.hobbyte.core.file.properties;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 
 import com.webrest.hobbyte.core.file.FileService;
 import com.webrest.hobbyte.core.logger.LoggerFactory;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * Instance should be init by {@link PropertiesFacade#get(String)}
@@ -59,15 +58,11 @@ public class PropertyService extends FileService {
 	protected static File propertyName2File(String propertyName) {
 		if (!propertyName.endsWith(".properties"))
 			propertyName = propertyName + ".properties";
-
-		URI uri = null;
-		try {
-			uri = PropertyService.class.getClassLoader().getResource(propertyName).toURI();
-		} catch (URISyntaxException e) {
-			LOGGER.info("Cannot get properties resource for name ({})", propertyName);
-			e.printStackTrace();
-		}
-		return new File(uri);
+		
+		final String propName = propertyName;
+		return ExceptionStream.printOnFailure().call(() -> {
+			return new File(PropertyService.class.getClassLoader().getResource(propName).toURI());
+		}).get();
 	}
 
 	/**

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.webrest.hobbyte.core.utils.Asserts;
 import com.webrest.hobbyte.core.utils.ClassUtils;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * Class with static methods for inject values from {@link Value} fields to map.
@@ -38,12 +39,10 @@ public class ReflectionPropertiesBuilder {
 				ReflectionPropertiesBuilder.class.getName(), propertyClass.getName()));
 
 		for (Field f : propertyValues) {
-			try {
+			ExceptionStream.printOnFailure().call(() -> {
 				Object propertyValue = f.get(map);
 				map.put(getPropertyName(f), propertyValue);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
+			});
 		}
 	}
 
