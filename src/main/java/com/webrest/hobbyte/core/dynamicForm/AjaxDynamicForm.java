@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
 import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
-import com.webrest.hobbyte.core.utils.spring.DependencyRequired;
 import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
@@ -24,10 +23,10 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
  *
  * @since 15 mar 2018
  */
-public abstract class AjaxDynamicForm extends DependencyRequired {
+public abstract class AjaxDynamicForm {
 
-	public AjaxDynamicForm(DependencyResolver dependencyResolver) {
-		super(dependencyResolver);
+	public AjaxDynamicForm() {
+		AjaxFormFactory.registerForm(this);
 	}
 
 	private HttpServletRequest request;

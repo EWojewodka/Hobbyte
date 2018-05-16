@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
-import com.webrest.hobbyte.core.http.context.IHttpContext;
-import com.webrest.hobbyte.core.utils.AppParamUtils;
 
 /**
  * The most basic controller which is an advice. </br>
@@ -23,19 +21,11 @@ import com.webrest.hobbyte.core.utils.AppParamUtils;
 public class AsterixController {
 
 	@Autowired
-	private ExtranetUserContext userContext;
+	private ExtranetUserContext context;
 	
-	@Autowired
-	private AppParamUtils appParamUtils;
-	
-	@ModelAttribute("extranetContext")
-	private IHttpContext getContext() {
-		return userContext;
+	@ModelAttribute("context")
+	private ExtranetUserContext getContext() {
+		return context;
 	}
 
-	@ModelAttribute("paramUtils")
-	private AppParamUtils getAppParamUtils() {
-		return appParamUtils;
-	}
-	
 }

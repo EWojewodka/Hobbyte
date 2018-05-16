@@ -8,17 +8,22 @@ import com.webrest.hobbyte.core.criteria.CriteriaFilter;
 import com.webrest.hobbyte.core.dao.GenericDao;
 
 @Service
-public class AppParamDao extends GenericDao<AppParam>{
+public class AppParamDao extends GenericDao<AppParam> {
 
 	public List<AppParam> findByGroup(String group) {
 		return findAllBy("group", group);
 	}
-	
+
 	public AppParam find(String group, String key) {
 		CriteriaFilter cf = new CriteriaFilter("group", group);
 		cf.addWhere("code", key);
 		List<AppParam> find = find(cf);
 		return find.isEmpty() ? null : find.get(0);
 	}
-	
+
+	public String find(String group, String key, String defaultValue) {
+		AppParam result = find(group, key);
+		return result != null ? result.getValue() : defaultValue;
+	}
+
 }

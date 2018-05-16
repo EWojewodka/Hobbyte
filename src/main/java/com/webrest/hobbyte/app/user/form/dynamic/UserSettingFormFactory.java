@@ -38,7 +38,7 @@ public class UserSettingFormFactory {
 
 	}
 
-	protected static void registerForm(AjaxDynamicForm form) {
+	public static void registerForm(AjaxDynamicForm form) {
 		FORM_BUFFER.put(form.getCode(), form);
 	}
 

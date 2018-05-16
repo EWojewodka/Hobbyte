@@ -13,7 +13,7 @@
 	                    <div class="image-profile-wrapper">
 	                            <img th:src="${userProfile.getImageUrl()}" class="profile-image oryginal default"/>
 	                            <img th:src="${userProfile.getImageUrl()}" class="profile-image default blur"/>
-			                    <div th:if="${extranetContext.isUserLogged()} AND (${extranetContext.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
+			                    <div th:if="${context.isUserLogged()} AND (${context.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
 				                    <a href="/profile/settings/account" class="misc user-settings"><i class="fa fa-cogs"></i></a>
 			                    </div>
 	                    </div>
@@ -34,7 +34,7 @@
 			          		left bar
 			          	</div>
 			          	<div class="col-lg-offset-1 col-lg-6 profile-center-bar">
-			          		<div th:if="${extranetContext.isUserLogged()} AND (${extranetContext.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
+			          		<div th:if="${context.isUserLogged()} AND (${context.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
 								<div class="row">
 									<div class="col-lg-12">
 										<div th:include="user/post_area :: post"></div>

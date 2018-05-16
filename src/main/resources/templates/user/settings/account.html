@@ -38,7 +38,7 @@
 											Email
 										</div>
 										<small class="pale">
-											<p th:text="${extranetContext.getUser().getEmail()}" th:remove="tag"></p>
+											<p th:text="${context.getUser().getEmail()}" th:remove="tag"></p>
 										</small>								
 									</div>
 								</div>
@@ -50,7 +50,7 @@
 											</div>
 											<div class="form-group">
 												<label class="control-label text-left"><small>New email</small></label>
-												<input type="email" class="form-control" name="email" th:value="${extranetContext.getUser().getEmail()}"/>
+												<input type="email" class="form-control" name="email" th:value="${context.getUser().getEmail()}"/>
 												<button class="btn setting-btn">change email</button>
 											</div>
 										</form>
@@ -66,7 +66,7 @@
 											Phone number
 										</div>
 										<small class="pale">
-											<p th:text="${#strings.defaultString(extranetContext.getUser().getPhoneNumber(), 'Enter your phone number so that we can communicate')}" th:remove="tag"></p>
+											<p th:text="${#strings.defaultString(context.getUser().getPhoneNumber(), 'Enter your phone number so that we can communicate')}" th:remove="tag"></p>
 										</small>								
 									</div>
 								</div>
@@ -78,7 +78,7 @@
 											</div>
 											<div class="form-group">
 												<label class="control-label text-left"><small>Phone number</small></label>
-												<input type="tel" class="form-control" name="phone-number" th:value="${extranetContext.getUser().getPhoneNumber()}"/>
+												<input type="tel" class="form-control" name="phone-number" th:value="${context.getUser().getPhoneNumber()}"/>
 												<button class="btn setting-btn">add phone number</button>
 											</div>
 										</form>
@@ -127,7 +127,7 @@
 											Gender
 										</div>
 										<small class="pale">
-											<p th:text="${#strings.defaultString(extranetContext.getUser().getGender(), 'Who are you?')}" th:remove="tag"></p>
+											<p th:text="${#strings.defaultString(context.getUser().getGender(), 'Who are you?')}" th:remove="tag"></p>
 										</small>								
 									</div>
 								</div>
@@ -158,7 +158,7 @@
 											Name
 										</div>
 										<small class="pale">
-											<p th:text="${#strings.defaultString(extranetContext.getUser().getName(), 'What''s your name?')}" th:remove="tag"></p>
+											<p th:text="${#strings.defaultString(context.getUser().getName(), 'What''s your name?')}" th:remove="tag"></p>
 										</small>								
 									</div>
 								</div>
@@ -186,7 +186,7 @@
 											Lastname
 										</div>
 										<small class="pale">
-											<p th:text="${#strings.defaultString(extranetContext.getUser().getLastname(), 'What''s your lastname?')}" th:remove="tag"></p>
+											<p th:text="${#strings.defaultString(context.getUser().getLastname(), 'What''s your lastname?')}" th:remove="tag"></p>
 										</small>								
 									</div>
 								</div>

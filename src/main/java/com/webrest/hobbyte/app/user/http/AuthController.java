@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
+import com.webrest.hobbyte.core.dynamicForm.AjaxFormFactory;
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
@@ -30,6 +32,9 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 @RequestMapping(value = "/auth")
 public class AuthController extends BaseController {
 
+	@Autowired
+	private AjaxFormFactory formFactory;
+	
 	@GetMapping(value = "/sign-in")
 	public String getSignIn(Model model) {
 		return "redirect:/";
@@ -51,8 +56,8 @@ public class AuthController extends BaseController {
 	@PostMapping(value = "/sign-up")
 	@ResponseBody
 	public String postSignUp() {
-		LoginAjaxForm loginAjaxForm = new LoginAjaxForm(getContext(), getDependencyResolver());
-		String result = loginAjaxForm.run(getContext());
+		AjaxDynamicForm form = formFactory.getForm("sign-up");
+		form.run(getContext());
 		ExtranetUser user = loginAjaxForm.getUser();
 		if (user != null)
 			getContext().loginUser(user);
@@ -61,72 +66,7 @@ public class AuthController extends BaseController {
 
 }
 
-class LoginAjaxForm extends AjaxDynamicForm {
 
-	private ExtranetUserContext context;
-
-	private ExtranetUser user;
-
-	public LoginAjaxForm(ExtranetUserContext context, DependencyResolver dependencyResolver) {
-		super(dependencyResolver);
-		this.context = context;
-	}
-	
-	@Override
-	public Class<?>[] getDependencies() {
-		return ArrayUtils.addAll(super.getDependencies(), new Class<?>[] {ExtranetUserDao.class, PasswordEncoder.class, MessageSourceHelper.class});
-	}
-
-	@Override
-	protected void process(HttpServletRequest request) throws Exception {
-		if (ExtranetUserUtils.isLogged(request)) {
-			setRedirect("/");
-			return;
-		}
-		ExtranetUser u = findUser(request);
-		MessageSourceHelper messageHelper = getDependency(MessageSourceHelper.class);
-
-		AjaxAsserts.notNull(u, messageHelper.getMessage("IncorrectLogin", context));
-
-		boolean isPasswordMatches = getDependency(PasswordEncoder.class).matches(request.getParameter("password"),
-				u.getPassword());
-		AjaxAsserts.assertTrue(isPasswordMatches, messageHelper.getMessage("IncorrectLogin", context));
-
-		AjaxAsserts.assertTrue(u.getStatus() == ExtranetUserStatus.ACTIVE,
-				messageHelper.getMessage("UserNotActive", context));
-
-		this.user = u;
-		handleRememberMe(request, user);
-		setRedirect("/");
-	}
-
-	private ExtranetUser findUser(HttpServletRequest request) {
-		return getDependency(ExtranetUserDao.class).findByLoginOrEmail(request.getParameter("login"));
-	}
-
-	public void handleRememberMe(HttpServletRequest request, ExtranetUser user) {
-		HttpUtils.removeCookieIfExists(ExtranetUserUtils.REMEMBER_ME_COOKIE_NAME, context);
-
-		String code = StringUtils.generateRandom(250);
-		user.setRememberMeCode(code);
-		getDependency(ExtranetUserDao.class).save(user);
-
-		Cookie cookie = new Cookie(ExtranetUserUtils.REMEMBER_ME_COOKIE_NAME, code);
-		HttpUtils.setMaxAgeCookie(cookie);
-		cookie.setPath("/");
-		context.getResponse().addCookie(cookie);
-	}
-
-	public ExtranetUser getUser() {
-		return user;
-	}
-
-	@Override
-	public String getCode() {
-		return "header-sign-in";
-	}
-
-}
 
 class RegistrationAjaxFrom extends AjaxDynamicForm {
 

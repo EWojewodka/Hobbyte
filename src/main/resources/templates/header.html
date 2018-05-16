@@ -1,73 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-	<div th:fragment="header">
-		<div class="container-fluid" id="header">
-	     	<div class="header-obscure fullscreen"></div>
-	     	<div class="row menu-row">
-		     	<div class="col-lg-offset-1 col-lg-1">
-		     		<button class="btn btn-default" onclick="toggleMenu(true)">
-		     			<i class="fa fa-bars menu-icon"></i>
-	            	</button>
-		     	</div>
-	     	</div>
-	     	<div class="row">
-	     		<div class="col-lg-12">
-	     			<div class="row">
-	     				<div class="col-lg-12">
-			     			<h1 class="display-1 title text-center">
-			     				HOBBYTE
-			     			</h1>
-	     				</div>
-	     			</div>
-	     			<div class="row">
-	     				<div class="col-lg-12 text-center">
-	     					<h3 class="display-3 title text-center">
-				     			Join to the best minds around the world!
-			     			</h3>
-	     				</div>
-	     			</div>
-	     		</div>
-	     	</div>
-	     	<div class="row button-row">
-     			<div class="col-lg-12 text-center">
-					<div th:switch="${extranetContext.isUserLogged()}" th:remove="tag"> 
-						<a th:case="true" th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}">
-		     				<button class="main-button">
-		                    	Explore
-		     				</button>
-						</a>
-						<a th:case="*" href="/auth/sign-in">
-			            	<button class="main-button">
-		                    	Sign in
-		     				</button>
-						</a> 
-					</div>
-     			</div>
-	     	</div>
-	        <div class="navbar navbar-left">
-	            <button class="close" onclick="toggleMenu(false)">&#10006;</button>
-	            <ul>
-	                <a href="#"><li>News</li></a>
-	                <a href="#"><li>Top</li></a>
-	                <a href="#"><li>Last</li></a>
-	                <a href="#"><li>Categories</li></a>
-	                <a href="#"><li>Help</li></a>
-	                <div th:if="${extranetContext.isUserLogged()}" th:remove="tag">
-		                <li><a href="/profile/settings">Settings</a></li>
-						<li><a href="/logout">Logout</a></li>	                
-	                </div>
-	                <li th:if="${extranetContext.isUserLogged()} AND ${#strings.equals('ADMIN', #strings.toString(extranetContext.getUser().getRole()))}"><a href="/sys"> Admin panel</a></li>
-	            </ul>
-	            <div class="socials">
-	                <div class="sub-title text-center">Socials</div> <br/>
-	                <a class="facebook" href="#"><i class="fa fa-facebook-square"></i> facebook </a><br/>
-	                <a class="linkedin" href="#"><i class="fa fa-linkedin-square"></i> linkedin</a> <br/>
-	                <a class="snapchat" href="#"><i class="fa fa-snapchat-square"></i> snapchat</a>
-	            </div>
-	        </div> 
-	 	</div>
-    </div>
+	<!--
+		HEADER FOR NON-LOGGED USERS
+	  -->
 	<div th:fragment="sign-up" th:remove="tag">
 		<div class="sign-in-header">
 			<div class="row">
@@ -93,6 +29,9 @@
 			</div>
 		</div>
 	</div>
+	<!-- 
+		HEADER FOR LOGGED USERS
+	 -->
 	<div th:fragment="logged">
 	    <div class="container-fluid" id="normal-header">
 	        <div class="row">
@@ -114,16 +53,16 @@
 	        	<div class="offset-lg-3 col-lg-4">
 	        		<ul class="social-nav">
 	        			<li>
-	        				<a th:href="@{/profile/__${extranetContext.getUser().getLogin()}__}" class="row-items">
-	        					<img th:src="${extranetContext.getUser().getImageUrl()}" class="header-profile"></img>
-	        					<span th:text="${extranetContext.getUser().name}" class="header-profile-name"></span>
+	        				<a th:href="@{/profile/__${context.getUser().getLogin()}__}" class="row-items">
+	        					<img th:src="${context.getUser().getImageUrl()}" class="header-profile"></img>
+	        					<span th:text="${context.getUser().name}" class="header-profile-name"></span>
 	        				</a>
 	        			</li>
 		        		<li><a href="#friends"><i class="fa fa-users"></i></a></li>
 		        		<li><a href="#messages"><i class="fa fa-comments"></i></a></li>
 		        		<li><a href="#notifications"><i class="fa fa-globe"></i></a></li>	
 		        		<li><a href="#top"><i class="fa fa-fire"></i></a></li>	
-		        		<li th:if="${#strings.equals('ADMIN', #strings.toString(extranetContext.getUser().getRole()))}">
+		        		<li th:if="${#strings.equals('ADMIN', #strings.toString(context.getUser().getRole()))}">
 		        			<a href="/sys"><i class="fa fa-th"></i></a>	
 		        		</li>
 	        		</ul>
@@ -132,8 +71,11 @@
 	    </div>
 	</div>
 	
+	<!-- 
+		FACTORY FOR SET BEST HEADER. CHECK IF USER IS LOGGED.
+	 -->
 	<div th:fragment="top-header" th:remove="tag">
-		<div th:switch="${extranetContext.isUserLogged()}" th:remove="tag">
+		<div th:switch="${context.isUserLogged()}" th:remove="tag">
 			<div th:case="false" th:include="header :: sign-up"></div>
 			<div th:case="*" th:include="header :: logged" th:remove="tag"></div>
 		</div>
