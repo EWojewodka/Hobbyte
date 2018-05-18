@@ -5,20 +5,22 @@ package com.webrest.hobbyte.app.user.form.dynamic;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
+
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * @author Emil Wojewódka
  *
  * @since 15 mar 2018
  */
+@Service
+@Scope(WebApplicationContext.SCOPE_REQUEST)
 public class ChangeEmailForm extends UserAjaxForm {
 
-	public ChangeEmailForm(DependencyResolver dependencyResolver) {
-		super(dependencyResolver);
-	}
 
 	@Override
 	protected void process(HttpServletRequest request) throws Exception {

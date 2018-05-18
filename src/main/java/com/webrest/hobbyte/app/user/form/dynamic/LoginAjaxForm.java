@@ -1,29 +1,28 @@
 package com.webrest.hobbyte.app.user.form.dynamic;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.webrest.hobbyte.app.user.ExtranetUserUtils;
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
-import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
+import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
+import com.webrest.hobbyte.core.http.context.IHttpContext;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.HttpUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Service
+@Scope(WebApplicationContext.SCOPE_REQUEST)
 public class LoginAjaxForm extends AjaxDynamicForm {
-
-	private ExtranetUserContext context;
-
-	private ExtranetUser user;
 
 	@Autowired
 	private ExtranetUserDao userDao;
@@ -34,32 +33,29 @@ public class LoginAjaxForm extends AjaxDynamicForm {
 	@Autowired
 	private MessageSourceHelper msgHelper;
 
-	public LoginAjaxForm(ExtranetUserContext context) {
-		this.context = context;
-	}
 
 	@Override
-	protected void process(HttpServletRequest request) throws Exception {
-		if (ExtranetUserUtils.isLogged(request)) {
+	protected void process(IExtranetUserContext context) throws Exception {
+		if (ExtranetUserUtils.isLogged(context)) {
 			setRedirect("/");
 			return;
 		}
-		ExtranetUser u = userDao.findByLoginOrEmail(request.getParameter("login"));
+		ExtranetUser user = userDao.findByLoginOrEmail(getParameter("login"));
 
-		AjaxAsserts.notNull(u, msgHelper.getMessage("IncorrectLogin", context));
+		AjaxAsserts.notNull(user, msgHelper.getMessage("IncorrectLogin", context));
 
-		boolean isPasswordMatches = passwordEncoder.matches(request.getParameter("password"), u.getPassword());
+		boolean isPasswordMatches = passwordEncoder.matches(getParameter("password"), user.getPassword());
 		AjaxAsserts.assertTrue(isPasswordMatches, msgHelper.getMessage("IncorrectLogin", context));
 
-		AjaxAsserts.assertTrue(u.getStatus() == ExtranetUserStatus.ACTIVE,
+		AjaxAsserts.assertTrue(user.getStatus() == ExtranetUserStatus.ACTIVE,
 				msgHelper.getMessage("UserNotActive", context));
 
-		this.user = u;
-		handleRememberMe(request, user);
+		handleRememberMe(context, user);
+		context.loginUser(user);
 		setRedirect("/");
 	}
 
-	public void handleRememberMe(HttpServletRequest request, ExtranetUser user) {
+	public void handleRememberMe(IHttpContext context, ExtranetUser user) {
 		HttpUtils.removeCookieIfExists(ExtranetUserUtils.REMEMBER_ME_COOKIE_NAME, context);
 
 		String code = StringUtils.generateRandom(250);

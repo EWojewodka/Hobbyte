@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
+import com.webrest.hobbyte.core.http.context.IHttpContext;
 
 public class ExtranetUserUtils {
 
@@ -17,6 +18,9 @@ public class ExtranetUserUtils {
 
 	public static boolean isLogged(HttpSession session) {
 		return getUser(session) != null;
+	}
+	public static boolean isLogged(IHttpContext context) {
+		return isLogged(context.getRequest());
 	}
 
 	/**

@@ -1,49 +1,55 @@
 package com.webrest.hobbyte.core.dynamicForm;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
 
-import com.webrest.hobbyte.core.cache.CacheMap;
+import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.logger.LoggerFactory;
 import com.webrest.hobbyte.core.utils.Asserts;
 
 @Service
 public class AjaxFormFactory {
 
-	private static final CacheMap<String, AjaxDynamicForm> FORM_BUFFER = new CacheMap<>("dynamic forms");
+	private static final List<Class<? extends AjaxDynamicForm>> BUFFER_LIST = new ArrayList<>();
 
 	private AjaxFormFactory() {
 	}
 
-	public static void registerForm(AjaxDynamicForm form) {
-		Asserts.notNull(form, "Cannot register null AjaxDynamicForm");
-		String code = form.getCode();
-		Asserts.notEmpty(code, "Cannot register DynamicForm (" + form.getClass() + ") for nullable code!");
-		FORM_BUFFER.put(code, form);
+	public static void registerForm(Class<? extends AjaxDynamicForm> formClass) {
+		Asserts.notNull(formClass, "Cannot register null AjaxDynamicForm");
+		BUFFER_LIST.add(formClass);
 	}
 
-	public AjaxDynamicForm getForm(Class<? extends AjaxDynamicForm> clazz) {
-		Map<String, AjaxDynamicForm> map = FORM_BUFFER.getMap();
-		return map.values().parallelStream().filter(x -> x.getClass() == clazz).findFirst().orElse(getForm("null"));
-	}
-
-	public AjaxDynamicForm getForm(String code) {
-		return FORM_BUFFER.get(code);
+	/**
+	 * If you don't need it, please don't use. Better way is
+	 * {@link #getForm(String)} with code, not a {@link Class}
+	 * 
+	 * @see #getForm(String)
+	 * @param clazz
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getForm(Class<? extends AjaxDynamicForm> clazz) {
+		Class<? extends AjaxDynamicForm> formClass = BUFFER_LIST.parallelStream().filter(x -> x == clazz).findFirst()
+				.orElse(getForm(AjaxDynamicFormNull.class));
+		return (T) formClass;
 	}
 
 }
 
 @Service
+@Scope(WebApplicationContext.SCOPE_APPLICATION)
 class AjaxDynamicFormNull extends AjaxDynamicForm {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger();
 
 	@Override
-	protected void process(HttpServletRequest request) throws Exception {
+	protected void process(IExtranetUserContext request) throws Exception {
 		LOGGER.warn("Invoke " + this.getClass());
 	}
 

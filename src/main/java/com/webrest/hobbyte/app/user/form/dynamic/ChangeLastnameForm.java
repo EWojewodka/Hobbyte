@@ -2,15 +2,16 @@ package com.webrest.hobbyte.app.user.form.dynamic;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
+
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
+@Service
+@Scope(WebApplicationContext.SCOPE_REQUEST)
 public class ChangeLastnameForm extends UserAjaxForm {
-
-	public ChangeLastnameForm(DependencyResolver dependencyResolver) {
-		super(dependencyResolver);
-	}
 
 	@Override
 	protected void process(HttpServletRequest request) throws Exception {

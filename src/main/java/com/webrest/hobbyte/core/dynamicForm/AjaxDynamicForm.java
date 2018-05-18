@@ -3,16 +3,16 @@
  */
 package com.webrest.hobbyte.core.dynamicForm;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.webrest.hobbyte.core.exception.AjaxMessageException;
-import com.webrest.hobbyte.core.http.context.IHttpContext;
+import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * Abstract class for expanding if you want to use simple, ajax form on front
@@ -23,27 +23,19 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
  *
  * @since 15 mar 2018
  */
+@Service
 public abstract class AjaxDynamicForm {
 
-	public AjaxDynamicForm() {
-		AjaxFormFactory.registerForm(this);
-	}
+	@Autowired(required = true)
+	private IExtranetUserContext context;
 
-	private HttpServletRequest request;
-
-	private HttpServletResponse response;
-	
 	private JSONObject jsonObject = new JSONObject();
 
-	public String run(IHttpContext context) {
-		return run(context.getRequest(), context.getResponse());
-	}
-
-	public String run(HttpServletRequest request, HttpServletResponse response) {
-		this.request = request;
-		this.response = response;
-		return ExceptionStream.handle(e -> {return handleException(e);}).call(() -> {
-			process(request);
+	public String run() {
+		return ExceptionStream.handle(e -> {
+			return handleException(e);
+		}).call(() -> {
+			process(context);
 			return jsonObject.toString();
 		}).get();
 	}
@@ -56,9 +48,9 @@ public abstract class AjaxDynamicForm {
 	private String handleException(Exception e) {
 		ExceptionStream.printOnFailure().call(() -> {
 			if (e instanceof AjaxMessageException) {
-				response.sendError(((AjaxMessageException) e).getErrorCode(), e.getMessage());
+				context.getResponse().sendError(((AjaxMessageException) e).getErrorCode(), e.getMessage());
 			} else {
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				context.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		});
 		return createJsonError(e.getMessage());
@@ -69,12 +61,12 @@ public abstract class AjaxDynamicForm {
 	 * 
 	 * @return
 	 */
-	protected abstract void process(HttpServletRequest request) throws Exception;
+	protected abstract void process(IExtranetUserContext context) throws Exception;
 
 	public String getParameter(String name) {
-		return request.getParameter(name);
+		return context.getRequest().getParameter(name);
 	}
-
+	
 	public abstract String getCode();
 
 	protected void addMessage(String message) throws JSONException {
@@ -92,5 +84,5 @@ public abstract class AjaxDynamicForm {
 	protected JSONObject getJSON() {
 		return jsonObject;
 	}
-	
+
 }
