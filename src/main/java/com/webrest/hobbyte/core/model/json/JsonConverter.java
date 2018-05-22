@@ -40,7 +40,7 @@ public class JsonConverter {
 				: ClassUtils.getAnnotatedFields(clazz, AsJSON.class);
 		for (Field f : fields) {
 			AsJSON annotation = f.getAnnotation(AsJSON.class);
-			Object value = ExceptionStream.printOnFailure().call(() -> {return f.get(sourceObject);});
+			Object value = ExceptionStream.printOnFailure().call(() -> {return f.get(sourceObject);}).get();
 			processSingle(resultObject, annotation, value, f);	
 		}
 	}

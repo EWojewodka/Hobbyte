@@ -1,5 +1,6 @@
 package com.webrest.hobbyte.app.reaction.http;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +13,13 @@ import com.webrest.hobbyte.core.http.controllers.BaseController;
 @RequestMapping(value = "/post/reaction")
 public class PostEntryReactionController extends BaseController {
 
+	@Autowired
+	private NewOrRemoveReactionForm form;
+	
 	@ResponseBody
 	@PostMapping(value = "/add")
 	public String postNewReaction() {
-		NewOrRemoveReactionForm form = new NewOrRemoveReactionForm(getDependencyResolver());
-		return form.run(getContext());
+		return form.run();
 	}
 
 }

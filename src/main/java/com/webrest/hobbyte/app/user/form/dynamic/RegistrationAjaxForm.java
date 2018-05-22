@@ -1,10 +1,10 @@
 package com.webrest.hobbyte.app.user.form.dynamic;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
@@ -12,16 +12,14 @@ import org.springframework.web.context.WebApplicationContext;
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
-import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
+import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Service
-@Scope(WebApplicationContext.SCOPE_REQUEST)
+@Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class RegistrationAjaxForm extends AjaxDynamicForm {
-
-	private ExtranetUserContext context;
 
 	@Autowired
 	private ExtranetUserDao userDao;
@@ -31,24 +29,20 @@ public class RegistrationAjaxForm extends AjaxDynamicForm {
 	
 	@Autowired
 	private MessageSourceHelper msgHelper;
-	
-	public RegistrationAjaxForm(ExtranetUserContext context) {
-		this.context = context;
-	}
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	protected void process(HttpServletRequest request) throws Exception {
+	protected void process(IExtranetUserContext context) throws Exception {
 
-		String login = request.getParameter("login");
+		String login = getParameter("login");
 		AjaxAsserts.longerThan(login, 5,
 				msgHelper.getMessage("Min", context, msgHelper.getMessage("username", context), 6));
 
-		String email = request.getParameter("email");
+		String email = getParameter("email");
 		String emailMsg = msgHelper.getMessage("NotEmail", context);
 		AjaxAsserts.assertTrue(StringUtils.isEmail(email), emailMsg);
 
-		String password = request.getParameter("password");
+		String password = getParameter("password");
 		AjaxAsserts.longerThan(password, 7,
 				msgHelper.getMessage("Min", context, msgHelper.getMessage("password", context), 8));
 

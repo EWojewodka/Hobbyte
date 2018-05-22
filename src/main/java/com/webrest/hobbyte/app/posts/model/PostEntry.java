@@ -21,8 +21,6 @@ import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 import com.webrest.hobbyte.core.model.json.AsJSON;
 import com.webrest.hobbyte.core.utils.Asserts;
-import com.webrest.hobbyte.core.utils.EnumUtils;
-import com.webrest.hobbyte.core.utils.WithId;
 
 /**
  * @author Emil Wojewódka
@@ -33,29 +31,10 @@ import com.webrest.hobbyte.core.utils.WithId;
 @Table(name = "hb_post_entries")
 public class PostEntry extends DatabaseObjectImpl {
 
-	public enum PostEntryStatus implements WithId {
-		PUBLISH(0), PENDING(1), REPORT(2);
-
-		private int id;
-
-		private PostEntryStatus(int id) {
-			this.id = id;
-		}
-
-		@Override
-		public int getId() {
-			return id;
-		}
-
-		public static PostEntryStatus getById(int id) {
-			return EnumUtils.findById(PostEntryStatus.class, id);
-		}
-	}
-
 	@Id
+	@AsJSON
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "hb_post_entry_id", nullable = false, unique = true, updatable = false)
-	@AsJSON
 	private int id;
 
 	@JoinColumn(name = "author_id")
@@ -85,15 +64,25 @@ public class PostEntry extends DatabaseObjectImpl {
 
 	@Column
 	@AsJSON
-	private int status = PostEntryStatus.PENDING.id;
-	
+	private int status = PostEntryStatus.PENDING.getId();
+
 	@AsJSON
 	@OneToMany(mappedBy = "postEntry")
 	private Collection<PostEntryReaction> reactions;
-	
+
 	public PostEntry(ExtranetUser author) {
 		Asserts.exists(author);
 		this.author = author;
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+	
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public ExtranetUser getAuthor() {
@@ -143,24 +132,13 @@ public class PostEntry extends DatabaseObjectImpl {
 	public void setStatus(PostEntryStatus status) {
 		this.status = status.getId();
 	}
-	
-	public Collection<PostEntryReaction> getReactions(){
+
+	public Collection<PostEntryReaction> getReactions() {
 		return reactions;
 	}
-	
+
 	public PostEntry() {
-		
-	}
-	
-	@Override
-	public int getId() {
-		return id;
+
 	}
 
-	@Override
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	
 }

@@ -76,5 +76,10 @@ public class AjaxAsserts {
 		if (str.length() < minLength)
 			throwBadRequest(message);
 	}
+	
+	public static void greaterThan(double value, double than, String message) throws AjaxMessageException {
+		if(than > value)
+			throwBadRequest(message);
+	}
 
 }

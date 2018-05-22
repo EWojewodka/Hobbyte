@@ -21,9 +21,13 @@ public class AppParamDao extends GenericDao<AppParam> {
 		return find.isEmpty() ? null : find.get(0);
 	}
 
-	public String find(String group, String key, String defaultValue) {
+	public String getValue(String group, String key, String defaultValue) {
 		AppParam result = find(group, key);
 		return result != null ? result.getValue() : defaultValue;
+	}
+	
+	public String getValue(String group, String key) {
+		return getValue(group, key, "");
 	}
 
 }

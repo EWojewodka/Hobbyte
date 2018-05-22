@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
-import com.webrest.hobbyte.app.user.form.dynamic.UserSettingFormFactory;
+import com.webrest.hobbyte.app.user.form.dynamic.ChangeEmailForm;
+import com.webrest.hobbyte.app.user.form.dynamic.ChangeLastnameForm;
+import com.webrest.hobbyte.app.user.form.dynamic.ChangeNameForm;
+import com.webrest.hobbyte.app.user.form.dynamic.ChangePhoneForm;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
 import com.webrest.hobbyte.core.exception.response.NotFoundException;
-import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
-import com.webrest.hobbyte.core.http.context.IHttpContext;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 
 /**
@@ -36,18 +37,24 @@ public class ProfileController extends BaseController {
 	private ExtranetUserDao userDAO;
 
 	@Autowired
-	private IExtranetUserContext userContext;
+	private ChangeEmailForm emailForm;
 
 	@Autowired
-	private UserSettingFormFactory formFactory;
+	private ChangePhoneForm phoneForm;
+
+	@Autowired
+	private ChangeNameForm nameForm;
+
+	@Autowired
+	private ChangeLastnameForm lastnameForm;
 
 	@GetMapping(value = { "/profile/{login}", "/profile" })
 	public String getProfile(@PathVariable(name = "login", required = false) String login, Model model)
 			throws Exception {
 		ExtranetUser user = userDAO.findByLogin(login);
 		if (user == null) {
-			if (userContext.isUserLogged() && StringUtils.isEmpty(login))
-				user = userContext.getUser();
+			if (getContext().isUserLogged() && StringUtils.isEmpty(login))
+				user = getContext().getUser();
 			else
 				throw new NotFoundException(getContext());
 		}
@@ -75,8 +82,22 @@ public class ProfileController extends BaseController {
 	@ResponseBody
 	@PostMapping(value = { "/profile/settings" })
 	public String postSettings(@PathParam("type") String type) {
-		AjaxDynamicForm form = formFactory.get(type);
-		IHttpContext context = getContext();
-		return form.run(context.getRequest(), context.getResponse());
+		AjaxDynamicForm form = null;
+		switch (type) {
+		case "email":
+			form = emailForm;
+			break;
+		case "phone":
+			form = phoneForm;
+			break;
+		case "name":
+			form = nameForm;
+			break;
+		case "lastname":
+			form = lastnameForm;
+			break;
+		}
+		return form.run();
 	}
+
 }

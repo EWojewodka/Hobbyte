@@ -70,7 +70,9 @@ public class ExceptionStream {
 	 * @return
 	 */
 	public static ExceptionStream printOnFailure() {
-		return new ExceptionStream();
+		ExceptionStream es = new ExceptionStream();
+
+		return es;
 	}
 
 	public ExceptionStream call(Callable<?> callable) {
@@ -79,9 +81,7 @@ public class ExceptionStream {
 		} catch (Exception e) {
 			isThrow = true;
 			e.printStackTrace();
-			if (actionOnException != null) {
-				result = actionOnException.call(e);
-			}
+			result = actionOnException != null ? actionOnException.call(e) : null;
 		}
 		return this;
 	}

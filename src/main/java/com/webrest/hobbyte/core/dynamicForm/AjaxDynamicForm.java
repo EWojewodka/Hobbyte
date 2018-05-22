@@ -32,12 +32,14 @@ public abstract class AjaxDynamicForm {
 	private JSONObject jsonObject = new JSONObject();
 
 	public String run() {
-		return ExceptionStream.handle(e -> {
+		String s = ExceptionStream.handle(e -> {
 			return handleException(e);
 		}).call(() -> {
 			process(context);
 			return jsonObject.toString();
 		}).get();
+		System.out.println(s);
+		return s;
 	}
 
 	// Create manual json object with one property - error.
@@ -66,7 +68,7 @@ public abstract class AjaxDynamicForm {
 	public String getParameter(String name) {
 		return context.getRequest().getParameter(name);
 	}
-	
+
 	public abstract String getCode();
 
 	protected void addMessage(String message) throws JSONException {

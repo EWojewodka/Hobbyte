@@ -22,6 +22,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<project.start-class>com.webrest.hobbyte.HobbyteApplication</project.start-class>
+		<hibernate.version>4.3.11.Final</hibernate.version>
 	</properties>
 
 	<dependencies>

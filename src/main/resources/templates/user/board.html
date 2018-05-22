@@ -12,7 +12,6 @@
 			ajax.send(null, function(jsonObj){
 				var len = jsonObj.length;
 				for(i=0;len>i;i++) {
-					printPostEntry(jQuery('.post-container'), jsonObj[i])				
 					printPostEntry(jQuery('.post-container'), jsonObj[i])									
 				}
 			});

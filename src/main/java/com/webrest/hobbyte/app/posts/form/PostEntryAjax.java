@@ -9,22 +9,27 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Service;
 
 import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.upload.cdn.CloudinaryUploader;
 import com.webrest.hobbyte.app.user.form.dynamic.UserAjaxForm;
+import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.FileUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * @author Emil Wojewódka
  *
  * @since 10 kwi 2018
  */
+@Service
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class PostEntryAjax extends UserAjaxForm {
 
 	private static final String[] AVAILABLE_PHOTO_EXTENSION = { "jpg", "jpeg", "png", "gif" };
@@ -33,21 +38,19 @@ public class PostEntryAjax extends UserAjaxForm {
 			"Cannot upload file. Wrong fil extension - only %s are available",
 			StringUtils.toGenericString(AVAILABLE_PHOTO_EXTENSION, ","));
 
-	public PostEntryAjax(DependencyResolver dependencyResolver) {
-		super(dependencyResolver);
-	}
-	
-	@Override
-	public Class<?>[] getDependencies() {
-		return ArrayUtils.addAll(super.getDependencies(), new Class<?>[] {PostEntryDao.class, CloudinaryUploader.class});
-	}
+	@Autowired
+	private PostEntryDao postEntryDao;
+
+	@Autowired
+	private CloudinaryUploader uploader;
 
 	@Override
-	protected void process(HttpServletRequest request) throws Exception {
-		valid(request);
+	protected void process(IExtranetUserContext userContext) throws Exception {
+		HttpServletRequest req = userContext.getRequest();
+		valid(req);
 
-		String content = request.getParameter("content");
-		String imageUrl = uploadImage(request);
+		String content = getParameter("content");
+		String imageUrl = uploadImage(req);
 		// If there is no a image or text - throw exception. Zombie post are not nice.
 		AjaxAsserts.notEmpty("Post entry content cannot be empty!", content, imageUrl);
 
@@ -55,7 +58,7 @@ public class PostEntryAjax extends UserAjaxForm {
 		postEntry.setImageUrl(imageUrl);
 		postEntry.setContent(content);
 
-		getDependency(PostEntryDao.class).save(postEntry);
+		postEntryDao.save(postEntry);
 
 		addMessage("Your post is published!");
 		addJsonValue("postEntry", postEntry.getJSONAsString());
@@ -83,7 +86,7 @@ public class PostEntryAjax extends UserAjaxForm {
 		File dest = FileUtils.getTemporaryFile("tmp_" + fileName);
 		// Write file as a temporary file.
 		FileUtils.writeFile(photo.getInputStream(), dest);
-		Map<String, Object> upload = getDependency(CloudinaryUploader.class).upload(dest);
+		Map<String, Object> upload = uploader.upload(dest);
 
 		// Delete tmp file.
 		dest.delete();

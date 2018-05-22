@@ -4,9 +4,9 @@ import javax.servlet.http.Cookie;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.webrest.hobbyte.app.user.ExtranetUserUtils;
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
@@ -21,7 +21,7 @@ import com.webrest.hobbyte.core.utils.HttpUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Service
-@Scope(WebApplicationContext.SCOPE_REQUEST)
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class LoginAjaxForm extends AjaxDynamicForm {
 
 	@Autowired

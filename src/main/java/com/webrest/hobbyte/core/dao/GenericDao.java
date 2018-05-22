@@ -122,9 +122,7 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 		
 		//Add where in
 		Map<String, Object[]> whereIn = criteriaFilter.getWhereIn();
-		whereIn.forEach((c, v) -> {
-			criteria.add(Restrictions.in(c, v));
-		});
+		whereIn.forEach((c, v) -> criteria.add(Restrictions.in(c, v)));
 		
 		//set limit
 		int limit = criteriaFilter.getLimit();
@@ -154,9 +152,7 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 	 * Object.
 	 */
 	protected Class<?> getGenericType() {
-		if (_genericType == null)
-			_genericType = ClassUtils.getGenericType(this.getClass());
-		return _genericType;
+		return _genericType == null ? (_genericType = ClassUtils.getGenericType(this.getClass())) : _genericType;
 	}
 
 	private class ListenerExecutor {
@@ -174,44 +170,28 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 
 			switch (state) {
 			case LOAD:
-				consumer = (l -> {
-					l.onLoad(dbo);
-				});
+				consumer = (l -> l.onLoad(dbo));
 				break;
 			case AFTER_REMOVE:
-				consumer = (l -> {
-					l.afterRemove(dbo);
-				});
+				consumer = (l -> l.afterRemove(dbo));
 				break;
 			case AFTER_SAVE:
-				consumer = (l -> {
-					l.afterSave(dbo);
-				});
+				consumer = (l -> l.afterSave(dbo));
 				break;
 			case BEFORE_REMOVE:
-				consumer = (l -> {
-					l.beforeRemove(dbo);
-				});
+				consumer = (l -> l.beforeRemove(dbo));
 				break;
 			case BEFORE_SAVE:
-				consumer = (l -> {
-					l.beforeSave(dbo);
-				});
+				consumer = (l -> l.beforeSave(dbo));
 				break;
 			case CREATE:
-				consumer = (l -> {
-					l.onCreate();
-				});
+				consumer = (l -> l.onCreate());
 				break;
 			case BEFORE_FIRST_SAVE:
-				consumer = (l -> {
-					l.beforeFirstSave(dbo);
-				});
+				consumer = (l -> l.beforeFirstSave(dbo));
 				break;
 			case AFTER_FIRST_SAVE:
-				consumer = (l -> {
-					l.afterFirstSave(dbo);
-				});
+				consumer = (l -> l.afterFirstSave(dbo));
 				break;
 			default:
 				throw new IllegalArgumentException("Command " + state + "is not implemented yet. :<");

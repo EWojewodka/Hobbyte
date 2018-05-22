@@ -3,9 +3,6 @@
  */
 package com.webrest.hobbyte.app.posts.http;
 
-import java.util.Arrays;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.form.PostEntryAjax;
-import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
+import com.webrest.hobbyte.core.utils.JsonUtils;
 
 /**
  * @author Emil Wojewódka
@@ -26,25 +23,24 @@ import com.webrest.hobbyte.core.http.controllers.BaseController;
  */
 @Controller
 @RequestMapping(value = "/post")
-public class PostEntryController extends BaseController{
-	
+public class PostEntryController extends BaseController {
+
 	@Autowired
 	private PostEntryDao dao;
-	
+
+	@Autowired
+	private PostEntryAjax postEntryForm;
+
 	@ResponseBody
 	@PostMapping(value = "/new")
 	public String addPostEntry() {
-		PostEntryAjax postEntryAjax = new PostEntryAjax(getDependencyResolver());
-		return postEntryAjax.run(getContext());
+		return postEntryForm.run();
 	}
 
 	@ResponseBody
-	@GetMapping(value ="/board")
+	@GetMapping(value = "/board")
 	public String getPostForBoard() throws JSONException {
-		JSONArray array = new JSONArray();
-		PostEntry[] relatedPosts = dao.getRelatedPosts(null);
-		Arrays.asList(relatedPosts).forEach(p -> array.put(p.getAsJSON()));
-		return array.toString();
+		return JsonUtils.toJsonbObject(dao.getRelatedPosts(null)).toString();
 	}
-	
+
 }

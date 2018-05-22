@@ -20,6 +20,7 @@ public class HobbyteApplication {
 		profiler.addProfile(AvailablePlatformProfiles.DEVELOPMENT);
 		profiler.load();
 		SpringApplication.run(HobbyteApplication.class, args);
+		
 	}
 
 }

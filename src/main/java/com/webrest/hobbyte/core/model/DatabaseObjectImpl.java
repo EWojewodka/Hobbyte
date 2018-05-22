@@ -138,5 +138,7 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 			return clone;
 		}).get();
 	}
+	
+	
 
 }

@@ -73,7 +73,7 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private int newsletter;
 
 	@Column(name = "role_id")
-	private int roleId = ExtranetUserRoles.ADMIN.getId();
+	private int roleId = ExtranetUserRoles.USER.getId();
 
 	@Transient
 	private ExtranetUserPolicy userPolicy;

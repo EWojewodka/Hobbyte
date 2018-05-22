@@ -17,10 +17,11 @@ function printPostEntry(appendTo, postEntry){
 				'<div class="col-lg-9">'+
 					'<div class="row">'+
 						'<a class="thumb-button block small standard-btn" onclick="new AjaxRequest(\'/post/reaction/add?postId='+postEntry.id+'\').send(null, incrementLikes);"><i class="fa fa-thumbs-up"></i> <span id="post-entry-likes-'+postEntry.id+'">' + postEntry.reactions.length + '</span> Like!</a>'+
-						'<a class="show-comments block small standard-btn">Comments</a>'+
+						'<a class="show-comments block small standard-btn" onclick="getComments('+postEntry.id+')">Comments</a>'+
 					'</div>'+
 				'</div>'+
 			'</div>' +
+			'<div class="row" id="comment-block-'+postEntry.id+'" style="display:none;"></div>'+
 	'</div>';
 	jQuery(appendTo).append(result);
 }
@@ -36,4 +37,19 @@ var incrementLikes = function(json){
 function sendNewPost(form, onSuccess,onFailure) {
 	var ajax = new AjaxRequest('/post/new');
 	ajax.send(new FormData(form), onSuccess, onFailure);
+}
+
+function getComments(postId) {
+	var ajax = new AjaxRequest('/comments?post-id=' + postId);
+	ajax.method = 'GET';
+	ajax.send(null,showComments,getMessage('internal.error'));
+}
+
+var showComments = function(jsonObject){
+}
+
+function showComments(postId){
+	var postEntry = jQuery('#comment-block-' + postId);
+	postEntry.slideToggle(100);
+	
 }
