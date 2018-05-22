@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 import com.webrest.hobbyte.core.model.json.AsJSON;
@@ -42,15 +41,14 @@ public class Comment extends DatabaseObjectImpl {
 	@Column(name = "created_at")
 	private Date createdAt = new Date();
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "author_id")
 	private ExtranetUser author;
 
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "post_id")
-	private PostEntry postEntryId;
+	@Column(name = "post_id")
+	private int postEntryId;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_comment_id")
 	private Comment parentComment;
 
@@ -93,11 +91,11 @@ public class Comment extends DatabaseObjectImpl {
 		this.author = author;
 	}
 
-	public PostEntry getPostEntryId() {
+	public int getPostEntryId() {
 		return postEntryId;
 	}
 
-	public void setPostEntryId(PostEntry postEntryId) {
+	public void setPostEntryId(int postEntryId) {
 		this.postEntryId = postEntryId;
 	}
 

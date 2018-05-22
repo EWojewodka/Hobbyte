@@ -4,6 +4,7 @@
 package com.webrest.hobbyte.app.seeds.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
@@ -19,6 +20,9 @@ import com.webrest.hobbyte.core.seed.AbstractSeed;
 @Service
 public class AdministratorSeed extends AbstractSeed {
 
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Autowired
 	private ExtranetUserDao userDao;
 
@@ -36,7 +40,7 @@ public class AdministratorSeed extends AbstractSeed {
 		ExtranetUser user = new ExtranetUser();
 		user.setLogin("Administrator");
 		user.setEmail("emilwojewodka@gmail.com");
-		user.setPassword("adminPassword");
+		user.setPassword(encoder.encode("adminPassword"));
 		user.setName("Emil");
 		user.setLastname("Wojewódka");
 		user.setRole(ExtranetUserRoles.ADMIN);

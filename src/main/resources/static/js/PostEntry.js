@@ -16,7 +16,7 @@ function printPostEntry(appendTo, postEntry){
 			'<div class="row reaction-block">'+
 				'<div class="col-lg-9">'+
 					'<div class="row">'+
-						'<a class="thumb-button block small standard-btn" onclick="new AjaxRequest(\'/post/reaction/add?postId='+postEntry.id+'\').send(null, incrementLikes);"><i class="fa fa-thumbs-up"></i> <span id="post-entry-likes-'+postEntry.id+'">' + postEntry.reactions.length + '</span> Like!</a>'+
+						'<a class="thumb-button block small standard-btn" onclick="executeThumb('+postEntry.id+')"><i class="fa fa-thumbs-up"></i> <span id="post-entry-likes-'+postEntry.id+'">' + postEntry.reactions.length + '</span> Like!</a>'+
 						'<a class="show-comments block small standard-btn" onclick="getComments('+postEntry.id+')">Comments</a>'+
 					'</div>'+
 				'</div>'+
@@ -24,6 +24,11 @@ function printPostEntry(appendTo, postEntry){
 			'<div class="row" id="comment-block-'+postEntry.id+'" style="display:none;"></div>'+
 	'</div>';
 	jQuery(appendTo).append(result);
+}
+
+function executeThumb(postId) {
+	var ajax = new AjaxRequest('/post/reaction/add?postId='+postId);
+	ajax.send(null, incrementLikes);
 }
 
 var incrementLikes = function(json){
@@ -39,17 +44,28 @@ function sendNewPost(form, onSuccess,onFailure) {
 	ajax.send(new FormData(form), onSuccess, onFailure);
 }
 
-function getComments(postId) {
+function getComments(postId,params) {
+	var postEntry = jQuery('#comment-block-' + postId);
+	if(postEntry.is(':visible'))
+		return;
 	var ajax = new AjaxRequest('/comments?post-id=' + postId);
 	ajax.method = 'GET';
-	ajax.send(null,showComments,getMessage('internal.error'));
+	ajax.send(null,showComments,getMessage('internal.error'),{'postId':postId, 'postEntry':postEntry});
 }
 
-var showComments = function(jsonObject){
+var showComments = function(jsonObject,params){
+	var ren = renderCommentForm(params["postId"]);
+	var postEntry = params['postEntry'];
+	postEntry.append(ren);
+	postEntry.slideDown(100);
 }
 
-function showComments(postId){
-	var postEntry = jQuery('#comment-block-' + postId);
-	postEntry.slideToggle(100);
-	
+function sendOnEnter(textArea) {
+	console.log(textArea);
+}
+
+function renderCommentForm(postId,commentParent){
+	return '<div class="offset-lg-1 col-lg-9 comment-form">' +
+				'<textarea class="comment-'+postId+'" name="comment-content" onkeyup="sendOnEnter(this)" placeholder="'+getMessage('enter.content')+'"></textarea>' + 
+			'</div>';
 }

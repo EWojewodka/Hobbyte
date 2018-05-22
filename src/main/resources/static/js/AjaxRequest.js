@@ -7,7 +7,7 @@ function AjaxRequest(url) {
 	this.failCallback = function(){};
 }
 
-AjaxRequest.prototype.send = function(data, onSuccess, onFailure) {
+AjaxRequest.prototype.send = function(data, onSuccess, onFailure, params) {
 	jQuery.ajax({
 		url : this.url,
 		method: this.method,
@@ -15,12 +15,11 @@ AjaxRequest.prototype.send = function(data, onSuccess, onFailure) {
 	    contentType: this.contentType,
 	    data: data,
 		success : function(data) {
-			var jsonObj = JSON.parse(data);
-			onSuccess(jsonObj);
+			onSuccess(JSON.parse(data), params);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			if(typeof onFailure === 'function')
-				onFailure(xhr, ajaxOptions, thrownError);
+				onFailure(xhr, ajaxOptions, thrownError, params);
 		}
 	});
 }
