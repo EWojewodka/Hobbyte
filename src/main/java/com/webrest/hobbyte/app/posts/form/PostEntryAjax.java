@@ -46,11 +46,10 @@ public class PostEntryAjax extends UserAjaxForm {
 
 	@Override
 	protected void process(IExtranetUserContext userContext) throws Exception {
-		HttpServletRequest req = userContext.getRequest();
-		valid(req);
+		valid();
 
 		String content = getParameter("content");
-		String imageUrl = uploadImage(req);
+		String imageUrl = uploadImage(userContext.getRequest());
 		// If there is no a image or text - throw exception. Zombie post are not nice.
 		AjaxAsserts.notEmpty("Post entry content cannot be empty!", content, imageUrl);
 

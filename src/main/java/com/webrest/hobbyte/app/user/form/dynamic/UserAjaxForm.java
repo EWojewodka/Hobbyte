@@ -34,8 +34,8 @@ public abstract class UserAjaxForm extends AjaxDynamicForm {
 	 * @param request
 	 * @throws AjaxMessageException
 	 */
-	public void valid(HttpServletRequest request) throws AjaxMessageException {
-		user = ExtranetUserUtils.getUser(request);
+	public void valid() throws AjaxMessageException {
+		user = ExtranetUserUtils.getUser(getContext());
 		// Only logged users could change they email. Obviously.
 		AjaxAsserts.notNull(user, "User not logged.");
 	}

@@ -15,7 +15,7 @@ public class ChangeLastnameForm extends UserAjaxForm {
 
 	@Override
 	protected void process(IExtranetUserContext context) throws Exception {
-		valid(context.getRequest());
+		valid();
 		
 		String lastname = getParameter("lastname");
 		AjaxAsserts.notEmpty(lastname, "We don't think so you're lastnameless!");

@@ -23,7 +23,7 @@ public class ChangePhoneForm extends UserAjaxForm {
 
 	@Override
 	protected void process(IExtranetUserContext context) throws Exception {
-		valid(context.getRequest());
+		valid();
 
 		String phoneNumber = getParameter("phone-number");
 		AjaxAsserts.assertTrue(StringUtils.isNumeric(phoneNumber), "Phone number can contains only numeric.");

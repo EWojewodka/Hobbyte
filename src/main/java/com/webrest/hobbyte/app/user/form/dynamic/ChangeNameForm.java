@@ -15,10 +15,10 @@ public class ChangeNameForm extends UserAjaxForm {
 
 	@Override
 	protected void process(IExtranetUserContext context) throws Exception {
-		valid(context.getRequest());
+		valid();
 
 		String name = getParameter("name");
-		AjaxAsserts.notEmpty(name, "We don't think so you has no name!");
+		AjaxAsserts.notEmpty(name, "We don't think so you're nameless!");
 
 		ExtranetUser user = getUser();
 		user.setName(name);

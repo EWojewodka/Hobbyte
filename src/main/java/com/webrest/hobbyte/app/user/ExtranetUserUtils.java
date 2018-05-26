@@ -23,6 +23,10 @@ public class ExtranetUserUtils {
 		return isLogged(context.getRequest());
 	}
 
+	public static ExtranetUser getUser(IHttpContext context) {
+		return getUser(context.getRequest());
+	}
+	
 	/**
 	 * Return user from request session;
 	 * 

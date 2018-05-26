@@ -3,6 +3,7 @@ package com.webrest.hobbyte.core.model.json;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.json.JSONException;
@@ -27,55 +28,75 @@ public class JsonConverter {
 	}
 
 	/**
-	 * Add annotated {@link Field} of sourceObject to resultObject. 
-	 * If clazz is annotated by {@link AsJSON} process all {@link Class} fields.
+	 * Add annotated {@link Field} of sourceObject to resultObject. If clazz is
+	 * annotated by {@link AsJSON} process all {@link Class} fields.
 	 * 
-	 * @param sourceObject - object which should be convert to json 
-	 * @param resultObject - {@link JSONObject} which'll be return
-	 * @param clazz - {@link Class} of sourceObject
+	 * @param sourceObject
+	 *            - object which should be convert to json
+	 * @param resultObject
+	 *            - {@link JSONObject} which'll be return
+	 * @param clazz
+	 *            - {@link Class} of sourceObject
 	 */
 	private static void processFields(Object sourceObject, JSONObject resultObject, Class<?> clazz) {
 		// Get all fields if Class is annotated. Otherwise get only annotated fields.
 		Field[] fields = clazz.isAnnotationPresent(AsJSON.class) ? clazz.getDeclaredFields()
 				: ClassUtils.getAnnotatedFields(clazz, AsJSON.class);
 		for (Field f : fields) {
+			f.setAccessible(true);
 			AsJSON annotation = f.getAnnotation(AsJSON.class);
-			Object value = ExceptionStream.printOnFailure().call(() -> {return f.get(sourceObject);}).get();
-			processSingle(resultObject, annotation, value, f);	
+			Object value = ExceptionStream.printOnFailure().call(() -> {
+				return f.get(sourceObject);
+			}).get();
+			processSingle(resultObject, annotation, value, f);
 		}
 	}
 
 	/**
-	 * Add annotated {@link Method} of sourceObject to resultObject. 
+	 * Add annotated {@link Method} of sourceObject to resultObject.
 	 * 
-	 * @param sourceObject - object which should be convert to json 
-	 * @param resultObject - {@link JSONObject} which'll be return
-	 * @param clazz - {@link Class} of sourceObject
+	 * @param sourceObject
+	 *            - object which should be convert to json
+	 * @param resultObject
+	 *            - {@link JSONObject} which'll be return
+	 * @param clazz
+	 *            - {@link Class} of sourceObject
 	 */
 	private static void processMethods(Object sourceObject, JSONObject jsonObject, Class<?> clazz) {
 		Method[] methods = ClassUtils.getAnnotatedMethods(clazz, AsJSON.class);
 		for (Method m : methods) {
 			AsJSON annotation = m.getAnnotation(AsJSON.class);
-				Object value = ExceptionStream.printOnFailure().call(() -> {return m.invoke(sourceObject);});
-				processSingle(jsonObject, annotation, value, m);
+			Object value = ExceptionStream.printOnFailure().call(() -> {
+				return m.invoke(sourceObject);
+			}).get();
+			processSingle(jsonObject, annotation, value, m);
 		}
 	}
 
 	private static void processSingle(JSONObject jsonObject, AsJSON annotation, Object object, Member member) {
+		boolean isAnnotated = annotation != null;
+		boolean isNull = object == null;
+
+		if (!isAnnotated && isNull) {
+			return;
+		}
 		// put default value if string.
-		if (object == null)
+		if (isNull && isAnnotated)
 			object = annotation.defaultValue();
 
 		try {
 			Class<? extends Object> returnType = object.getClass();
-			String jsonPropertyName = StringUtils.isEmpty(annotation.jsonName()) ? member.getName()
-					: annotation.jsonName();
+			String jsonPropertyName = null;
+			if (isAnnotated && !StringUtils.isEmpty(annotation.jsonName()))
+				jsonPropertyName = annotation.jsonName();
+			else
+				jsonPropertyName = member.getName();
 
 			if (object instanceof JSONable) {
 				jsonObject.put(jsonPropertyName, ((JSONable) object).getAsJSON());
 			} else {
 				// format date if it's Date
-				if (returnType == Date.class) {
+				if (returnType == Date.class || returnType == Timestamp.class) {
 					object = DateUtils.formatDate((Date) object, annotation.defaultDateFormat());
 				}
 

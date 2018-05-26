@@ -1,6 +1,6 @@
 var messages = {
 	'internal.error' : 'Internal error. Try again.',
-	'enter.content' : 'Enter here content!'
+	'enter.content' : 'Write a comment...'
 };
 
 function getMessage(code,variables) {

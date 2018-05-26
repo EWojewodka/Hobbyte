@@ -27,7 +27,7 @@ public class NewOrRemoveReactionForm extends UserAjaxForm {
 
 	@Override
 	protected void process(IExtranetUserContext context) throws Exception {
-		valid(context.getRequest());
+		valid();
 		PostEntry postEntry = postEntryDao.getById(StringUtils.getAsInt(getParameter("postId"), 0));
 		AjaxAsserts.notNull(postEntry, "Cannot add reaction. Internal error.");
 		// filter reaction. if there is reaction created by current user - get it else

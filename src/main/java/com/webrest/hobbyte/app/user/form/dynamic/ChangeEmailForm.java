@@ -24,7 +24,7 @@ public class ChangeEmailForm extends UserAjaxForm {
 
 	@Override
 	protected void process(IExtranetUserContext context) throws Exception {
-		valid(context.getRequest());
+		valid();
 		
 		String newEmail = getParameter("email");
 		AjaxAsserts.assertTrue(StringUtils.isEmail(newEmail), "Invalid email format.");

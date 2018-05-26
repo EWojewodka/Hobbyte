@@ -226,6 +226,8 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	
 	@AsJSON(jsonName = "postEntriesSize")
 	public int getPostEntrySize() {
+		if(postEntries == null)
+			return 0;
 		return postEntries.size();
 	}
 

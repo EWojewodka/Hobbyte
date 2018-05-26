@@ -44,6 +44,19 @@ a:hover, a:active, a:focus {
 	color: inherit !important;
 }
 
+a.hover-underline:hover{
+	border-bottom: solid black 1px;
+}
+
+.underline-color-red:hover{
+	border-bottom-color: #eb4b56 !important;
+}
+
+input.form-control:focus, textarea.form-control:focus{
+	box-shadow: none;
+	border: 1px solid #ced4da;
+}
+
 .one-page {
 	min-height: 85vh;
 	margin: 0;
@@ -1198,6 +1211,10 @@ iframe {
 	border-radius: 4px;
 }
 
+.post-entry .author {
+	font-weight: bold;
+}
+
 .post-entry .header {
 	display: flex;
 	flex-flow: row;
@@ -1224,6 +1241,42 @@ iframe {
 	padding-bottom: 30px;
 	background-color: #f3f6f8;
 	z-index: 1;
+}
+
+.comment-section{
+	font-size: 80%;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.red{
+	color: #eb4b56;
+}
+
+.single-comment {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.comment-content{
+	padding: 8px 10px;
+	border-radius: 18px;
+	background-color: #f3f6f8;
+	color: black;
+	font-family: Arial;
+	margin-left: 5px;
+}
+
+.comment-content .comment-author{
+	padding-right: 5px;
+}
+
+.post-profile-image{
+	width: 30px;
+	margin-right: -3px;
+	border-radius: 99px;
 }
 
 .reaction-block {
@@ -1266,6 +1319,8 @@ iframe {
 	padding: 5px 10px;
 	width: 100%;
 	height: 40px;
+	margin-top: 10px;
+	color: black;
 }
 
 #messages-container {

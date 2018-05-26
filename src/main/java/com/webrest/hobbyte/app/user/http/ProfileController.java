@@ -22,7 +22,6 @@ import com.webrest.hobbyte.app.user.form.dynamic.ChangeNameForm;
 import com.webrest.hobbyte.app.user.form.dynamic.ChangePhoneForm;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
-import com.webrest.hobbyte.core.exception.response.NotFoundException;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 
 /**
@@ -51,12 +50,15 @@ public class ProfileController extends BaseController {
 	@GetMapping(value = { "/profile/{login}", "/profile" })
 	public String getProfile(@PathVariable(name = "login", required = false) String login, Model model)
 			throws Exception {
-		ExtranetUser user = userDAO.findByLogin(login);
+		//We shouldn't looking for a user if login is empty.
+		boolean isLogin = StringUtils.isEmpty(login);
+		ExtranetUser user = isLogin ? null : userDAO.findByLogin(login);
+		//So if login is empty (probably user is logged)
 		if (user == null) {
-			if (getContext().isUserLogged() && StringUtils.isEmpty(login))
+			if (getContext().isUserLogged() && isLogin)
 				user = getContext().getUser();
 			else
-				throw new NotFoundException(getContext());
+				return "redirect:/";
 		}
 		model.addAttribute("userProfile", user);
 		return "user/profile";

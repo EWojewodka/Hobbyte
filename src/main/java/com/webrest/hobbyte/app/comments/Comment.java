@@ -52,9 +52,13 @@ public class Comment extends DatabaseObjectImpl {
 	@JoinColumn(name = "parent_comment_id")
 	private Comment parentComment;
 
-	public Comment(String content, ExtranetUser author) {
+	//For spring
+	protected Comment() {}
+	
+	public Comment(String content, ExtranetUser author, int postEntryId) {
 		this.content = content;
 		this.author = author;
+		this.postEntryId = postEntryId;
 	}
 
 	@Override

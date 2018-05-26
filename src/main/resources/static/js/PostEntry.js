@@ -1,29 +1,51 @@
-function printPostEntry(appendTo, postEntry){
-	var result = '';
-	result += 
+function printPostEntry(appendTo,postEntry){
+	var params = {
+			'author.login': postEntry.author.login,
+			'author.imageUrl': postEntry.author.imageUrl,
+			'author.name': postEntry.author.name,
+			'author.lastname': postEntry.author.lastname,
+			'postEntry.createdAt': postEntry.createdAt,
+			'postEntry.content': postEntry.content,
+			'postEntry.id': postEntry.id,
+			'reactions.length' : postEntry.reactions.length
+		};
+	var result = 
 	'<div class="row">' +
 		'<div class="col-lg-12 post-entry block">' +
 			'<div class="row header">' +
-				'<div class="col-lg-6 author">'+
-					'<a href="/profile/'+postEntry.author.login+'">' +
-						'<img class="post-profile-image block" src="' +postEntry.author.imageUrl +'" />'+
-						postEntry.author.name + ' ' + postEntry.author.lastname + 
+				'<div class="col-lg-12 author">'+
+					'<a href="/profile/{author.login}">' +
+						'<div class="row">' + 
+							'<div class="col-lg-2">' + 
+								'<img class="post-profile-image block" src="{author.imageUrl}" />'+
+							'</div>' +
+							'<div class="col-lg-10">' + 
+								'<div class="row">' +
+									'{author.name} {author.lastname}' + 
+								'</div>' + 
+								'<div class="row small">' +
+									'{postEntry.createdAt}' + 
+								'</div>' + 
+							'</div>'+
+						'</div>' + 
 					'</a>'+
 				'</div>' +
-				'<div class="date col-lg-6 text-right small">' + postEntry.createdAt +'</div>' +
+//				'<div class="date col-lg-3 text-right small">{postEntry.createdAt}</div>' +
 			'</div>' + 
-			'<div class="row content block">' +postEntry.content + '</div>' +
+			'<div class="row content block">{postEntry.content}</div>' +
 			'<div class="row reaction-block">'+
 				'<div class="col-lg-9">'+
 					'<div class="row">'+
-						'<a class="thumb-button block small standard-btn" onclick="executeThumb('+postEntry.id+')"><i class="fa fa-thumbs-up"></i> <span id="post-entry-likes-'+postEntry.id+'">' + postEntry.reactions.length + '</span> Like!</a>'+
-						'<a class="show-comments block small standard-btn" onclick="getComments('+postEntry.id+')">Comments</a>'+
+						'<a class="thumb-button block small standard-btn" onclick="executeThumb({postEntry.id})"><i class="fa fa-thumbs-up"></i> <span id="post-entry-likes-{postEntry.id}">{reactions.length}</span> Like!</a>'+
+						'<a class="show-comments block small standard-btn" onclick="getComments({postEntry.id})">Comments</a>'+
 					'</div>'+
 				'</div>'+
 			'</div>' +
-			'<div class="row" id="comment-block-'+postEntry.id+'" style="display:none;"></div>'+
+			'<div class="row" id="comment-block-{postEntry.id}" style="display:none;"></div>'+
 	'</div>';
+	result = result.formatUnicorn(params);
 	jQuery(appendTo).append(result);
+		
 }
 
 function executeThumb(postId) {
@@ -48,24 +70,93 @@ function getComments(postId,params) {
 	var postEntry = jQuery('#comment-block-' + postId);
 	if(postEntry.is(':visible'))
 		return;
-	var ajax = new AjaxRequest('/comments?post-id=' + postId);
+	var ajax = new AjaxRequest('/comment/get?post-id=' + postId);
 	ajax.method = 'GET';
-	ajax.send(null,showComments,getMessage('internal.error'),{'postId':postId, 'postEntry':postEntry});
+	ajax.send(null,showComments,null,{'postId':postId, 'postEntry':postEntry});
 }
 
 var showComments = function(jsonObject,params){
-	var ren = renderCommentForm(params["postId"]);
 	var postEntry = params['postEntry'];
-	postEntry.append(ren);
+	renderCommentsBlock(params["postId"],jsonObject,postEntry);
 	postEntry.slideDown(100);
 }
 
-function sendOnEnter(textArea) {
-	console.log(textArea);
+function sendOnEnter(event, textArea) {
+	if(event.keyCode != 13)
+		return;
+	var ajax = new AjaxRequest('/comment/new');
+	var content = textArea.value;
+	if(isEmpty(content))
+		return;
+	var form = jQuery(textArea).parent();
+	ajax.send(new FormData(form[0]),addCommentSuccess);
 }
 
-function renderCommentForm(postId,commentParent){
-	return '<div class="offset-lg-1 col-lg-9 comment-form">' +
-				'<textarea class="comment-'+postId+'" name="comment-content" onkeyup="sendOnEnter(this)" placeholder="'+getMessage('enter.content')+'"></textarea>' + 
-			'</div>';
+var addCommentSuccess = function(jsonObj) {
+	console.log(jsonObj);
+}
+
+function renderCommentsBlock(postId,jsonObject,postEntryNode){
+	var params = {
+			'postId': postId,
+			'placeholder': getMessage('enter.content'), 
+			};
+	
+	var result = 
+	'<div class="col-lg-9 comment-form">' +
+		'<form id="postEntry-comment-{postId}">' + 
+			'<input type="hidden" value="{postId}" name="postId"/>' + 
+			'<textarea class="form-control block" name="content" onkeyup="sendOnEnter(event,this)" placeholder="{placeholder}"></textarea>' + 
+		'</form>' + 
+	'</div>' +
+	'<div class="offset-lg-1 col-lg-10 comment-section">' +
+		renderAllComment(jsonObject) + 
+	'</div>';
+	result = result.formatUnicorn(params);
+	postEntryNode.append(result);
+}
+
+function renderAllComment(jsonComments){
+	if(jsonComments === undefined || jsonComments.length === 0)
+		return '';
+	
+	var len = jsonComments.length;
+	var allComments = '';
+	for(i=0;i<len;i++) {
+		console.log(renderSingleComment(jsonComments[i]));
+		allComments += renderSingleComment(jsonComments[i]);
+	}
+	
+	return allComments;
+		
+}
+
+function renderSingleComment(jsonSingleComment){
+	console.log(jsonSingleComment);
+	var params = {
+		'comment.author.login': jsonSingleComment.author.login,
+		'comment.author.img': jsonSingleComment.author.imageUrl,
+		'comment.author.name': jsonSingleComment.author.name,
+		'comment.author.lastname': jsonSingleComment.author.lastname,
+		'comment.content': jsonSingleComment.content
+	};
+	var result = 
+	'<div class="row single-comment">' + 
+		'<div class="col-lg-12">' +
+			'<div class="row">' +
+				'<a href="/profile/{comment.author.login}" class="author">' +
+					'<img src="{comment.author.img}" class="post-profile-image"/>' +
+				'</a>' +
+				'<div class="comment-content">'+
+					'<a href="/profile/{comment.author.login}" class="hover-underline underline-color-red comment-author">' +
+						'<span class="bold red">{comment.author.name}&nbsp;{comment.author.lastname}</span>' +
+					'</a>' +
+					'{comment.content}'+
+				'</div>' +
+			'</div>' +
+		'</div>' + 
+	'</div>';
+	result = result.formatUnicorn(params);
+	return result;
+	
 }

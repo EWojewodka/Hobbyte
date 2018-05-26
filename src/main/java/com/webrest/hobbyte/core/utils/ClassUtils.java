@@ -156,5 +156,5 @@ public class ClassUtils {
 	public static Class<?> getGenericType(Class<?> clazz) {
 		return (Class) ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[0];
 	}
-
+	
 }
