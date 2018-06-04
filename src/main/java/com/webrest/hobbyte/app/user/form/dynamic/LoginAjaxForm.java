@@ -12,7 +12,10 @@ import com.webrest.hobbyte.app.user.ExtranetUserUtils;
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
-import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
+import com.webrest.hobbyte.core.dynamicForm.GenericAjaxDynamicForm;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage.ErrorMessage;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage.RedirectMessage;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
@@ -22,7 +25,7 @@ import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Service
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class LoginAjaxForm extends AjaxDynamicForm {
+public class LoginAjaxForm extends GenericAjaxDynamicForm<SimpleMessage> {
 
 	@Autowired
 	private ExtranetUserDao userDao;
@@ -33,12 +36,10 @@ public class LoginAjaxForm extends AjaxDynamicForm {
 	@Autowired
 	private MessageSourceHelper msgHelper;
 
-
 	@Override
-	protected void process(IExtranetUserContext context) throws Exception {
+	protected SimpleMessage process(IExtranetUserContext context) throws Exception {
 		if (ExtranetUserUtils.isLogged(context)) {
-			setRedirect("/");
-			return;
+			return new RedirectMessage("/");
 		}
 		ExtranetUser user = userDao.findByLoginOrEmail(getParameter("login"));
 
@@ -52,7 +53,7 @@ public class LoginAjaxForm extends AjaxDynamicForm {
 
 		handleRememberMe(context, user);
 		context.loginUser(user);
-		setRedirect("/");
+		return new RedirectMessage("/");
 	}
 
 	public void handleRememberMe(IHttpContext context, ExtranetUser user) {
@@ -71,6 +72,11 @@ public class LoginAjaxForm extends AjaxDynamicForm {
 	@Override
 	public String getCode() {
 		return "sign-up";
+	}
+
+	@Override
+	protected SimpleMessage handleException(Exception e) {
+		return new ErrorMessage(e.getMessage());
 	}
 
 }

@@ -2,6 +2,8 @@ package com.webrest.hobbyte.core.http.context;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import com.webrest.hobbyte.app.user.ExtranetUserUtils;
@@ -11,6 +13,7 @@ import com.webrest.hobbyte.core.utils.HttpUtils;
 
 @Service("extranetUser")
 @Primary
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ExtranetUserContext extends HttpContext implements IExtranetUserContext {
 
 	@Autowired

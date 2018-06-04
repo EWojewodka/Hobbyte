@@ -6,15 +6,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 
 @Service
 @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class ChangeLastnameForm extends UserAjaxForm {
+public class ChangeLastnameForm extends UserEntityAjaxForm<SimpleMessage> {
 
 	@Override
-	protected void process(IExtranetUserContext context) throws Exception {
+	protected SimpleMessage process(IExtranetUserContext context) throws Exception {
 		valid();
 		
 		String lastname = getParameter("lastname");
@@ -23,7 +24,7 @@ public class ChangeLastnameForm extends UserAjaxForm {
 		ExtranetUser user = getUser();
 		user.setLastname(lastname);
 		getUserDao().save(user);
-		addMessage("Your lastname is changed!");
+		return new SimpleMessage("Your lastname is changed!");
 	}
 
 	@Override

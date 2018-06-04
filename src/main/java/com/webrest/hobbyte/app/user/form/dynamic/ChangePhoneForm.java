@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
@@ -19,10 +20,10 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  */
 @Service
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class ChangePhoneForm extends UserAjaxForm {
+public class ChangePhoneForm extends UserEntityAjaxForm<SimpleMessage> {
 
 	@Override
-	protected void process(IExtranetUserContext context) throws Exception {
+	protected SimpleMessage process(IExtranetUserContext context) throws Exception {
 		valid();
 
 		String phoneNumber = getParameter("phone-number");
@@ -31,7 +32,7 @@ public class ChangePhoneForm extends UserAjaxForm {
 		ExtranetUser user = getUser();
 		user.setPhoneNumber(phoneNumber);
 		getUserDao().save(user);
-		addMessage("Your phone number has been changed.");
+		return new SimpleMessage("Your phone number has been changed.");
 	}
 
 	@Override

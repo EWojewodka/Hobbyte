@@ -3,6 +3,7 @@
  */
 package com.webrest.hobbyte.app.posts;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,12 +22,19 @@ import com.webrest.hobbyte.core.dao.GenericDao;
 @Service
 public class PostEntryDao extends GenericDao<PostEntry>{
 	
-	public PostEntry[] getRelatedPosts(ExtranetUser user) {
+	public List<PostEntry> getRelatedPosts(ExtranetUser user, int size, Collection<Integer> withoutId) {
 		CriteriaFilter cf = new CriteriaFilter();
 		cf.setOrderBy("createdAt");
 		cf.setOrderDirection(OrderDirections.DESC);
-		List<PostEntry> result = find(cf);
-		return result.toArray(new PostEntry[result.size()]);
+		cf.setDistinct(true);
+		cf.setLimit(size);
+		if(withoutId != null)
+			cf.addWhereNotIn("id", withoutId.toArray(new Integer[withoutId.size()]));
+		return find(cf);
+	}
+	
+	public List<PostEntry> getRelatedPosts(ExtranetUser user, int size) {
+		return getRelatedPosts(user, size, null);
 	}
 	
 	public boolean isReactedByUser(int postId, int userId) {

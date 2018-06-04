@@ -18,26 +18,28 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	private List<ICriteriaJoiner<?>> joiners = new ArrayList<>();
 
 	private Map<String, Object> whereMap = new HashMap<>();
-	
+
 	private Map<String, Object> whereNotMap = new HashMap<>();
 
 	private Map<String, Object[]> whereInMap = new HashMap<>();
+
+	private Map<String, Object[]> whereNotInMap = new HashMap<>();
 
 	private int limit;
 
 	private boolean isDistinct;
 
 	private String orderBy;
-	
+
 	private OrderDirections orderDirection = OrderDirections.DESC;
-	
+
 	public CriteriaFilter() {
 	}
 
 	public CriteriaFilter(String whereColumn, Object value) {
 		whereMap.put(whereColumn, value);
 	}
-	
+
 	@Override
 	public CriteriaFilter setOrderBy(String columnName) {
 		this.orderBy = columnName;
@@ -53,12 +55,12 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	public Map<String, Object> getWhere() {
 		return whereMap;
 	}
-	
+
 	@Override
 	public Map<String, Object> getWhereNot() {
 		return whereNotMap;
 	}
-	
+
 	@Override
 	public CriteriaFilter addWhereNot(String fieldName, Object value) {
 		whereNotMap.put(fieldName, value);
@@ -68,6 +70,11 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	@Override
 	public Map<String, Object[]> getWhereIn() {
 		return whereInMap;
+	}
+	
+	@Override
+	public Map<String, Object[]> getWhereNotIn() {
+		return whereNotInMap;
 	}
 
 	@Override
@@ -79,7 +86,13 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	@Override
 	public CriteriaFilter addWhereIn(String fieldName, Object[] values) {
 		whereInMap.put(fieldName, values);
-		return null;
+		return this;
+	}
+
+	@Override
+	public CriteriaFilter addWhereNotIn(String fieldName, Object[] values) {
+		whereNotInMap.put(fieldName, values);
+		return this;
 	}
 
 	@Override
@@ -120,5 +133,5 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	public OrderDirections getOrderDirection() {
 		return orderDirection;
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-function printPostEntry(appendTo,postEntry){
+function printPostEntry(appendTo,postEntry, before){
 	var params = {
 			'author.login': postEntry.author.login,
 			'author.imageUrl': postEntry.author.imageUrl,
@@ -6,14 +6,15 @@ function printPostEntry(appendTo,postEntry){
 			'author.lastname': postEntry.author.lastname,
 			'postEntry.createdAt': postEntry.createdAt,
 			'postEntry.content': postEntry.content,
+			'postEntry.image': isEmpty(postEntry.imageUrl) ? "" : postEntry.imageUrl,
 			'postEntry.id': postEntry.id,
-			'reactions.length' : postEntry.reactions.length
+			'reactions.length' : postEntry.reactions === null ? 0 :postEntry.reactions.length
 		};
 	var result = 
 	'<div class="row">' +
 		'<div class="col-lg-12 post-entry block">' +
 			'<div class="row header">' +
-				'<div class="col-lg-12 author">'+
+				'<div class="col-lg-11 author">'+
 					'<a href="/profile/{author.login}">' +
 						'<div class="row">' + 
 							'<div class="col-lg-2">' + 
@@ -30,47 +31,75 @@ function printPostEntry(appendTo,postEntry){
 						'</div>' + 
 					'</a>'+
 				'</div>' +
-//				'<div class="date col-lg-3 text-right small">{postEntry.createdAt}</div>' +
+				'<div class="col-lg-1 edit">' +
+					'<a href="#" onclick="showPostOptions({postEntry.id})"><i class="fa fa-ellipsis-h"></i></a>' +
+				'</div>'+
 			'</div>' + 
-			'<div class="row content block">{postEntry.content}</div>' +
+			'<div class="row content block">{postEntry.content}'+
+			'<img src="{postEntry.image}" class="post-entry-img" onclick="maximizePostEntryImage(this)" />' +
+			'</div>' +
 			'<div class="row reaction-block">'+
 				'<div class="col-lg-9">'+
 					'<div class="row">'+
 						'<a class="thumb-button block small standard-btn" onclick="executeThumb({postEntry.id})"><i class="fa fa-thumbs-up"></i> <span id="post-entry-likes-{postEntry.id}">{reactions.length}</span> Like!</a>'+
-						'<a class="show-comments block small standard-btn" onclick="getComments({postEntry.id})">Comments</a>'+
+						'<a class="show-comments block small standard-btn" onclick="getComments({postEntry.id})"><i class="fa fa-comments"></i> <span>Comments</span></a>'+
 					'</div>'+
 				'</div>'+
 			'</div>' +
 			'<div class="row" id="comment-block-{postEntry.id}" style="display:none;"></div>'+
 	'</div>';
 	result = result.formatUnicorn(params);
-	jQuery(appendTo).append(result);
-		
+	if(before){
+		jQuery(result).insertBefore(appendTo.parent());
+	} else {
+		jQuery(appendTo).append(result);
+	}
+	showComments(postEntry.comments, {'postId':postEntry.id,'postEntry':jQuery('#comment-block-' + postEntry.id)});
+}
+
+/**
+ * Render post entry options after click menu button.
+ * @param postId
+ * @returns
+ */
+function showPostOptions(postId){
+	var ajax = new AjaxRequest("/post/options?postId=" + postId);
+	ajax.method = 'GET';
+	ajax.send(null,function(jsonObj){
+		console.log(jsonObj);
+	});
 }
 
 function executeThumb(postId) {
 	var ajax = new AjaxRequest('/post/reaction/add?postId='+postId);
-	ajax.send(null, incrementLikes);
-}
-
-var incrementLikes = function(json){
-	var postEntryLikes = jQuery('#post-entry-likes-' + json.postId);
-	if(postEntryLikes === undefined)
-		return;
-	var modifier = json.action == 'deleted' ? -1 : 1;
-	postEntryLikes.text(parseInt(postEntryLikes.text()) + 1 * modifier);
+	ajax.send(null, function(json){
+		var postEntryLikes = jQuery('#post-entry-likes-' + json.postId);
+		if(postEntryLikes === undefined)
+			return;
+		var modifier = json.action == 'deleted' ? -1 : 1;
+		postEntryLikes.text(parseInt(postEntryLikes.text()) + 1 * modifier);
+	});
 }
 
 function sendNewPost(form, onSuccess,onFailure) {
+	if(isEmpty(form.content.value) && form.photo.files.length === 0){
+		return;
+	}
 	var ajax = new AjaxRequest('/post/new');
 	ajax.send(new FormData(form), onSuccess, onFailure);
 }
 
-function getComments(postId,params) {
+function getComments(postId,size) {
 	var postEntry = jQuery('#comment-block-' + postId);
 	if(postEntry.is(':visible'))
 		return;
-	var ajax = new AjaxRequest('/comment/get?post-id=' + postId);
+	var url = '/comment/get';
+	url = addUrlParam(url,'post-id',postId);
+	
+	if(size !== undefined)
+		url = addUrlParam(url,'size', size);
+	
+	var ajax = new AjaxRequest(url);
 	ajax.method = 'GET';
 	ajax.send(null,showComments,null,{'postId':postId, 'postEntry':postEntry});
 }
@@ -90,13 +119,18 @@ function sendOnEnter(event, textArea) {
 		return;
 	var form = jQuery(textArea).parent();
 	ajax.send(new FormData(form[0]),addCommentSuccess);
+	textArea.value = '';
 }
 
 var addCommentSuccess = function(jsonObj) {
-	console.log(jsonObj);
+	var newCommentBody = renderSingleComment(jsonObj);
+	var commentBlock = jQuery('#comment-section-for-' + jsonObj.postEntryId);
+	commentBlock.append(newCommentBody);
 }
 
 function renderCommentsBlock(postId,jsonObject,postEntryNode){
+	if(jQuery('#postEntry-comment-' + postId).is(':visible'))
+		return;
 	var params = {
 			'postId': postId,
 			'placeholder': getMessage('enter.content'), 
@@ -104,26 +138,32 @@ function renderCommentsBlock(postId,jsonObject,postEntryNode){
 	
 	var result = 
 	'<div class="col-lg-9 comment-form">' +
-		'<form id="postEntry-comment-{postId}">' + 
+		'<a class="red bold small" onclick="togglePostEntryForm({postId},this)">{placeholder}</a>' + 
+		'<form id="postEntry-comment-{postId}" style="display: none;">' + 
 			'<input type="hidden" value="{postId}" name="postId"/>' + 
 			'<textarea class="form-control block" name="content" onkeyup="sendOnEnter(event,this)" placeholder="{placeholder}"></textarea>' + 
 		'</form>' + 
 	'</div>' +
-	'<div class="offset-lg-1 col-lg-10 comment-section">' +
+	'<div class="col-lg-11 comment-section" id="comment-section-for-{postId}">' +
 		renderAllComment(jsonObject) + 
 	'</div>';
 	result = result.formatUnicorn(params);
 	postEntryNode.append(result);
 }
 
+function togglePostEntryForm(postEntryId,link){
+	var formRef = 'form#postEntry-comment-' + postEntryId;
+	jQuery(formRef).slideDown(100);
+	jQuery(link).hide(100);
+}
+
 function renderAllComment(jsonComments){
-	if(jsonComments === undefined || jsonComments.length === 0)
+	if(jsonComments === undefined || jsonComments === null ||jsonComments.length === 0)
 		return '';
 	
 	var len = jsonComments.length;
 	var allComments = '';
-	for(i=0;i<len;i++) {
-		console.log(renderSingleComment(jsonComments[i]));
+	for(var i=0;i<len;i++) {
 		allComments += renderSingleComment(jsonComments[i]);
 	}
 	
@@ -131,14 +171,14 @@ function renderAllComment(jsonComments){
 		
 }
 
-function renderSingleComment(jsonSingleComment){
-	console.log(jsonSingleComment);
+function renderSingleComment(comment){
+	comment = comment.content === undefined ? comment.comment : comment;
 	var params = {
-		'comment.author.login': jsonSingleComment.author.login,
-		'comment.author.img': jsonSingleComment.author.imageUrl,
-		'comment.author.name': jsonSingleComment.author.name,
-		'comment.author.lastname': jsonSingleComment.author.lastname,
-		'comment.content': jsonSingleComment.content
+		'comment.author.login': comment.author.login,		
+		'comment.author.img': comment.author.imageUrl,
+		'comment.author.name': comment.author.name,
+		'comment.author.lastname': comment.author.lastname,
+		'comment.content': comment.content
 	};
 	var result = 
 	'<div class="row single-comment">' + 
@@ -159,4 +199,17 @@ function renderSingleComment(jsonSingleComment){
 	result = result.formatUnicorn(params);
 	return result;
 	
+}
+
+function fetchEntries(size){
+	var url = "/post/feed/news";
+	url = addUrlParam(url, "size",size)
+	var ajax = new AjaxRequest(url);
+	ajax.method = 'GET';
+	ajax.send(null, function(jsonObj){
+		var len = jsonObj.length;
+		for(var i=0; len>i; i++) {
+			printPostEntry(jQuery('.post-container'), jsonObj[i])									
+		}
+	});
 }

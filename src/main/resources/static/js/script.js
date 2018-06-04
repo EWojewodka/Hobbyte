@@ -253,9 +253,17 @@ function maximizePhoto(photo){
 	}
 }
 
+function maximizePostEntryImage(photo) {
+	toggleHeaderObscure();
+	var imgSrc = jQuery(photo).attr('src');
+	var maxPhoto  = jQuery('<img src="'+imgSrc+'" class="max-photo" id="maximize-photo" />');
+	jQuery(maxPhoto).insertAfter('.header-obscure');
+}
+
 function minimizeImage(){
 	var photoPreview = jQuery('#photo-mini-preview');
 	photoPreview.toggleClass('max-photo');
+	jQuery('#maximize-photo').remove();
 }
 
 function toggleHeaderObscure(){
@@ -298,3 +306,18 @@ function () {
 
     return str;
 };
+
+function addUrlParam(url,key,value){
+	if(isEmpty(url))
+		return '';
+	if(isEmpty(key))
+		return url;
+
+	var indexOf = url.indexOf('?');
+	if(indexOf == -1)
+		url += '?';
+	else 
+		url += '&';
+	url += key + '=' + value;
+	return url;
+}

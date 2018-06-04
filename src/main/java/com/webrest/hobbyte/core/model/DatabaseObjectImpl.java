@@ -6,10 +6,6 @@ package com.webrest.hobbyte.core.model;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
-import org.json.JSONObject;
-
-import com.webrest.hobbyte.core.model.json.JSONable;
-import com.webrest.hobbyte.core.model.json.JsonConverter;
 import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
@@ -17,7 +13,7 @@ import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
  *
  * @since 24 mar 2018
  */
-public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
+public abstract class DatabaseObjectImpl implements DatabaseObject {
 
 	/** {@inheritDoc}} */
 	public boolean isNew() {
@@ -119,16 +115,6 @@ public abstract class DatabaseObjectImpl implements DatabaseObject, JSONable {
 			field.setAccessible(true);
 			return field.get(this);
 		}).get();
-	}
-
-	@Override
-	public JSONObject getAsJSON() {
-		return JsonConverter.toJson(this);
-	}
-
-	@Override
-	public String getJSONAsString() {
-		return getAsJSON().toString();
 	}
 
 	public DatabaseObjectImpl cloneDBO() {

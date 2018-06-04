@@ -136,7 +136,7 @@ public class Console extends NodeSource implements IConsole {
 
 	protected Class<? extends ConsoleHandler> initConsoleHandler(String handlerClass) {
 		return ExceptionStream.printOnFailure().call(() -> {
-			return Class.forName(handlerClass);
+			return StringUtils.isEmpty(handlerClass) ? ConsoleHandler.class : Class.forName(handlerClass);
 		}).getOrDefault(ConsoleHandler.class);
 	}
 

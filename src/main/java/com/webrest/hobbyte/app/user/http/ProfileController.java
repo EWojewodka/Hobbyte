@@ -21,7 +21,8 @@ import com.webrest.hobbyte.app.user.form.dynamic.ChangeLastnameForm;
 import com.webrest.hobbyte.app.user.form.dynamic.ChangeNameForm;
 import com.webrest.hobbyte.app.user.form.dynamic.ChangePhoneForm;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
-import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
+import com.webrest.hobbyte.core.dynamicForm.GenericAjaxDynamicForm;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 
 /**
@@ -83,8 +84,8 @@ public class ProfileController extends BaseController {
 	 */
 	@ResponseBody
 	@PostMapping(value = { "/profile/settings" })
-	public String postSettings(@PathParam("type") String type) {
-		AjaxDynamicForm form = null;
+	public SimpleMessage postSettings(@PathParam("type") String type) {
+		GenericAjaxDynamicForm<SimpleMessage> form = null;
 		switch (type) {
 		case "email":
 			form = emailForm;

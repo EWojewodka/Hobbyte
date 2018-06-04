@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.webrest.hobbyte.core.utils.collection.ParameterContainer;
 
 @Service(value = "http")
-@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class HttpContext extends ParameterContainer implements IHttpContext {
 
 	@Autowired

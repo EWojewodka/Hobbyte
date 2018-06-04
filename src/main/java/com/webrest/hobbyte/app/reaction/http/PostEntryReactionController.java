@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.webrest.hobbyte.app.reaction.form.NewOrRemoveReactionForm;
+import com.webrest.hobbyte.app.reaction.form.NewOrRemoveReactionForm.ReactionResponse;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 
 @Controller
@@ -18,7 +19,7 @@ public class PostEntryReactionController extends BaseController {
 	
 	@ResponseBody
 	@PostMapping(value = "/add")
-	public String postNewReaction() {
+	public ReactionResponse postNewReaction() {
 		return form.run();
 	}
 

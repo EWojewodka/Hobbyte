@@ -5,13 +5,6 @@
   	layout:decorator="sys/templates/console">
 <head th:include="head :: head" th:remove="tag"></head>
 <body>
-	<div layout:fragment="toolbar">
-		<div th:if="${console.canSave()}" th:remove="tag">
-			<button onclick="jQuery('#new-param-form').submit();">
-				<i class="fa fa-plus-square"></i>&nbsp;save
-			</button>
-		</div>
-	</div>
 	<div layout:fragment="content">
 		<form role="form" id="new-param-form" class="dyanmic-form" method="POST" th:action="@{${detailsURL}(action=('save'),console-id=(__${console.id}__))}">
 		    <div class="form-group">
@@ -26,6 +19,7 @@
 		      <label for="value">App param value</label>
 		      <input type="text" class="form-control" id="value" name="value" th:value="${context.getObject('app-param') == null ? '' : context.getObject('app-param').value}"/>
 		    </div>
+		    <button>send</button>
 		</form>
 	</div>
 </body>

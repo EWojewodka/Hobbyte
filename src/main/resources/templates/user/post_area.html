@@ -28,7 +28,11 @@
 								});
 								
 								var addPostToBoard = function(jsonObject) {
-									console.log(jsonObject);
+									printPostEntry(jQuery('.post-entry').first(),jsonObject,true);
+									document.getElementById('new-post').reset();
+									document.getElementsByClassName('post-attachments-preview')[0].innerHTML = "";
+									jQuery('.post-attachments-preview').hide();
+									jQuery('.post-attachments').hide();
 								}
 							</script>
 							<div class="post-attachments">

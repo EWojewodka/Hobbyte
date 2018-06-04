@@ -8,6 +8,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,11 +16,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.webrest.hobbyte.app.comments.Comment;
 import com.webrest.hobbyte.app.reaction.model.PostEntryReaction;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
-import com.webrest.hobbyte.core.model.json.AsJSON;
+import com.webrest.hobbyte.core.model.json.View;
 import com.webrest.hobbyte.core.utils.Asserts;
 
 /**
@@ -32,43 +37,50 @@ import com.webrest.hobbyte.core.utils.Asserts;
 public class PostEntry extends DatabaseObjectImpl {
 
 	@Id
-	@AsJSON
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "hb_post_entry_id", nullable = false, unique = true, updatable = false)
+	@JsonView(View.Basic.class)
 	private int id;
 
 	@JoinColumn(name = "author_id")
 	@OneToOne
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private ExtranetUser author;
 
 	@Column(nullable = true)
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private String content;
 
 	@Column(name = "created_at")
-	@AsJSON(defaultDateFormat = "EEE dd k:mm")
+	@JsonView(View.Basic.class)
+	@JsonFormat(pattern = "EEEEEEEE dd.MM HH:mm")
 	private Date createdAt = new Date();
 
 	@Column(name = "image_url")
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private String imageUrl;
 
 	@Column(name = "video_url")
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private String videoUrl;
 
 	@Column(name = "doc_url")
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private String documentUrl;
 
 	@Column
-	@AsJSON
 	private int status = PostEntryStatus.PENDING.getId();
 
-	@AsJSON
 	@OneToMany(mappedBy = "postEntry")
+	@JsonView(View.Basic.class)
 	private Collection<PostEntryReaction> reactions;
+
+	@OneToMany(mappedBy = "postEntryId", fetch = FetchType.LAZY)
+	@JsonView(View.Basic.class)
+	private Collection<Comment> comments;
+	
+	@Transient
+	private int commentCount = comments == null ? 0 : comments.size();
 
 	public PostEntry(ExtranetUser author) {
 		Asserts.exists(author);
@@ -79,7 +91,7 @@ public class PostEntry extends DatabaseObjectImpl {
 	public int getId() {
 		return id;
 	}
-	
+
 	@Override
 	public void setId(int id) {
 		this.id = id;
@@ -137,8 +149,16 @@ public class PostEntry extends DatabaseObjectImpl {
 		return reactions;
 	}
 
+	public int getCommentCount() {
+		return commentCount;
+	}
+
 	public PostEntry() {
 
+	}
+
+	public Collection<Comment> getComments() {
+		return comments;
 	}
 
 }

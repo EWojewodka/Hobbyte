@@ -32,7 +32,7 @@ public class AdministratorSeed extends AbstractSeed {
 
 	@Override
 	public boolean needExecute() {
-		return userDao.findByEmail("emilwojewodka@gmail.com") == null;
+		return userDao.findByLogin("Administrator") == null;
 	}
 
 	@Override

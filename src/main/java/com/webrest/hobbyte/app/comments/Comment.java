@@ -16,9 +16,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
-import com.webrest.hobbyte.core.model.json.AsJSON;
+import com.webrest.hobbyte.core.model.json.View;
 
 /**
  * @author Emil Wojewódka
@@ -27,29 +29,35 @@ import com.webrest.hobbyte.core.model.json.AsJSON;
  */
 @Entity
 @Table(name = "hb_comments")
-@AsJSON
 public class Comment extends DatabaseObjectImpl {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "hb_comment_id", nullable = false, unique = true, updatable = false)
+	@JsonView(View.Basic.class)
 	private int id;
 
 	@Column(name = "content", nullable = false)
+	@JsonView(View.Basic.class)
 	private String content;
 
 	@Column(name = "created_at")
+	@JsonView(View.Basic.class)
+	@JsonFormat(pattern = "EEEEEEEE dd.MM HH:mm")
 	private Date createdAt = new Date();
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "author_id")
+	@JsonView(View.Basic.class)
 	private ExtranetUser author;
 
 	@Column(name = "post_id")
+	@JsonView(View.Basic.class)
 	private int postEntryId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_comment_id")
+	@JsonView(View.Basic.class)
 	private Comment parentComment;
 
 	//For spring

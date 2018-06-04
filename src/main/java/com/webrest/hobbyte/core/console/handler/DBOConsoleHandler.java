@@ -29,6 +29,7 @@ public class DBOConsoleHandler extends ConsoleHandler {
 
 	@Override
 	public void handle(ExtranetUserContext context, Model model, String action) throws Exception {
+		super.handle(context, model, action);
 		switch (action) {
 		case "add":
 			onAdd(context, model);

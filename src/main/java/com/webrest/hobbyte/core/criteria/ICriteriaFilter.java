@@ -38,6 +38,10 @@ public interface ICriteriaFilter<T extends ICriteriaFilter<T>> {
 
 	Map<String, Object[]> getWhereIn();
 
+	T addWhereNotIn(String fieldName, Object[] objects);
+
+	Map<String, Object[]> getWhereNotIn();
+	
 	T setOrderBy(String columnName);
 
 	String getOrderBy();

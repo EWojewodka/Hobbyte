@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserAgreement;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserRoles;
@@ -20,7 +21,7 @@ import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.app.user.model.enums.Gender;
 import com.webrest.hobbyte.app.user.model.enums.NewsletterStatus;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
-import com.webrest.hobbyte.core.model.json.AsJSON;
+import com.webrest.hobbyte.core.model.json.View;
 import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Entity
@@ -30,13 +31,14 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "hb_extranet_user_id", nullable = false, unique = true, updatable = false)
+	@JsonView(View.Basic.class)
 	private int id;
 
 	@Column(name = "created_at")
 	private Date createdAt = new Date();
 
 	@Column(nullable = false, unique = true)
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private String login;
 
 	@Column(nullable = false, unique = true)
@@ -46,11 +48,11 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private String password;
 
 	@Column
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private String name;
 
 	@Column
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private String lastname;
 
 	@Column
@@ -66,7 +68,7 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private String phoneNumber;
 
 	@Column(nullable = true)
-	@AsJSON
+	@JsonView(View.Basic.class)
 	private Integer gender;
 
 	@Column
@@ -82,7 +84,6 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	private String rememberMeCode;
 
 	@Column(name = "image_url")
-	@AsJSON(defaultValue = "/images/gandalf.jpg")
 	private String imageUrl;
 
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
@@ -106,6 +107,7 @@ public class ExtranetUser extends DatabaseObjectImpl {
 		return postEntries;
 	}
 
+	@JsonView(View.Basic.class)
 	public String getImageUrl() {
 		if (StringUtils.isEmpty(imageUrl))
 			return "/images/gandalf.jpg";
@@ -224,13 +226,6 @@ public class ExtranetUser extends DatabaseObjectImpl {
 		return name + " " + lastname;
 	}
 	
-	@AsJSON(jsonName = "postEntriesSize")
-	public int getPostEntrySize() {
-		if(postEntries == null)
-			return 0;
-		return postEntries.size();
-	}
-
 	public ExtranetUserPolicy createOrGetUserPolicy() {
 		if (userPolicy != null)
 			return userPolicy;

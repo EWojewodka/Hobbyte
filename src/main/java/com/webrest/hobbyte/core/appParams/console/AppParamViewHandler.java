@@ -46,6 +46,7 @@ public class AppParamViewHandler extends DBOConsoleHandler {
 	public void onSave(ExtranetUserContext context, Model model) throws Exception {
 		super.onSave(context, model);
 		HttpServletRequest req = context.getRequest();
+		req.getParameterMap().forEach((k,v) -> System.out.println(k + " v : " + v[0]));
 		String group = req.getParameter("group");
 		String key = req.getParameter("key");
 		if (StringUtils.isEmpty(group) || StringUtils.isEmpty(key)) {

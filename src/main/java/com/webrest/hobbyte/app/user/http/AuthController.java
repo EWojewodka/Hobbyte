@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.webrest.hobbyte.app.user.form.dynamic.LoginAjaxForm;
 import com.webrest.hobbyte.app.user.form.dynamic.RegistrationAjaxForm;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 
 @Controller
@@ -29,7 +30,7 @@ public class AuthController extends BaseController {
 
 	@PostMapping(value = "/sign-in")
 	@ResponseBody
-	public String postSignIn() throws Exception {
+	public SimpleMessage postSignIn() throws Exception {
 		return signInForm.run();
 	}
 
@@ -40,7 +41,7 @@ public class AuthController extends BaseController {
 
 	@PostMapping(value = "/sign-up")
 	@ResponseBody
-	public String postSignUp() {
+	public SimpleMessage postSignUp() {
 		return signUpForm.run();
 	}
 

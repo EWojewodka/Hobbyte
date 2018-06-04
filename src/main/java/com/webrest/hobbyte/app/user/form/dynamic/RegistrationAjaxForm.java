@@ -11,7 +11,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.webrest.hobbyte.app.user.dao.ExtranetUserDao;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
-import com.webrest.hobbyte.core.dynamicForm.AjaxDynamicForm;
+import com.webrest.hobbyte.core.dynamicForm.GenericAjaxDynamicForm;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage.ErrorMessage;
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage.RedirectMessage;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
@@ -19,20 +22,20 @@ import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Service
 @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class RegistrationAjaxForm extends AjaxDynamicForm {
+public class RegistrationAjaxForm extends GenericAjaxDynamicForm<SimpleMessage> {
 
 	@Autowired
 	private ExtranetUserDao userDao;
-	
+
 	@Autowired
 	private PasswordEncoder encoder;
-	
+
 	@Autowired
 	private MessageSourceHelper msgHelper;
 
 	@Override
 	@Transactional(rollbackOn = Exception.class)
-	protected void process(IExtranetUserContext context) throws Exception {
+	protected SimpleMessage process(IExtranetUserContext context) throws Exception {
 
 		String login = getParameter("login");
 		AjaxAsserts.longerThan(login, 5,
@@ -55,12 +58,17 @@ public class RegistrationAjaxForm extends AjaxDynamicForm {
 		user.setPassword(encoder.encode(password));
 		userDao.save(user);
 		context.loginUser(user);
-		setRedirect("/");
+		return new RedirectMessage("/");
 	}
 
 	@Override
 	public String getCode() {
 		return "registration";
+	}
+
+	@Override
+	protected SimpleMessage handleException(Exception e) {
+		return new ErrorMessage(e.getMessage());
 	}
 
 }

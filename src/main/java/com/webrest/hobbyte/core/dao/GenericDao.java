@@ -124,6 +124,11 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 		Map<String, Object[]> whereIn = criteriaFilter.getWhereIn();
 		whereIn.forEach((c, v) -> criteria.add(Restrictions.in(c, v)));
 		
+		//Add where not in
+		Map<String, Object[]> whereNotIn = criteriaFilter.getWhereNotIn();
+		whereNotIn.forEach((c, v) -> criteria.add(Restrictions.not(Restrictions.in(c, v))));
+		
+		
 		//set limit
 		int limit = criteriaFilter.getLimit();
 		if (limit > 0)

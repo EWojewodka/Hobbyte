@@ -11,7 +11,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.webrest.hobbyte.app.comments.Comment;
 import com.webrest.hobbyte.app.comments.CommentDao;
-import com.webrest.hobbyte.app.user.form.dynamic.UserAjaxForm;
+import com.webrest.hobbyte.app.user.form.dynamic.UserEntityAjaxForm;
 import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
@@ -25,7 +25,7 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  */
 @Service
 @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class NewCommentAjax extends UserAjaxForm {
+public class NewCommentAjax extends UserEntityAjaxForm<Comment> {
 
 	@Autowired
 	private MessageSourceHelper msgHelper;
@@ -34,7 +34,7 @@ public class NewCommentAjax extends UserAjaxForm {
 	private CommentDao commentDao;
 
 	@Override
-	protected void process(IExtranetUserContext context) throws Exception {
+	protected Comment process(IExtranetUserContext context) throws Exception {
 		valid();
 		String content = getParameter("content");
 
@@ -46,7 +46,7 @@ public class NewCommentAjax extends UserAjaxForm {
 		Comment comment = new Comment(content, user, entryId);
 		commentDao.save(comment);
 
-		addJsonValue("commentId", comment.toString());
+		return comment;
 	}
 
 	@Override

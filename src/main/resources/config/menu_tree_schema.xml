@@ -15,7 +15,20 @@
 			id="users_list" 
 			icon="fa fa-users"
 		/>
-		
+		<leaf 
+			name="Post entries" 
+			console-id="post-entries-list" 
+			id="post-entries-list" 
+			icon="fa fa-users"
+		/>
+	</folder>
+	<folder name="Social" id="social" icon="fa fa-folder">
+		<leaf 
+			name="Facebook" 
+			console-id="facebook" 
+			id="facebok" 
+			icon="fa fa-columns"
+		/>
 	</folder>
 	<folder name="Application" id="application" icon="fa fa-folder">
 		<leaf 

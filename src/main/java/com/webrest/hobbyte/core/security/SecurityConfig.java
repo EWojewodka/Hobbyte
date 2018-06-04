@@ -38,5 +38,6 @@ public class SecurityConfig extends WebMvcConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
 
 }

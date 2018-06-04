@@ -15,12 +15,12 @@ import com.webrest.hobbyte.core.utils.Asserts;
 @Service
 public class AjaxFormFactory {
 
-	private static final List<Class<? extends AjaxDynamicForm>> BUFFER_LIST = new ArrayList<>();
+	private static final List<Class<? extends GenericAjaxDynamicForm<?>>> BUFFER_LIST = new ArrayList<>();
 
 	private AjaxFormFactory() {
 	}
 
-	public static void registerForm(Class<? extends AjaxDynamicForm> formClass) {
+	public static void registerForm(Class<? extends GenericAjaxDynamicForm<?>> formClass) {
 		Asserts.notNull(formClass, "Cannot register null AjaxDynamicForm");
 		BUFFER_LIST.add(formClass);
 	}
@@ -34,9 +34,9 @@ public class AjaxFormFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getForm(Class<? extends AjaxDynamicForm> clazz) {
-		Class<? extends AjaxDynamicForm> formClass = BUFFER_LIST.parallelStream().filter(x -> x == clazz).findFirst()
-				.orElse(getForm(AjaxDynamicFormNull.class));
+	public <T> T getForm(Class<? extends GenericAjaxDynamicForm<?>> clazz) {
+		Class<? extends GenericAjaxDynamicForm<?>> formClass = BUFFER_LIST.parallelStream().filter(x -> x == clazz)
+				.findFirst().orElse(getForm(AjaxDynamicFormNull.class));
 		return (T) formClass;
 	}
 
@@ -44,18 +44,24 @@ public class AjaxFormFactory {
 
 @Service
 @Scope(WebApplicationContext.SCOPE_APPLICATION)
-class AjaxDynamicFormNull extends AjaxDynamicForm {
+class AjaxDynamicFormNull extends GenericAjaxDynamicForm<Object> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger();
 
 	@Override
-	protected void process(IExtranetUserContext request) throws Exception {
+	protected Object process(IExtranetUserContext request) throws Exception {
 		LOGGER.warn("Invoke " + this.getClass());
+		return new Object();
 	}
 
 	@Override
 	public String getCode() {
 		return "null";
+	}
+
+	@Override
+	protected Object handleException(Exception e) {
+		return new Object();
 	}
 
 }

@@ -10,14 +10,14 @@ import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.reaction.IPostEntryReaction.PostEntryReactions;
 import com.webrest.hobbyte.app.reaction.dao.PostEntryReactionDao;
 import com.webrest.hobbyte.app.reaction.model.PostEntryReaction;
-import com.webrest.hobbyte.app.user.form.dynamic.UserAjaxForm;
+import com.webrest.hobbyte.app.user.form.dynamic.UserEntityAjaxForm;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.StringUtils;
 
 @Service
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class NewOrRemoveReactionForm extends UserAjaxForm {
+public class NewOrRemoveReactionForm extends UserEntityAjaxForm<NewOrRemoveReactionForm.ReactionResponse> {
 
 	@Autowired
 	private PostEntryDao postEntryDao;
@@ -26,7 +26,7 @@ public class NewOrRemoveReactionForm extends UserAjaxForm {
 	private PostEntryReactionDao postEntryReactionDao;
 
 	@Override
-	protected void process(IExtranetUserContext context) throws Exception {
+	protected ReactionResponse process(IExtranetUserContext context) throws Exception {
 		valid();
 		PostEntry postEntry = postEntryDao.getById(StringUtils.getAsInt(getParameter("postId"), 0));
 		AjaxAsserts.notNull(postEntry, "Cannot add reaction. Internal error.");
@@ -43,8 +43,7 @@ public class NewOrRemoveReactionForm extends UserAjaxForm {
 		} else {
 			postEntryReactionDao.delete(reactionDBO);
 		}
-		addJsonValue("action", reactionDBO == null ? "added" : "deleted");
-		addJsonValue("postId", String.valueOf(postEntry.getId()));
+		return new ReactionResponse(reactionDBO == null ? "added" : "deleted", postEntry.getId());
 	}
 
 	@Override
@@ -52,4 +51,24 @@ public class NewOrRemoveReactionForm extends UserAjaxForm {
 		return "new-post-entry";
 	}
 
+	public static class ReactionResponse {
+
+		private String action;
+
+		private int postId;
+
+		public ReactionResponse(String action, int postId) {
+			this.action = action;
+			this.postId = postId;
+		}
+
+		public String getAction() {
+			return action;
+		}
+
+		public int getPostId() {
+			return postId;
+		}
+
+	}
 }

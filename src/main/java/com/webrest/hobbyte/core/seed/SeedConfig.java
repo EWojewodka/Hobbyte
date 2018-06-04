@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +22,7 @@ import com.webrest.hobbyte.core.seed.ISeed.SeedExecuteResult;
  * @since 20 maj 2018
  */
 @Configuration
+@ConditionalOnClass(FlywayAutoConfiguration.class)
 public class SeedConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger();
@@ -35,7 +38,7 @@ public class SeedConfig {
 			return o1.getCreateDate().compareTo(o2.getCreateDate());
 		});
 		seeds.forEach(seed -> {
-			LOGGER.info("Seed {} is [{}]", seed.getClass(),
+			LOGGER.info("Seed {} execute status [{}]", seed.getClass(),
 					(seed.needExecute() ? seed.execute() : SeedExecuteResult.SKIPED));
 		});
 		actionLogger.stop();

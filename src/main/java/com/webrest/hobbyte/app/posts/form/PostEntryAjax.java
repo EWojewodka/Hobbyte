@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
 import com.webrest.hobbyte.app.upload.cdn.CloudinaryUploader;
-import com.webrest.hobbyte.app.user.form.dynamic.UserAjaxForm;
+import com.webrest.hobbyte.app.user.form.dynamic.UserEntityAjaxForm;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.utils.AjaxAsserts;
 import com.webrest.hobbyte.core.utils.FileUtils;
@@ -30,7 +30,7 @@ import com.webrest.hobbyte.core.utils.StringUtils;
  */
 @Service
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class PostEntryAjax extends UserAjaxForm {
+public class PostEntryAjax extends UserEntityAjaxForm<PostEntry> {
 
 	private static final String[] AVAILABLE_PHOTO_EXTENSION = { "jpg", "jpeg", "png", "gif" };
 
@@ -45,7 +45,7 @@ public class PostEntryAjax extends UserAjaxForm {
 	private CloudinaryUploader uploader;
 
 	@Override
-	protected void process(IExtranetUserContext userContext) throws Exception {
+	protected PostEntry process(IExtranetUserContext userContext) throws Exception {
 		valid();
 
 		String content = getParameter("content");
@@ -58,9 +58,7 @@ public class PostEntryAjax extends UserAjaxForm {
 		postEntry.setContent(content);
 
 		postEntryDao.save(postEntry);
-
-		addMessage("Your post is published!");
-		addJsonValue("postEntry", postEntry.getJSONAsString());
+		return postEntry;
 	}
 
 	/**

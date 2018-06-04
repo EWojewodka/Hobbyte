@@ -26,10 +26,15 @@
 		type="params"
 		group="welcome_page"
 		view="sys/templates/param"
-		save="false"
-		new="true"
-		remove="false"
 		name="Welcome page"
+		handler="com.webrest.hobbyte.core.appParams.console.AppParamViewHandler"
+	/>
+	<console 
+		id="facebook"
+		type="params"
+		group="facebook"
+		view="sys/templates/param"
+		name="Facebook params"
 		handler="com.webrest.hobbyte.core.appParams.console.AppParamViewHandler"
 	/>
 	
@@ -88,6 +93,21 @@
 		view="sys/hobbyte/extranetUser/new_user"
 		save="true"
 		handler="com.webrest.hobbyte.core.console.handler.ExtranetUserViewHandler"
+	/>
+	
+	<!-- POST ENTRIES -->
+		<console 
+		id="post-entries-list"
+		type="list"
+		bean="com.webrest.hobbyte.app.posts.model.PostEntry"
+		view="sys/templates/list"
+		fields="author.id#author_id,author.getFullName()#author,createdAt,content,commentCount#comment_size"
+		sort="all"
+		sort-default="createdAt"
+		name="Post entries list"
+		remove="true"
+		handler="com.webrest.hobbyte.core.console.handler.DBOConsoleHandler"
+		
 	/>
 	
 	<console 

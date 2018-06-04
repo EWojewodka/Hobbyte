@@ -7,14 +7,13 @@
 	<div layout:fragment="content :: content-page" th:remove="tag">
 		<script>
 			importScript('PostEntry');
-			var ajax = new AjaxRequest('/post/board');
-			ajax.method = 'GET';
-			ajax.send(null, function(jsonObj){
-				var len = jsonObj.length;
-				for(i=0;len>i;i++) {
-					printPostEntry(jQuery('.post-container'), jsonObj[i])									
-				}
-			});
+			fetchEntries(10);
+			
+			jQuery(window).scroll(function () { 
+				   if (jQuery(window).scrollTop() >= jQuery(document).height() - jQuery(window).height() - 10) {
+						fetchEntries(10);
+				   }
+				});
 		</script>
 		<div class="header-obscure"></div>
 		<div class="container-fluid one-page">
@@ -37,7 +36,12 @@
 							<div class="col-lg-12 post-container">
 															
 							</div>
-						</div>		          		
+						</div>		          	
+						<div class="row">
+							<h3 class="display-3">
+								There're not more posts :(
+							</h3>
+						</div>	
 		          	</div>
 		          	<div class="offset-lg-1 col-lg-2 block profile-right-bar d-none d-xl-block">
 		          		right bar

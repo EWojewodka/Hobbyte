@@ -98,9 +98,10 @@ public class ExceptionStream {
 			callable.call();
 		} catch (Exception e) {
 			isThrow = true;
-			e.printStackTrace();
 			if (actionOnVoidException != null) {
 				actionOnVoidException.call(e);
+			} else {
+				e.printStackTrace();
 			}
 		}
 	}

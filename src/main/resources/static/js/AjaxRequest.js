@@ -15,7 +15,7 @@ AjaxRequest.prototype.send = function(data, onSuccess, onFailure, params) {
 	    contentType: this.contentType,
 	    data: data,
 		success : function(data) {
-			onSuccess(JSON.parse(data), params);
+			onSuccess(data, params);
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			if(typeof onFailure === 'function')

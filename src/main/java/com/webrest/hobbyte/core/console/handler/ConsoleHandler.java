@@ -27,6 +27,11 @@ public class ConsoleHandler extends DependencyRequired implements ViewHandler {
 		this.console = console;
 		this.renderer = initRenderer();
 	}
+	
+	@Override
+	public Class<?>[] getDependencies() {
+		return new Class<?>[] {ExtranetUserContext.class};
+	}
 
 	protected ConsoleRenderer<?> initRenderer() {
 		return new ConsoleRenderer<>(getDependencyResolver(), getConsole());
@@ -34,8 +39,12 @@ public class ConsoleHandler extends DependencyRequired implements ViewHandler {
 	
 	@Override
 	public void handle(ExtranetUserContext context, Model model, String action) throws Exception {
-
+		if(action.equals("back")) {
+			String referer = context.getRequest().getHeader("referer");
+			System.out.println(referer);
+		}
 	}
+	
 	public ConsoleRenderer<?> getRenderer() {
 		return renderer;
 	}

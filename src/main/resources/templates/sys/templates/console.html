@@ -26,17 +26,17 @@
 	
 
 	<div class="container-fluid">
-		<div class="row toolbar">
-			<div class="col-lg-12 text-left">
-				<button onclick="window.history.back()">
-					<i class="fa fa-arrow-circle-left"></i>&nbsp;back
-				</button>
-				<a th:href="@{${detailsURL}(console-id=(__${console.id}__))}">
-					<button onclick="location.reload()">
-						<i class="fa fa-refresh"></i>&nbsp;refresh
-					</button>
-				</a>
-				<div layout:fragment="toolbar" th:remove="tag"></div>
+		<div class="row">
+			<div class="col-lg-12 text-left toolbar">
+				<div th:each="btn : ${handler.renderer.toolbarButtons}" th:remove="tag">
+					<form method="get" action="" class="toolbar-button">
+						<input type="hidden" name="action" th:value="${btn.codeAction}"></input>
+						<input type="hidden" name="console-id" th:value="${console.id}"></input>
+						<button th:id="${btn.code}">
+							<i th:class="${btn.icon}"></i>&nbsp;<span th:text="${btn.label}"></span>
+						</button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>

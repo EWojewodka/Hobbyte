@@ -11,21 +11,45 @@
 	
 	<div layout:fragment="scripts" th:remove="tag">
 		<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="/js/typeahead.js"></script>
 		<script type="text/javascript" src="/js/script.js"></script>
 		<script type="text/javascript" src="/js/prototype.min.js"></script>
 		<script type="text/javascript" src="/js/AjaxRequest.js"></script>
 		<script type="text/javascript" src="/js/messages.js"></script>
+		<div id="fb-root"></div>
+		<input type="hidden" th:value="${appParam.getValue('facebook','facebook_app_id')}" id="facebook-id"></input>
+		<input type="hidden" th:value="${appParam.getValue('facebook','facebook_app_version')}" id="facebook-version"></input>
+		<script>
+		  window.fbAsyncInit = function() {
+		    FB.init({
+		      appId      : jQuery('#facebook-id').val(),
+		      cookie     : true,
+		      xfbml      : true,
+		      version    : jQuery('#facebook-version').val()
+		    });
+		    console.log(jQuery('#facebook-id').val());
+		      
+		    FB.AppEvents.logPageView();   
+		      
+		  };
 		
+		  (function(d, s, id){
+		     var js, fjs = d.getElementsByTagName(s)[0];
+		     if (d.getElementById(id)) {return;}
+		     js = d.createElement(s); js.id = id;
+		     js.src = "https://connect.facebook.net/en_US/sdk.js";
+		     fjs.parentNode.insertBefore(js, fjs);
+		   }(document, 'script', 'facebook-jssdk'));
+		</script>
 	</div>
 	
-	<div layout:fragment="styles" th:remove="tag">
+	<head layout:fragment="styles" th:remove="tag">
 		<link rel="stylesheet" type="text/css" href="/css/main.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/app.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
-	</div>
+	</head>
 	
 </body>
 </html>
