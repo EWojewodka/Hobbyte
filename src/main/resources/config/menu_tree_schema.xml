@@ -44,5 +44,13 @@
 			id="cache-list" 
 			icon="fa fa-industry"
 		/>
+		
+		<leaf 
+			name="Agent list" 
+			console-id="agent-list" 
+			id="agent-list" 
+			icon="fa fa-columns"
+		/>
+		
 	</folder>
 </menutree>

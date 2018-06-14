@@ -20,6 +20,7 @@ import com.webrest.hobbyte.app.user.model.enums.ExtranetUserRoles;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.app.user.model.enums.Gender;
 import com.webrest.hobbyte.app.user.model.enums.NewsletterStatus;
+import com.webrest.hobbyte.app.user.model.enums.RegistrationType;
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
 import com.webrest.hobbyte.core.model.json.View;
 import com.webrest.hobbyte.core.utils.StringUtils;
@@ -85,6 +86,12 @@ public class ExtranetUser extends DatabaseObjectImpl {
 
 	@Column(name = "image_url")
 	private String imageUrl;
+
+	@Column(name = "registration_type")
+	private int registrationType = RegistrationType.DEFAULT.getId();
+
+	@Column(name = "social_auth", nullable = true)
+	private String socialAuthToken;
 
 	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
 	private Collection<PostEntry> postEntries;
@@ -225,7 +232,23 @@ public class ExtranetUser extends DatabaseObjectImpl {
 	public String getFullName() {
 		return name + " " + lastname;
 	}
-	
+
+	public RegistrationType getRegistrationType() {
+		return RegistrationType.getById(registrationType);
+	}
+
+	public void setRegistrationType(RegistrationType registrationType) {
+		this.registrationType = registrationType.getId();
+	}
+
+	public String getSocialAuthToken() {
+		return socialAuthToken;
+	}
+
+	public void setSocialAuthToken(String socialAuthToken) {
+		this.socialAuthToken = socialAuthToken;
+	}
+
 	public ExtranetUserPolicy createOrGetUserPolicy() {
 		if (userPolicy != null)
 			return userPolicy;

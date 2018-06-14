@@ -14,8 +14,6 @@ import com.webrest.hobbyte.app.user.model.ExtranetUser;
 import com.webrest.hobbyte.app.user.model.enums.ExtranetUserStatus;
 import com.webrest.hobbyte.core.dynamicForm.GenericAjaxDynamicForm;
 import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
-import com.webrest.hobbyte.core.dynamicForm.SimpleMessage.ErrorMessage;
-import com.webrest.hobbyte.core.dynamicForm.SimpleMessage.RedirectMessage;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
 import com.webrest.hobbyte.core.http.context.IHttpContext;
 import com.webrest.hobbyte.core.i18n.MessageSourceHelper;
@@ -38,8 +36,10 @@ public class LoginAjaxForm extends GenericAjaxDynamicForm<SimpleMessage> {
 
 	@Override
 	protected SimpleMessage process(IExtranetUserContext context) throws Exception {
+		SimpleMessage msg = new SimpleMessage();
 		if (ExtranetUserUtils.isLogged(context)) {
-			return new RedirectMessage("/");
+			msg.setRedirect("/");
+			return msg;
 		}
 		ExtranetUser user = userDao.findByLoginOrEmail(getParameter("login"));
 
@@ -51,12 +51,13 @@ public class LoginAjaxForm extends GenericAjaxDynamicForm<SimpleMessage> {
 		AjaxAsserts.assertTrue(user.getStatus() == ExtranetUserStatus.ACTIVE,
 				msgHelper.getMessage("UserNotActive", context));
 
-		handleRememberMe(context, user);
+		handleRememberMe(context, user, userDao);
 		context.loginUser(user);
-		return new RedirectMessage("/");
+		msg.setRedirect("/");
+		return msg;
 	}
 
-	public void handleRememberMe(IHttpContext context, ExtranetUser user) {
+	public static void handleRememberMe(IHttpContext context, ExtranetUser user, ExtranetUserDao userDao) {
 		HttpUtils.removeCookieIfExists(ExtranetUserUtils.REMEMBER_ME_COOKIE_NAME, context);
 
 		String code = StringUtils.generateRandom(250);
@@ -76,7 +77,7 @@ public class LoginAjaxForm extends GenericAjaxDynamicForm<SimpleMessage> {
 
 	@Override
 	protected SimpleMessage handleException(Exception e) {
-		return new ErrorMessage(e.getMessage());
+		return new SimpleMessage().addError(e.getMessage());
 	}
 
 }

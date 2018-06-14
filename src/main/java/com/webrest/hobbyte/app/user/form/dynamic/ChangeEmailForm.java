@@ -32,7 +32,7 @@ public class ChangeEmailForm extends UserEntityAjaxForm<SimpleMessage> {
 
 		getUser().setEmail(newEmail);
 		getUserDao().save(getUser());
-		return new SimpleMessage("Your email has been changed.");
+		return new SimpleMessage().addMessage("Your email has been changed.");
 	}
 
 	@Override

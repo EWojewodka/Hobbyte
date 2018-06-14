@@ -110,6 +110,7 @@
 		
 	/>
 	
+	<!-- APPLICATION -->
 	<console 
 		id="cache-list"
 		bean="com.webrest.hobbyte.core.cache.ICacheMap"
@@ -121,5 +122,14 @@
 		handler="com.webrest.hobbyte.core.cache.console.CacheMapConsoleHandler"
 	/>
 	
-	
+	<console 
+		id="agent-list"
+		bean="com.webrest.hobbyte.core.agent.AgentDBO"
+		type="list"
+		view="sys/templates/list"
+		fields="agentClass#class,lastRun,nextRun,status,period"
+		sort="all"
+		name="Agent list"
+		handler="com.webrest.hobbyte.core.console.handler.DBOConsoleHandler"
+	/>
 </consoles>

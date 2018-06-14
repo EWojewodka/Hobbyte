@@ -3,17 +3,21 @@ package com.webrest.hobbyte.core.exception;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
 import com.webrest.hobbyte.core.exception.prepare.ExceptionModelFactory;
 import com.webrest.hobbyte.core.exception.prepare.IExceptionModel;
 import com.webrest.hobbyte.core.exception.response.GenericResponseErrorException;
+import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * Excpetion handler for custom behavior of {@link Exception} </br>
@@ -38,7 +42,7 @@ public class ExceptionController {
 	 * 
 	 * @param e
 	 * @throws IOException
-	 * @throws ServletException 
+	 * @throws ServletException
 	 */
 	@ExceptionHandler(value = RedirectException.class)
 	@ResponseStatus(code = HttpStatus.PERMANENT_REDIRECT)
@@ -56,12 +60,21 @@ public class ExceptionController {
 	 * @param model
 	 * @return
 	 */
-	@ExceptionHandler(value = {Exception.class, Throwable.class})
+	@ExceptionHandler(value = { Exception.class, Throwable.class })
 	public String runtimeException(Throwable e, Model model) {
 		printException(e);
 		IExceptionModel service = exceptionModelFactory.getModel(e);
 		service.addToModel(model);
 		return service.getTemplate();
+	}
+
+	@ExceptionHandler(value = AjaxMessageException.class)
+	@ResponseBody
+	public SimpleMessage ajaxMessageException(AjaxMessageException e, HttpServletResponse resp) {
+		SimpleMessage simpleMessage = new SimpleMessage();
+		simpleMessage.addError(e.getMessage());
+		ExceptionStream.printOnFailure().call(() -> resp.sendError(e.getErrorCode()));
+		return simpleMessage;
 	}
 
 	private void printException(Throwable e) {

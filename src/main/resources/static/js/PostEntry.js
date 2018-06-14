@@ -82,11 +82,16 @@ function executeThumb(postId) {
 }
 
 function sendNewPost(form, onSuccess,onFailure) {
-	if(isEmpty(form.content.value) && form.photo.files.length === 0){
+	var fileLen = form.photo.files.length;
+	if(isEmpty(form.content.value) && fileLen === 0){
 		return;
 	}
 	var ajax = new AjaxRequest('/post/new');
-	ajax.send(new FormData(form), onSuccess, onFailure);
+	ajax.addAjaxData('contentType',false);
+	ajax.addAjaxData('processData', false);
+	form = new FormData(form);
+
+	ajax.send(form, onSuccess, onFailure);
 }
 
 function getComments(postId,size) {
@@ -201,9 +206,11 @@ function renderSingleComment(comment){
 	
 }
 
-function fetchEntries(size){
+function fetchEntries(size,offset){
 	var url = "/post/feed/news";
 	url = addUrlParam(url, "size",size)
+	if(offset !== undefined)
+		url = addUrlParam(url, "offset",offset)
 	var ajax = new AjaxRequest(url);
 	ajax.method = 'GET';
 	ajax.send(null, function(jsonObj){

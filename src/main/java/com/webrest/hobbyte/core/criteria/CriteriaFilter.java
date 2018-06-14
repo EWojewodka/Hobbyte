@@ -27,6 +27,8 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 
 	private int limit;
 
+	private int offset;
+
 	private boolean isDistinct;
 
 	private String orderBy;
@@ -71,7 +73,7 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	public Map<String, Object[]> getWhereIn() {
 		return whereInMap;
 	}
-	
+
 	@Override
 	public Map<String, Object[]> getWhereNotIn() {
 		return whereNotInMap;
@@ -104,6 +106,17 @@ public class CriteriaFilter implements ICriteriaFilter<CriteriaFilter> {
 	@Override
 	public int getLimit() {
 		return limit;
+	}
+
+	@Override
+	public CriteriaFilter setOffset(int offset) {
+		this.offset = offset;
+		return this;
+	}
+
+	@Override
+	public int getOffset() {
+		return offset;
 	}
 
 	@Override

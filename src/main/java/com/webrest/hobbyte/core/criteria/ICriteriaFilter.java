@@ -53,6 +53,12 @@ public interface ICriteriaFilter<T extends ICriteriaFilter<T>> {
 	T setLimit(int limit);
 
 	int getLimit();
+	
+	T setOffset(int offset);
+
+	int getOffset();
+	
+		
 
 	T setDistinct(boolean distinct);
 

@@ -19,30 +19,6 @@
 		<script type="text/javascript" src="/js/AjaxRequest.js"></script>
 		<script type="text/javascript" src="/js/messages.js"></script>
 		<div id="fb-root"></div>
-		<input type="hidden" th:value="${appParam.getValue('facebook','facebook_app_id')}" id="facebook-id"></input>
-		<input type="hidden" th:value="${appParam.getValue('facebook','facebook_app_version')}" id="facebook-version"></input>
-		<script>
-		  window.fbAsyncInit = function() {
-		    FB.init({
-		      appId      : jQuery('#facebook-id').val(),
-		      cookie     : true,
-		      xfbml      : true,
-		      version    : jQuery('#facebook-version').val()
-		    });
-		    console.log(jQuery('#facebook-id').val());
-		      
-		    FB.AppEvents.logPageView();   
-		      
-		  };
-		
-		  (function(d, s, id){
-		     var js, fjs = d.getElementsByTagName(s)[0];
-		     if (d.getElementById(id)) {return;}
-		     js = d.createElement(s); js.id = id;
-		     js.src = "https://connect.facebook.net/en_US/sdk.js";
-		     fjs.parentNode.insertBefore(js, fjs);
-		   }(document, 'script', 'facebook-jssdk'));
-		</script>
 	</div>
 	
 	<head layout:fragment="styles" th:remove="tag">

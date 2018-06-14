@@ -24,7 +24,7 @@ public class ChangeNameForm extends UserEntityAjaxForm<SimpleMessage> {
 		ExtranetUser user = getUser();
 		user.setName(name);
 		getUserDao().save(user);
-		return new SimpleMessage(String.format("Hello %s! Your name is changed!", name));
+		return new SimpleMessage().addMessage(String.format("Hello %s! Your name is changed!", name));
 	}
 
 	@Override

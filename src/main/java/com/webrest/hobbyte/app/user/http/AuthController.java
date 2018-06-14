@@ -41,7 +41,7 @@ public class AuthController extends BaseController {
 
 	@PostMapping(value = "/sign-up")
 	@ResponseBody
-	public SimpleMessage postSignUp() {
+	public SimpleMessage postSignUp() throws Exception{
 		return signUpForm.run();
 	}
 

@@ -113,35 +113,43 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 		return result.isEmpty() ? null : result.get(0);
 	}
 
+	public List<T> findAll(){
+		return find(new CriteriaFilter());
+	}
+	
 	@Override
 	public List<T> find(ICriteriaFilter<?> criteriaFilter) {
 		Criteria criteria = em.unwrap(Session.class).createCriteria(getGenericType());
-		
-		//Add where
+
+		// Add where
 		criteria.add(Restrictions.allEq(criteriaFilter.getWhere()));
-		
-		//Add where in
+
+		// Add where in
 		Map<String, Object[]> whereIn = criteriaFilter.getWhereIn();
 		whereIn.forEach((c, v) -> criteria.add(Restrictions.in(c, v)));
-		
-		//Add where not in
+
+		// Add where not in
 		Map<String, Object[]> whereNotIn = criteriaFilter.getWhereNotIn();
 		whereNotIn.forEach((c, v) -> criteria.add(Restrictions.not(Restrictions.in(c, v))));
-		
-		
-		//set limit
+
+		// set limit
 		int limit = criteriaFilter.getLimit();
 		if (limit > 0)
 			criteria.setMaxResults(limit);
 
-		//Set order
+		// set offset
+		int offset = criteriaFilter.getOffset();
+		if (offset > 0)
+			criteria.setFirstResult(offset);
+
+		// Set order
 		String orderBy = criteriaFilter.getOrderBy();
 		if (!StringUtils.isEmpty(orderBy)) {
 			criteria.addOrder(criteriaFilter.getOrderDirection() == OrderDirections.ASC ? Order.asc(orderBy)
 					: Order.desc(orderBy));
 		}
 
-		//Set distinct
+		// Set distinct
 		if (criteriaFilter.isDistinct())
 			criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 

@@ -1,34 +1,42 @@
 package com.webrest.hobbyte.core.dynamicForm;
 
-@SuppressWarnings("unused")
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimpleMessage {
 
-	public String msg;
+	public List<String> messages = new ArrayList<>();
 
-	public SimpleMessage(String msg) {
-		this.msg = msg;
+	public List<String> errors = new ArrayList<>();
+
+	public String redirect = "";
+	
+	private int httpStatus;
+
+	public SimpleMessage() {
 	}
 
-	public static class ErrorMessage extends SimpleMessage {
-
-		private String error;
-
-		public ErrorMessage(String error) {
-			super("");
-			this.error = error;
-		}
-
+	public SimpleMessage addMessage(String content) {
+		messages.add(content);
+		return this;
 	}
 
-	public static class RedirectMessage extends SimpleMessage {
+	public SimpleMessage addError(String error) {
+		errors.add(error);
+		return this;
+	}
 
-		public String redirect;
-
-		public RedirectMessage(String path) {
-			super("");
-			this.redirect = path;
-		}
-
+	public SimpleMessage setRedirect(String redirect) {
+		this.redirect = redirect;
+		return this;
+	}
+	
+	public void setHttpStatus(int httpStatus) {
+		this.httpStatus = httpStatus;
+	}
+	
+	public int getHttpStatus() {
+		return httpStatus;
 	}
 
 }

@@ -40,6 +40,10 @@ public class StringUtils {
 		return pattern.matcher(value).matches();
 	}
 
+	public static boolean isEmpty(String[] values) {
+		return values == null || values.length == 0;
+	}
+
 	public static boolean isEmpty(String value) {
 		return value == null || value.trim().length() == 0;
 	}

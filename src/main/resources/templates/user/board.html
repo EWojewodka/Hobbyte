@@ -10,8 +10,8 @@
 			fetchEntries(10);
 			
 			jQuery(window).scroll(function () { 
-				   if (jQuery(window).scrollTop() >= jQuery(document).height() - jQuery(window).height() - 10) {
-						fetchEntries(10);
+				   if (jQuery(window).scrollTop() >= jQuery(document).height() - jQuery(window).height()) {
+						fetchEntries(10,document.getElementsByClassName('post-entry').length);
 				   }
 				});
 		</script>

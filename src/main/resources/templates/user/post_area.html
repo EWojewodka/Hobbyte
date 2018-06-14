@@ -7,7 +7,7 @@
 		<div class="row">
 			<div class="col-lg-12 post-area">
 				<div class="row">
-					<form enctype="multipart/form-data" class="form-horizontal post-form" role="form" id="new-post" method="POST" onsubmit="sendNewPost(this, addPostToBoard); return false;">
+					<form class="form-horizontal post-form" role="form" id="new-post" method="POST" onsubmit="sendNewPost(this, addPostToBoard); return false;">
 						<img th:src="${context.getUser().imageUrl}" class="block user-form-profile-image"/>
 						<div class="form-group block">
 							<div class="title">

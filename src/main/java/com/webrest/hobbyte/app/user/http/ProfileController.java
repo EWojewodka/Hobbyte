@@ -51,10 +51,10 @@ public class ProfileController extends BaseController {
 	@GetMapping(value = { "/profile/{login}", "/profile" })
 	public String getProfile(@PathVariable(name = "login", required = false) String login, Model model)
 			throws Exception {
-		//We shouldn't looking for a user if login is empty.
+		// We shouldn't looking for a user if login is empty.
 		boolean isLogin = StringUtils.isEmpty(login);
 		ExtranetUser user = isLogin ? null : userDAO.findByLogin(login);
-		//So if login is empty (probably user is logged)
+		// So if login is empty (probably user is logged)
 		if (user == null) {
 			if (getContext().isUserLogged() && isLogin)
 				user = getContext().getUser();
@@ -81,10 +81,11 @@ public class ProfileController extends BaseController {
 	 * @param type
 	 * @param formId
 	 * @return
+	 * @throws Exception
 	 */
 	@ResponseBody
 	@PostMapping(value = { "/profile/settings" })
-	public SimpleMessage postSettings(@PathParam("type") String type) {
+	public SimpleMessage postSettings(@PathParam("type") String type) throws Exception {
 		GenericAjaxDynamicForm<SimpleMessage> form = null;
 		switch (type) {
 		case "email":

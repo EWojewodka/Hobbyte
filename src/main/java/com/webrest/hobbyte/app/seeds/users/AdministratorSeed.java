@@ -22,7 +22,7 @@ public class AdministratorSeed extends AbstractSeed {
 
 	@Autowired
 	private PasswordEncoder encoder;
-	
+
 	@Autowired
 	private ExtranetUserDao userDao;
 
@@ -32,14 +32,14 @@ public class AdministratorSeed extends AbstractSeed {
 
 	@Override
 	public boolean needExecute() {
-		return userDao.findByLogin("Administrator") == null;
+		return userDao.findByLogin("Administrator") == null && userDao.findByEmail("adm@hobbyte.com") == null;
 	}
 
 	@Override
 	public SeedExecuteResult execute() {
 		ExtranetUser user = new ExtranetUser();
 		user.setLogin("Administrator");
-		user.setEmail("emilwojewodka@gmail.com");
+		user.setEmail("adm@hobbyte");
 		user.setPassword(encoder.encode("adminPassword"));
 		user.setName("Emil");
 		user.setLastname("Wojewódka");

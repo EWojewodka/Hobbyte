@@ -52,18 +52,9 @@ public class PostEntryController extends BaseController {
 	@JsonView(View.Basic.class)
 	@ResponseBody
 	@GetMapping(value = "/feed/news")
-	public List<PostEntry> getPostForBoard(@RequestParam(name = "size", defaultValue = "10") int size)
-			throws JSONException {
-		List<Integer> showedPosts = getContext().getObject(PostEntryConst.CURRENT_SHOWED_POSTS_KEY);
-		
-		List<PostEntry> posts = dao.getRelatedPosts(null, size, showedPosts);
-
-		List<Integer> collect = posts.parallelStream().map(x -> x.getId()).collect(Collectors.toList());
-		if (showedPosts == null)
-			showedPosts = new ArrayList<>();
-		showedPosts.addAll(collect);
-		getContext().put(PostEntryConst.CURRENT_SHOWED_POSTS_KEY, showedPosts);
-		return posts;
+	public List<PostEntry> getPostForBoard(@RequestParam(name = "size", defaultValue = "10") int size,
+			@RequestParam(name = "offset", defaultValue = "0") int offset) throws JSONException {
+		return dao.getRelatedPosts(null, size, offset);
 	}
 
 	/**

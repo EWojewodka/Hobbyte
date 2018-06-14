@@ -32,7 +32,7 @@ public class ChangePhoneForm extends UserEntityAjaxForm<SimpleMessage> {
 		ExtranetUser user = getUser();
 		user.setPhoneNumber(phoneNumber);
 		getUserDao().save(user);
-		return new SimpleMessage("Your phone number has been changed.");
+		return new SimpleMessage().addMessage("Your phone number has been changed.");
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 	<head th:include="head :: head" th:remove="tag"></head>
   <body>
+	<input type="hidden" th:value="${appParam.getValue('facebook','facebook_app_id', '197151534249534')}" id="facebook-id"></input>
+	<input type="hidden" th:value="${appParam.getValue('facebook','facebook_app_version', 'v3.0')}" id="facebook-version"></input>
     <div id="header" class="container-fluid">
       <div class="row header-row">
         <div class="col-lg-6 left-col">
@@ -77,7 +79,48 @@
 	                </div>
 	                <button type="submit" class="border-button" th:text="#{sign-in}"></button>
             	</form>
-            	<div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+            	<div data-onlogin="loginWithFacebook()" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+           		<script>
+	      		  window.fbAsyncInit = function() {
+	      		    FB.init({
+	      		      appId      : jQuery('#facebook-id').val(),
+	      		      cookie     : true,
+	      		      xfbml      : true,
+	      		      version    : jQuery('#facebook-version').val()
+	      		    });
+	      		    FB.AppEvents.logPageView();   
+					}; 
+					
+					function loginWithFacebook(){
+						FB.login(function(resp) {
+							console.log(resp);
+							if(resp.status === 'connected'){
+								FB.api('/me', {fields: 'birthday,photos,email,first_name,last_name,gender,location,picture.height(800)'}, function(userData) {
+									console.log(userData);
+									var ajax = new AjaxRequest('/auth/sign-in');
+										ajax.send({
+											login: userData.email,
+											email: userData.email,
+											imageUrl: userData.picture.data.url,
+											name: userData.first_name,
+											lastname: userData.last_name,
+											gender: userData.gender,
+											source: 'facebook'
+										});
+								});
+							}
+						}, {scope: 'email,user_gender,user_location,user_photos',return_scopes: true});
+					}
+	      		
+	      		  (function(d, s, id){
+	      		     var js, fjs = d.getElementsByTagName(s)[0];
+	      		     if (d.getElementById(id)) {return;}
+	      		     js = d.createElement(s); js.id = id;
+	      		     js.src = "https://connect.facebook.net/en_US/sdk.js";
+	      		     fjs.parentNode.insertBefore(js, fjs);
+	      		   }(document, 'script', 'facebook-jssdk'));
+	      		  
+           		</script>
             </div>
             <div class="col-lg-2">
               &nbsp;

@@ -11,7 +11,7 @@
     <title th:text="${console.name}"></title>
 </head>
 <body>
-	<div layout:fragment="toolbar">
+	<!-- <div layout:fragment="toolbar">
 		<div th:if="${console.canAdd()}" th:remove="tag">
 			<a th:href="@{${detailsURL}(action=('add'),console-id=(__${console.id}__))}">
 				<button>
@@ -26,7 +26,7 @@
 				</button>
 			</a>
 		</div>
-	</div>
+	</div> -->
 	<div layout:fragment="content">
 		<div class="row">
 			<div class="col-lg-6">

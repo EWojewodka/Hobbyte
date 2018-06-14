@@ -138,7 +138,22 @@ public class FileUtils {
 	 * @return
 	 */
 	public static File getTemporaryFile(String name) {
-		return new File(TMP_DIR, name);
+		return getTemporaryFile(name, false);
+	}
+
+	/**
+	 * Return file - if createDir is {@code true} create directory if not exists.
+	 * 
+	 * @param name
+	 * @param createDir
+	 * @return
+	 */
+	public static File getTemporaryFile(String name, boolean createDir) {
+		File file = new File(TMP_DIR, name);
+		if (!file.exists() || !file.isDirectory())
+			if (!file.mkdir())
+				LOGGER.info("Cannot create file {}", file.getAbsolutePath());
+		return file;
 	}
 
 }

@@ -52,7 +52,6 @@ function moveHeaderImage(toRight) {
 function handleDynamicForms() {
 	jQuery('.dynamic-form').each(function() {
 		jQuery(this).find('form').hide();
-		console.log(jQuery(this))
 	});
 
 	jQuery('.dynamic-form').click(function() {
@@ -78,8 +77,8 @@ function sendAjaxWithUrl(url, _form) {
 	var form = jQuery(_form);
 	var ajax = new AjaxRequest(url + "?type=" + form.attr('id'));
 	var success = function(jsonObj){
-		showResultAfterAjax(form, jsonObj.msg, true);
-		if(jsonObj.redirect !== undefined)
+		showResultAfterAjax(form, jsonObj.messages[0], true);
+		if(!isEmpty(jsonObj.redirect))
 			window.location.href = jsonObj.redirect;
 	}
 
@@ -89,11 +88,29 @@ function sendAjaxWithUrl(url, _form) {
 		showResultAfterAjax(form, xhr.responseJSON.message, false);
 	}
 	prepareFormDescription(form);
-	ajax.send(new FormData(_form), success, failure);
+	ajax.send(form.serialize(), success, failure);
 }
 
 function sendAjax(_form) {
 	sendAjaxWithUrl(window.location.href, _form);
+}
+
+function signUp(_form){
+	var form = jQuery(_form);
+	var ajax = new AjaxRequest('/auth/sign-up');
+	var success = function(jsonObj){
+		showResultAfterAjax(form, jsonObj.msg, true);
+		if(!isEmpty(jsonObj.redirect))
+			window.location.href = jsonObj.redirect;
+	}
+
+	var failure = function(xhr, ajaxOptions, thrownError) {
+		if (xhr === undefined || xhr.responseJSON === undefined)
+			return;
+		showResultAfterAjax(form, xhr.responseJSON.errors[0], false);
+	}
+	prepareFormDescription(form);
+	ajax.send(new FormData(_form), success, failure);
 }
 
 

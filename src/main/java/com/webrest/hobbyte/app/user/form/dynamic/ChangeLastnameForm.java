@@ -24,7 +24,7 @@ public class ChangeLastnameForm extends UserEntityAjaxForm<SimpleMessage> {
 		ExtranetUser user = getUser();
 		user.setLastname(lastname);
 		getUserDao().save(user);
-		return new SimpleMessage("Your lastname is changed!");
+		return new SimpleMessage().addMessage("Your lastname is changed!");
 	}
 
 	@Override

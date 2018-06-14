@@ -4,8 +4,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.webrest.hobbyte.core.exception.AjaxMessageException;
 import com.webrest.hobbyte.core.http.context.IExtranetUserContext;
-import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * {@link GenericAjaxDynamicForm} is base of more specific ajax forms, which
@@ -21,12 +21,20 @@ public abstract class GenericAjaxDynamicForm<T> {
 	private IExtranetUserContext context;
 
 	@Transactional
-	public T run() {
-		return ExceptionStream.handle(e -> {
-			return handleException(e);
-		}).call(() -> {
+	public T run() throws Exception {
+		try {
 			return process(getContext());
-		}).get();
+		} catch (Exception e) {
+			if (e instanceof AjaxMessageException)
+				throw e;
+			else
+				return handleException(e);
+		}
+		// return ExceptionStream.handle(e -> {
+		// return handleException(e);
+		// }).call(() -> {
+		// return process(getContext());
+		// }).get();
 	}
 
 	/**
