@@ -78,7 +78,7 @@ public class PostEntry extends DatabaseObjectImpl {
 	@OneToMany(mappedBy = "postEntryId", fetch = FetchType.LAZY)
 	@JsonView(View.Basic.class)
 	private Collection<Comment> comments;
-	
+
 	@Transient
 	private int commentCount = comments == null ? 0 : comments.size();
 
@@ -99,6 +99,10 @@ public class PostEntry extends DatabaseObjectImpl {
 
 	public ExtranetUser getAuthor() {
 		return author;
+	}
+
+	public void setAuthor(ExtranetUser user) {
+		this.author = user;
 	}
 
 	public void setContent(String content) {

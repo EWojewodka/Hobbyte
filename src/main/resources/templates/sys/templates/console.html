@@ -28,10 +28,13 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-lg-12 text-left toolbar">
-				<div th:each="btn : ${handler.renderer.toolbarButtons}" th:remove="tag">
+				<div th:each="btn : ${handler.toolbarButtons}" th:remove="tag">
 					<form method="get" action="" class="toolbar-button">
 						<input type="hidden" name="action" th:value="${btn.codeAction}"></input>
 						<input type="hidden" name="console-id" th:value="${console.id}"></input>
+						<th:block th:if="${console instanceof T(com.webrest.hobbyte.core.console.details.DetailsConsole)}">
+							<input type="hidden" name="bean-id" th:value="${bean.getId()}"></input>
+						</th:block>
 						<button th:id="${btn.code}">
 							<i th:class="${btn.icon}"></i>&nbsp;<span th:text="${btn.label}"></span>
 						</button>

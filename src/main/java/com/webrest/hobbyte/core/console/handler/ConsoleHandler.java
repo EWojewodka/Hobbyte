@@ -1,13 +1,20 @@
 package com.webrest.hobbyte.core.console.handler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.webrest.hobbyte.core.console.IConsole;
-import com.webrest.hobbyte.core.console.render.ConsoleRenderer;
+import com.webrest.hobbyte.core.console.render.ToolbarButton;
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
-import com.webrest.hobbyte.core.utils.Asserts;
-import com.webrest.hobbyte.core.utils.spring.DependencyRequired;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * Basic renderer: {@link ConsoleRenderer}
@@ -15,42 +22,84 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
  * @author EWojewodka
  *
  */
-public class ConsoleHandler extends DependencyRequired implements ViewHandler {
+@Service("ConsoleHandler")
+@Scope("session")
+public class ConsoleHandler<T> implements ViewHandler {
 
-	private ConsoleRenderer<?> renderer;
+
+	@Autowired
+	private ExtranetUserContext context;
 
 	private IConsole console;
-	
-	public ConsoleHandler(DependencyResolver resolver, IConsole console) {
-		super(resolver);
-		Asserts.notNull(console, "Cannot init ConsoleHandler for nullable console");
-		this.console = console;
-		this.renderer = initRenderer();
-	}
-	
-	@Override
-	public Class<?>[] getDependencies() {
-		return new Class<?>[] {ExtranetUserContext.class};
+
+	private List<ToolbarButton> toolbarButtons = new ArrayList<>();
+
+	@PostConstruct
+	protected void init() {
+		initButtons();
 	}
 
-	protected ConsoleRenderer<?> initRenderer() {
-		return new ConsoleRenderer<>(getDependencyResolver(), getConsole());
-	}
-	
 	@Override
 	public void handle(ExtranetUserContext context, Model model, String action) throws Exception {
-		if(action.equals("back")) {
+		if (action.equals("back")) {
 			String referer = context.getRequest().getHeader("referer");
 			System.out.println(referer);
 		}
 	}
-	
-	public ConsoleRenderer<?> getRenderer() {
-		return renderer;
-	}
 
 	public IConsole getConsole() {
 		return console;
+	}
+
+	public void setConsole(IConsole console) {
+		this.console = console;
+	}
+
+	public ExtranetUserContext getContext() {
+		return context;
+	}
+
+	// ---------- RENDER SECTION -------------
+
+	public void render(Model model) {
+		model.addAttribute("beans", getObjects());
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<T> getObjects() {
+		return Collections.EMPTY_LIST;
+	}
+
+	protected void initButtons() {
+		ToolbarButton back = new ToolbarButton("back");
+		back.setCodeAction("back");
+		back.setIcon("fa fa-arrow-circle-left");
+		back.setLabel("back");
+		addButton(back);
+
+		ToolbarButton refresh = new ToolbarButton("refresh");
+		refresh.setCodeAction("refresh");
+		refresh.setIcon("fa fa-refresh");
+		refresh.setLabel("refresh");
+		addButton(refresh);
+	}
+
+	public List<ToolbarButton> getToolbarButtons() {
+		return toolbarButtons;
+	}
+
+	public ToolbarButton getToolbarButton(String code) {
+		return toolbarButtons.parallelStream().filter(x -> x.getCode().equals(code)).findFirst().get();
+	}
+
+	public void addButton(ToolbarButton button) {
+		if (toolbarButtons.parallelStream().filter(x -> x.getCode().equals(button.getCode())).count() > 0)
+			return;
+		toolbarButtons.add(button);
+	}
+
+	public void removeButton(String code) {
+		toolbarButtons.remove(toolbarButtons.parallelStream().filter(x -> x.getCode().equals(code)).findFirst().get());
 	}
 
 }

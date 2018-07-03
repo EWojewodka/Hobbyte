@@ -8,18 +8,23 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
 
+import com.webrest.hobbyte.core.logger.LoggerFactory;
 import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 public class ClassUtils {
 
 	public static final Class<?>[] EMPTY_ARRAY = new Class[0];
+
+	private static final Logger LOGGER = LoggerFactory.getLogger();
 
 	/**
 	 * Return collection of subtypes of passes class. </br>
@@ -156,5 +161,43 @@ public class ClassUtils {
 	public static Class<?> getGenericType(Class<?> clazz) {
 		return (Class) ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[0];
 	}
-	
+
+	public static void setProperty(Field field, Object target, Object newValue) throws Exception {
+		Asserts.notNull(field, "Field cannot be null");
+		Asserts.notNull(target, "Target cannot be null");
+		if (!field.isAccessible())
+			field.setAccessible(true);
+
+		Class<?> type = field.getType();
+		Class<? extends Object> newValueClazz = newValue.getClass();
+		if (type.isAssignableFrom(newValueClazz)) {
+			setField(field, target, newValue);
+			return;
+		}
+
+		if (type == Integer.class || (type.isPrimitive() && type.getName().equals("int"))) {
+			int asInt = StringUtils.getAsInt(newValue, Integer.MIN_VALUE);
+			if (asInt != Integer.MIN_VALUE)
+				setField(field, target, asInt);
+		} else if (type == Date.class) {
+			setField(field, target, DateUtils.parseDate(String.valueOf(newValue)));
+		} else if (type == String.class) {
+			setField(field, target, String.valueOf(newValue));
+		} else if (type == Class.class) {
+			setField(field, target, Class.forName(String.valueOf(newValue)));
+		}
+
+	}
+
+	public static void setField(Field field, Object target, Object newValue) {
+		try {
+			field.set(target, newValue);
+		} catch (Exception e) {
+			LOGGER.info("Field name: {}, Field type: {}, Value type: {}, Value: {}",
+					target.getClass() + "." + field.getName(), field.getType(),
+					newValue == null ? "null" : newValue.getClass(), newValue);
+			e.printStackTrace();
+		}
+	}
+
 }

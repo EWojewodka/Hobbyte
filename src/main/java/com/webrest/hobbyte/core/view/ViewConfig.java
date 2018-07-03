@@ -10,10 +10,12 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 import com.webrest.hobbyte.core.appParams.AppParamDao;
+import com.webrest.hobbyte.core.utils.DateUtils;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingStrategy;
@@ -42,6 +44,7 @@ public class ViewConfig {
 	private void initLayoutDialect() {
 		SpringTemplateEngine engine = new SpringTemplateEngine();
 		engine.addDialect(new LayoutDialect(new GroupingStrategy()));
+		engine.addDialect(new Java8TimeDialect());
 	}
 
 	private void addStaticVariables() {
@@ -67,6 +70,7 @@ class ViewStaticVariableMap extends HashMap<String, Object> {
 	@PostConstruct
 	private void init() {
 		put("appParam", appParamDao);
+		put("dateUtils", new DateUtils());
 	}
 
 }

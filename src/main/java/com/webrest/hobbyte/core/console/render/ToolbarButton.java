@@ -1,5 +1,8 @@
 package com.webrest.hobbyte.core.console.render;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ToolbarButton {
 
 	private String label;
@@ -9,6 +12,8 @@ public class ToolbarButton {
 	private String icon;
 
 	private String code;
+
+	private Map<String, Object> hrefParams = new HashMap<>();
 
 	public ToolbarButton(String code) {
 		this.code = code;
@@ -40,6 +45,14 @@ public class ToolbarButton {
 
 	public String getCode() {
 		return code;
+	}
+
+	public Map<String, Object> getHrefParams() {
+		return hrefParams;
+	}
+
+	public void addHrefParam(String paramName, Object paramValue) {
+		hrefParams.put(paramName, paramValue);
 	}
 
 }

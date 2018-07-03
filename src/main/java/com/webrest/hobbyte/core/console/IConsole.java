@@ -5,12 +5,8 @@ package com.webrest.hobbyte.core.console;
 
 import java.util.List;
 
-import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
-import com.webrest.hobbyte.core.console.handler.DBOConsoleHandler;
-import com.webrest.hobbyte.core.console.handler.ViewHandler;
 import com.webrest.hobbyte.core.utils.EnumUtils;
 import com.webrest.hobbyte.core.utils.WithCode;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * @author Emil Wojewódka
@@ -43,31 +39,17 @@ public interface IConsole {
 	Class<?> getObjectClass();
 
 	String getView();
-
-	Class<? extends ConsoleHandler> getConsoleHandler();
+	
+	String getHandlerCode();
 
 	ConsoleType getType();
 
 	IConsole getParent();
-	
+
 	List<IConsole> getChildren();
 
-	/**
-	 * Create instance of {@link ConsoleHandler} by
-	 * {@link ConsoleHandler#ConsoleHandler(IConsole)} constructor where
-	 * {@link IConsole} parameter is <b><i>this</i></b> instance of console. </br>
-	 * It should be thread-safe, if new request needs a dedicated handler it creates
-	 * new from cached console.
-	 * 
-	 * @see DBOConsoleHandler
-	 * @see ViewHandler
-	 * @return
-	 * @throws Exception
-	 */
-	ConsoleHandler initHandler(DependencyResolver dependencyResolver) throws Exception;
-	
 	String getName();
-	
+
 	String getShortName();
 
 }

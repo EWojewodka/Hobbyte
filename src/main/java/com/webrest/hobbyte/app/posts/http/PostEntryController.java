@@ -3,9 +3,7 @@
  */
 package com.webrest.hobbyte.app.posts.http;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.webrest.hobbyte.app.posts.PostEntryConst;
 import com.webrest.hobbyte.app.posts.PostEntryDao;
 import com.webrest.hobbyte.app.posts.PostEntryOptions;
 import com.webrest.hobbyte.app.posts.form.PostEntryAjax;
 import com.webrest.hobbyte.app.posts.model.PostEntry;
+import com.webrest.hobbyte.app.posts.model.PostEntryFetchRequest;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 import com.webrest.hobbyte.core.model.json.View;
 
@@ -52,9 +50,8 @@ public class PostEntryController extends BaseController {
 	@JsonView(View.Basic.class)
 	@ResponseBody
 	@GetMapping(value = "/feed/news")
-	public List<PostEntry> getPostForBoard(@RequestParam(name = "size", defaultValue = "10") int size,
-			@RequestParam(name = "offset", defaultValue = "0") int offset) throws JSONException {
-		return dao.getRelatedPosts(null, size, offset);
+	public List<PostEntry> getPostForBoard(PostEntryFetchRequest fetchConfiguration) throws JSONException {
+		return dao.getPosts(fetchConfiguration);
 	}
 
 	/**

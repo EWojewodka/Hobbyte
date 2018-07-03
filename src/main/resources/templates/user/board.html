@@ -6,50 +6,132 @@
 <body>
 	<div layout:fragment="content :: content-page" th:remove="tag">
 		<script>
-			importScript('PostEntry');
-			fetchEntries(10);
-			
-			jQuery(window).scroll(function () { 
+			jQuery(document).ready(function(){
+				jQuery('#tiles-title').hide();
+				
+				importScript('PostEntry');
+				fetchEntries(10);
+				
+				jQuery(window).scroll(function () { 
 				   if (jQuery(window).scrollTop() >= jQuery(document).height() - jQuery(window).height()) {
 						fetchEntries(10,document.getElementsByClassName('post-entry').length);
 				   }
 				});
+
+				detectScroll(function(){
+					jQuery('.profile-left-bar').addClass('top', {duration:200});
+				}, null, null, function(){
+					jQuery('.profile-left-bar').removeClass('top', {duration:200});					
+				});
+			});
+			
 		</script>
 		<div class="header-obscure"></div>
 		<div class="container-fluid one-page">
-		<div class="row">
-			&nbsp;
-		</div>
-        <div class="row">
-        	<div class="container-fluid">
-        		<div class="row">
-		          	<div class="offset-lg-1 col-lg-1 block profile-left-bar d-none d-xl-block">
-		          		left bar
-		          	</div>
-		          	<div class="offset-lg-1 col-lg-4 profile-center-bar">
-						<div class="row">
-							<div class="col-lg-12">
-								<div th:include="user/post_area :: post"></div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-12 post-container">
-															
-							</div>
-						</div>		          	
-						<div class="row">
-							<h3 class="display-3">
-								There're not more posts :(
-							</h3>
-						</div>	
-		          	</div>
-		          	<div class="offset-lg-1 col-lg-2 block profile-right-bar d-none d-xl-block">
-		          		right bar
-		          	</div>
-        		</div>
-        	</div>
-        </div>
-    </div>
-	</div>
+      	<div class="row">
+        	<div class=" col-lg-3 profile-left-bar d-none d-xl-block fixed">
+          		<div class="row">
+	          		<ul class="basic-event with-tiles">
+
+	          			<li class="navigation-tile">
+	          				<a th:href="@{/profile/__${context.getUser().getLogin()}__}" class="row-items">
+		          				<img th:src="${context.getUser().getImageUrl()}"></img>
+	          				</a>
+	          			</li>
+	          			<li class="navigation-tile two-col">
+	          				<a th:href="@{/profile/__${context.getUser().getLogin()}__}">
+		          				<span th:text="${context.getUser().getFullName()}"></span>
+	          				</a>
+	          			</li>
+
+	          			<li class="navigation-tile red-bg calendar-tile">events</li>
+	          			<li class="navigation-tile blue-bg people-tile">groups</li>
+	          			<li class="navigation-tile green-bg online-tile">friends online</li>
+	          			<li class="navigation-tile blue-bg online-tile">friends online</li>
+	          			<li class="navigation-tile red-bg top-tile">related</li>
+	          			<li class="navigation-tile blue-bg online-tile">friends online</li>
+	          			<li class="navigation-tile red-bg top-tile">related</li>
+	          			<li class="navigation-tile green-bg top-tile">related</li>
+	          			<li class="navigation-tile red-bg top-tile">related</li>
+		          	</ul>
+          		</div>
+          		<ul class="follow-event animation-list-el">
+          		</ul>
+          	</div>
+          	<div class="offset-lg-3 col-lg-4 profile-center-bar">
+				<div class="row">
+					<div class="col-lg-12">
+						<div th:include="user/post_area :: post"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 post-container">
+													
+					</div>
+				</div>		          	
+				<div class="row">
+					<h3 class="display-3">
+						There're not more posts :(
+					</h3>
+				</div>	
+          	</div>
+          	<div class="offset-lg-1 col-lg-2 profile-right-bar d-none d-xl-block">
+				<div class="list-title-wrapper row">
+					<div class="list-title">Who to follow</div>
+					<div class="title-description">
+						<a class="blue">refresh</a>
+					</div>
+				</div>
+				<div class="column-list row">
+					<div class="list-element col-lg-12" id="who-to-follow">
+						
+					</div>
+				</div>
+				<script>
+					jQuery(document).ready(function(){
+						var url = '/match/to-follow';
+						url = addUrlParam(url, 'size', 3);
+						var ajax = new AjaxRequest(url);
+						ajax.method = 'GET';
+						ajax.send(null,addUserToFollow);
+					});
+					
+					function addUserToFollow(jsonObj){
+						var len = jsonObj.length;
+						for(var i=0; len>i; i++) {
+							addSingleUserToFollow(jsonObj[i]);									
+						}
+					}
+					
+					function addSingleUserToFollow(json) {
+						var params = {
+							'user.image': json.imageUrl,
+							'user.fullname': json.name + ' ' + json.lastname,
+							'user.login': json.login
+						};
+
+						var result = 
+						'<div class="row user-to-follow">' + 
+							'<div class="col-lg-3">' + 
+								'<img src="{user.image}" class="circle-img"/>' +
+							'</div>' + 
+							'<div class="user col-lg-9">' +
+								'<div class="row work-sans blue">' + 
+									'{user.fullname}' + 
+								'</div>' +
+								'<div class="row text-right">' + 
+									'<div class="standard-btn work-sans">invite</div>' + 
+								'</div>' +
+							
+							'</div>' + 
+						'</div>';
+						result = result.formatUnicorn(params);
+						jQuery('#who-to-follow').append(result);
+					}
+				</script>
+          	</div>
+      		</div>
+      	</div>
+      </div>
 </body>
 </html>

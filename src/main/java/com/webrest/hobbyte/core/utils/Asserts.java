@@ -57,4 +57,8 @@ public class Asserts extends Assert {
 		exists(dbo, String.format("Cannot create object for not exists %s.", dbo.getClass().getName()));
 	}
 
+	public static void isFalse(boolean expression, String message) {
+		isTrue(!expression, message);
+	}
+
 }

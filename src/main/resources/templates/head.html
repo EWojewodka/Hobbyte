@@ -3,10 +3,8 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
 <body>
 	<head layout:fragment="head">
-		<link layout:include="head :: styles" th:remove="tag"></link>			
-		<link layout:include="head :: scripts" th:remove="tag"></link>
-
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link layout:include="head :: scripts" th:remove="tag"></link>
     </head>
 	
 	<div layout:fragment="scripts" th:remove="tag">
@@ -24,7 +22,8 @@
 	<head layout:fragment="styles" th:remove="tag">
 		<link rel="stylesheet" type="text/css" href="/css/main.css"/>
 		<link rel="stylesheet" type="text/css" href="/css/app.css"/>
-		<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
+		<!-- <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/> -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" />
 	</head>
 	
 </body>

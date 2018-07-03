@@ -4,8 +4,7 @@
 package com.webrest.hobbyte.core.adminPanel.http;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +16,7 @@ import com.webrest.hobbyte.core.exception.response.NotFoundException;
 import com.webrest.hobbyte.core.http.controllers.BaseController;
 import com.webrest.hobbyte.core.menuTree.IMenuTreeElement;
 import com.webrest.hobbyte.core.menuTree.MenuTreeBuilder;
-import com.webrest.hobbyte.core.utils.FrameworkUtils;
 import com.webrest.hobbyte.core.utils.StringUtils;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
 /**
  * It's controller for handle console request and managment this.
@@ -32,11 +29,10 @@ import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
  */
 @Controller
 @RequestMapping(value = "/sys")
-@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class AdminPanelController extends BaseController {
 
 	@Autowired
-	private DependencyResolver dependencyResolver;
+	private ApplicationContext appContext;
 
 	@RequestMapping
 	public String getMenuTree(Model model) {
@@ -51,26 +47,19 @@ public class AdminPanelController extends BaseController {
 		if (console == null)
 			throw new NotFoundException(getContext());
 
-		ConsoleHandler handler = null;
-		if (model.containsAttribute("handler")) {
-			handler = FrameworkUtils.getAttribute(model, "handler");
-			// check if current handler is for this console.
-			// It's neccessery because if it's same - we want to still keep this object.
-			if (!handler.getConsole().getId().equals(console.getId()))
-				handler = console.initHandler(dependencyResolver);
-		} else {
-			handler = console.initHandler(dependencyResolver);
-		}
-		model.addAttribute("handler", handler);
+		ConsoleHandler<?> handler = (ConsoleHandler<?>) appContext.getBean(console.getHandlerCode());
+		handler.setConsole(console);
+		getContext().getSession().setAttribute("handler", handler);
 
 		String action = getContext().getRequest().getParameter("action");
 		if (!StringUtils.isEmpty(action)) {
-			handler = FrameworkUtils.getAttribute(model, "handler");
 			handler.handle(getContext(), model, action);
 		}
-		handler.getRenderer().render(model);
+		handler.render(model);
 
 		model.addAttribute("console", console);
+		model.addAttribute("handler", handler);
+
 		return console.getView();
 	}
 

@@ -17,6 +17,7 @@ import com.webrest.hobbyte.core.dynamicForm.SimpleMessage;
 import com.webrest.hobbyte.core.exception.prepare.ExceptionModelFactory;
 import com.webrest.hobbyte.core.exception.prepare.IExceptionModel;
 import com.webrest.hobbyte.core.exception.response.GenericResponseErrorException;
+import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
@@ -36,6 +37,12 @@ public class ExceptionController {
 
 	@Autowired
 	private ExceptionModelFactory exceptionModelFactory;
+
+	@Autowired
+	private ExceptionLogDao excepionDao;
+
+	@Autowired
+	private ExtranetUserContext context;
 
 	/**
 	 * Handle redirect invoked by thrown {@link RedirectException} instance.
@@ -65,6 +72,8 @@ public class ExceptionController {
 		printException(e);
 		IExceptionModel service = exceptionModelFactory.getModel(e);
 		service.addToModel(model);
+		ExceptionLog exceptionLog = new ExceptionLog(e, context.getUser());
+		excepionDao.save(exceptionLog);
 		return service.getTemplate();
 	}
 

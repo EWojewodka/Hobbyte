@@ -10,27 +10,31 @@
     <meta http-Equiv="Expires" Content="0" />
 </head>
 <body>
-	<div layout:fragment="toolbar">
-		<div th:if="${console.canSave()}" th:remove="tag">
-			<a th:href="@{${detailsURL}(action=('save'),console-id=(__${console.id}__))}">
-				<button>
-					<i class="fa fa-plus-square"></i>&nbsp;save
-				</button>
-			</a>
-		</div>
-		<div th:if="${console.canRemove()}" th:remove="tag">
-			<a th:href="@{${detailsURL}(action=('remove'),console-id=(__${console.id}__))}">
-				<button>
-					<i class="fa fa-times-circle"></i>&nbsp;remove
-				</button>
-			</a>
-		</div>
-		<div th:if="${console.canClone()}" th:remove="tag">
-			<a th:href="@{${detailsURL}(action=('clone'),console-id=(__${console.id}__))}">
-				<button>
-					<i class="fa fa-clone"></i>&nbsp;clone
-				</button>
-			</a>
+	<div layout:fragment="content" class="console">
+		<div class="col-lg-10 field-detail-list">
+			<form th:action="@{${detailsURL}(console-id=(__${console.id}__),bean-id=(__${bean.id}__))}" method="POST">
+				<div class="col-lg-3 app-param-action">
+					<button class="btn" onclick="addAction(this,'save')">
+						<i class="fa fa-save"></i>
+					</button>
+					<button class="btn" onclick="addAction(this,'clone')">
+						<i class="fa fa-copy"></i>
+					</button>
+					<button class="btn" onclick="var r = confirm('Are you sure you want to delete this element?'); if(r)addAction(this,'remove')">
+						<i class="fa fa-trash"></i>
+					</button>
+				</div>
+				<th:block th:each="field : ${console.listOfFields}">
+						<div class="row">
+							<div class="col-lg-2 label text-right">
+								<span th:text="${field.label}"></span>
+							</div>
+							<div class="col-lg-8 value">
+								<div th:include="sys/templates/fields :: detailFieldResolver" th:with="field=${field},bean=${bean},value=${value}"></div>
+							</div>
+						</div>
+					</th:block>
+			</form>
 		</div>
 	</div>
 </body>

@@ -3,16 +3,12 @@
  */
 package com.webrest.hobbyte.core.console;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.w3c.dom.Element;
 
 import com.webrest.hobbyte.core.adminPanel.service.ConsoleFinder;
-import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
 import com.webrest.hobbyte.core.utils.StringUtils;
-import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 import com.webrest.hobbyte.core.xml.NodeSource;
 
 /**
@@ -30,7 +26,9 @@ public class Console extends NodeSource implements IConsole {
 
 	private String view;
 
-	private Class<? extends ConsoleHandler> consoleHandler;
+	// private Class<? extends ConsoleHandler> consoleHandler;
+
+	private String consoleHandlerCode;
 
 	private ConsoleType type;
 
@@ -66,13 +64,13 @@ public class Console extends NodeSource implements IConsole {
 	}
 
 	@Override
-	public Class<? extends ConsoleHandler> getConsoleHandler() {
-		return consoleHandler;
+	public ConsoleType getType() {
+		return type;
 	}
 
 	@Override
-	public ConsoleType getType() {
-		return type;
+	public String getHandlerCode() {
+		return consoleHandlerCode;
 	}
 
 	@Override
@@ -89,13 +87,6 @@ public class Console extends NodeSource implements IConsole {
 		return children = ConsoleFinder.getChildren(this);
 	}
 
-	@Override
-	public ConsoleHandler initHandler(DependencyResolver dependencyResolver) throws Exception {
-		Constructor<? extends ConsoleHandler> console = consoleHandler.getConstructor(DependencyResolver.class,
-				IConsole.class);
-		return console.newInstance(dependencyResolver, this);
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -110,7 +101,7 @@ public class Console extends NodeSource implements IConsole {
 		this.id = getAttribute("id");
 		this.objectClass = initObjectClass(getAttribute("bean"));
 		this.view = getAttribute("view", "sys/templates/console");
-		this.consoleHandler = initConsoleHandler(getAttribute("handler"));
+		this.consoleHandlerCode = getAttribute("handler");
 		this.type = ConsoleType.getByCode(getAttribute("type"));
 		this.parentConsoleId = getAttribute("parent-id");
 		this.name = getAttribute("name");
@@ -132,12 +123,6 @@ public class Console extends NodeSource implements IConsole {
 		if (StringUtils.isEmpty(objectClassAttribute))
 			return null;
 		return Class.forName(objectClassAttribute);
-	}
-
-	protected Class<? extends ConsoleHandler> initConsoleHandler(String handlerClass) {
-		return ExceptionStream.printOnFailure().call(() -> {
-			return StringUtils.isEmpty(handlerClass) ? ConsoleHandler.class : Class.forName(handlerClass);
-		}).getOrDefault(ConsoleHandler.class);
 	}
 
 }

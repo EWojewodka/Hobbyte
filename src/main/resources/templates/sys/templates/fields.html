@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+  	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+	<div th:fragment="detailFieldResolver" class="col-lg-8 value">
+		<th:block th:switch="${field.type.code}">
+			<div th:with="value=${bean.__${field.propertyName}__}">
+				<div th:case="'disabled'">
+					<th:block th:include="sys/templates/fields :: disabled" th:with="field=${field},bean=${bean},value=${value}"></th:block>
+				</div>
+				<div th:case="'input'">
+					<th:block th:include="sys/templates/fields :: input" th:with="field=${field},bean=${bean},value=${value}"></th:block>
+				</div>
+				<div th:case="'number'">
+					<th:block th:include="sys/templates/fields :: number" th:with="field=${field},bean=${bean},value=${value}"></th:block>
+				</div>
+				<div th:case="'datetime'">
+					<th:block th:include="sys/templates/fields :: datetime" th:with="field=${field},bean=${bean},value=${value}"></th:block>
+				</div>
+				<div th:case="'propertyString'">
+					<th:block th:include="sys/templates/fields :: propertyString" th:with="field=${field},bean=${bean},value=${value}"></th:block>
+				</div>
+				<div th:case="*">
+					<span th:text="${bean.__${field.propertyName}__}"></span>						
+				</div>
+			</div>
+		</th:block>
+	</div>
+	
+	<div th:fragment="disabled">
+		<input class="form-control" readOnly="readOnly" type="text" th:name="${field.propertyName}" th:value="${value}"></input>
+	</div>
+	
+	<div th:fragment="input">
+		<input class="form-control" type="text" th:name="${field.propertyName}" th:value="${value}"></input>
+	</div>
+	
+	<div th:fragment="number">
+		<input class="form-control" type="number" th:name="${field.propertyName}" th:value="${value}"></input>						
+	</div>
+	
+	<div th:fragment="datetime">
+		<input class="form-control" type="text" th:name="${field.propertyName}" th:value="${dateUtils.parseString('__${value}__', 'unknown', 'yyyy-MM-dd HH:mm')}"></input>						
+	</div>
+	
+	<div th:fragment="propertyString">
+		<input class="form-control" type="text" th:name="${field.propertyName}" th:value="${value}"></input>						
+	</div>
+	
+</body>
+</html>

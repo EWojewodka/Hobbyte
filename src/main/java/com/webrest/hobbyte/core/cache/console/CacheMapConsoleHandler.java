@@ -2,34 +2,20 @@ package com.webrest.hobbyte.core.cache.console;
 
 import java.util.Collection;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.webrest.hobbyte.core.cache.CacheManagerFactory;
 import com.webrest.hobbyte.core.cache.ICacheManager;
 import com.webrest.hobbyte.core.cache.ICacheMap;
-import com.webrest.hobbyte.core.console.IConsole;
 import com.webrest.hobbyte.core.console.handler.ConsoleHandler;
-import com.webrest.hobbyte.core.console.render.ConsoleRenderer;
 import com.webrest.hobbyte.core.console.render.ToolbarButton;
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
-public class CacheMapConsoleHandler extends ConsoleHandler {
-
-	public CacheMapConsoleHandler(DependencyResolver resolver, IConsole console) {
-		super(resolver, console);
-	}
-
-	@Override
-	public Class<?>[] getDependencies() {
-		return ArrayUtils.addAll(super.getDependencies(), new Class<?>[] { DependencyResolver.class });
-	}
-
-	@Override
-	protected ConsoleRenderer<?> initRenderer() {
-		return new CacheMapConsoleRenderer(getDependency(DependencyResolver.class));
-	}
+@Service("CacheMapConsoleHandler")
+@Scope("session")
+public class CacheMapConsoleHandler extends ConsoleHandler<ICacheMap<?, ?>> {
 
 	@Override
 	public void handle(ExtranetUserContext context, Model model, String action) throws Exception {
@@ -39,23 +25,20 @@ public class CacheMapConsoleHandler extends ConsoleHandler {
 		}
 	}
 
-	private class CacheMapConsoleRenderer extends ConsoleRenderer<ICacheMap<?, ?>> {
+	@Override
+	protected void initButtons() {
+		super.initButtons();
+		ToolbarButton button = new ToolbarButton("code");
+		button.setLabel("Reset all");
+		button.setCodeAction("resetAll");
+		button.setIcon("fa fa-eraser");
+		addButton(button);
+	}
 
-		public CacheMapConsoleRenderer(DependencyResolver resolver) {
-			super(resolver, CacheMapConsoleHandler.this.getConsole());
-			ToolbarButton button = new ToolbarButton("code");
-			button.setLabel("Reset all");
-			button.setCodeAction("resetAll");
-			button.setIcon("fa fa-eraser");
-			addButton(button);
-		}
-
-		@Override
-		public Collection<ICacheMap<?, ?>> getObjects() {
-			ICacheManager cacheManager = CacheManagerFactory.getCacheManager();
-			return cacheManager.getAll().values();
-		}
-		
+	@Override
+	public Collection<ICacheMap<?, ?>> getObjects() {
+		ICacheManager cacheManager = CacheManagerFactory.getCacheManager();
+		return cacheManager.getAll().values();
 	}
 
 }

@@ -1,37 +1,28 @@
 package com.webrest.hobbyte.core.appParams.console;
 
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.webrest.hobbyte.core.appParams.AppParam;
 import com.webrest.hobbyte.core.appParams.AppParamDao;
-import com.webrest.hobbyte.core.console.IConsole;
 import com.webrest.hobbyte.core.console.details.ParamConsole;
 import com.webrest.hobbyte.core.console.handler.DBOConsoleHandler;
-import com.webrest.hobbyte.core.console.render.ConsoleRenderer;
+import com.webrest.hobbyte.core.console.render.ToolbarButton;
+import com.webrest.hobbyte.core.criteria.CriteriaFilter;
 import com.webrest.hobbyte.core.exception.ConsoleRedirectException;
 import com.webrest.hobbyte.core.http.context.ExtranetUserContext;
 import com.webrest.hobbyte.core.utils.StringUtils;
-import com.webrest.hobbyte.core.utils.spring.DependencyResolver;
 
-public class AppParamViewHandler extends DBOConsoleHandler {
+@Service("AppParamViewHandler")
+@Scope("session")
+public class AppParamViewHandler extends DBOConsoleHandler<AppParam> {
 
-	public AppParamViewHandler(DependencyResolver resolver, IConsole console) {
-		super(resolver, console);
-	}
-	
-	@Override
-	protected ConsoleRenderer<?> initRenderer() {
-		return new AppParamDetailRenderer(getDependencyResolver(), getConsole());
-	}
-	
-	@Override
-	public Class<?>[] getDependencies() {
-		return ArrayUtils.addAll(super.getDependencies(), new Class<?>[] {AppParamDao.class});
-	}
+	@Autowired
+	private AppParamDao dao;
 
 	@Override
 	public void onAdd(ExtranetUserContext context, Model model) throws Exception {
@@ -46,7 +37,6 @@ public class AppParamViewHandler extends DBOConsoleHandler {
 	public void onSave(ExtranetUserContext context, Model model) throws Exception {
 		super.onSave(context, model);
 		HttpServletRequest req = context.getRequest();
-		req.getParameterMap().forEach((k,v) -> System.out.println(k + " v : " + v[0]));
 		String group = req.getParameter("group");
 		String key = req.getParameter("key");
 		if (StringUtils.isEmpty(group) || StringUtils.isEmpty(key)) {
@@ -60,7 +50,7 @@ public class AppParamViewHandler extends DBOConsoleHandler {
 		String id = req.getParameter("id");
 		if (!StringUtils.isEmpty(id))
 			appParam.setId(StringUtils.getAsInt(id));
-		getDependency(AppParamDao.class).save(appParam);
+		dao.save(appParam);
 	}
 
 	@Override
@@ -71,7 +61,7 @@ public class AppParamViewHandler extends DBOConsoleHandler {
 			context.getMessageHandler().addError("Error during delete app param.");
 			return;
 		}
-		getDependency(AppParamDao.class).delete(StringUtils.getAsInt(id));
+		dao.delete(StringUtils.getAsInt(id));
 		context.getMessageHandler().addSuccess(
 				"Application parameter (code: " + context.getRequest().getParameter("key") + ") is removed.");
 	}
@@ -80,7 +70,6 @@ public class AppParamViewHandler extends DBOConsoleHandler {
 	public void onClone(ExtranetUserContext context, Model model) throws Exception {
 		super.onClone(context, model);
 
-		AppParamDao dao = getDependency(AppParamDao.class);
 		AppParam byId = dao.getById(StringUtils.getAsInt(context.getRequest().getParameter("id"), -1));
 		if (byId == null) {
 			context.getMessageHandler().addError("Cannot copy element.");
@@ -88,8 +77,35 @@ public class AppParamViewHandler extends DBOConsoleHandler {
 		}
 		AppParam clone = (AppParam) byId.cloneDBO();
 		clone.setCode(byId.getCode() + StringUtils.generateRandom(15));
-		System.out.println(clone);
 		dao.save(clone);
+	}
+
+	// -------------- RENDER SECTION -------------
+
+	@Override
+	protected void initButtons() {
+		super.initButtons();
+		ToolbarButton addNewBtn = new ToolbarButton("add");
+		addNewBtn.setCodeAction("add");
+		addNewBtn.setLabel("Add new");
+		addButton(addNewBtn);
+		ToolbarButton saveBtn = new ToolbarButton("save");
+		saveBtn.setCodeAction("save");
+		saveBtn.setLabel("Save");
+		addButton(saveBtn);
+	}
+
+	@Override
+	protected CriteriaFilter getCriteriaFilter() {
+		CriteriaFilter cf = super.getCriteriaFilter();
+		cf.addWhere("group", ((ParamConsole) getConsole()).getGroup());
+		return cf;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public AppParamDao getDao() {
+		return dao;
 	}
 
 }

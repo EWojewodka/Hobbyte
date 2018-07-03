@@ -30,10 +30,21 @@
 	        <div class="row profile-content">
 	        	<div class="container">
 	        		<div class="row">
-			          	<div class="col-lg-2 block profile-left-bar">
-			          		left bar
+			          	<div class="col-lg-2 profile-left-bar fixed">
+			          		<ul class="basic-event">
+			          			<li><a><i class="fa fa-bookmark red"></i>Events</a></li>
+			          			<li><a><i class="fa fa-users blue"></i>Friends</a></li>
+			          			<li><a><i class="fa fa-bullseye green"></i>Friends online: 52</a></li>	
+			          		</ul>
+			          		<ul class="follow-event">
+			          			<li>Skateboard in Wrocław</li>
+			          			<li>Rollers!</li>
+			          			<li>HobbyteDevs Board</li>
+			          			<li>Related events</li>
+			          			<li>Groups</li>	
+			          		</ul>
 			          	</div>
-			          	<div class="col-lg-offset-1 col-lg-6 profile-center-bar">
+			          	<div class="offset-lg-3 col-lg-6 profile-center-bar">
 			          		<div th:if="${context.isUserLogged()} AND (${context.getUser().getId()} == ${userProfile.getId()})" th:remove="tag">
 								<div class="row">
 									<div class="col-lg-12">
@@ -42,12 +53,22 @@
 								</div>
 			          		</div>
 				          	<div class="row">
-				          		<div class="col-lg-12 block">
-						          	&nbsp;
+				          		<div class="col-lg-12 block post-container">
+				          			<input type="hidden" id="userId" th:value="${userProfile.getId()}" ></input>
+						          	<script>
+										importScript('PostEntry');
+										fetchEntries(10, 0, document.getElementById('userId').value);
+										
+										jQuery(window).scroll(function () { 
+											   if (jQuery(window).scrollTop() >= jQuery(document).height() - jQuery(window).height()) {
+													fetchEntries(10,document.getElementsByClassName('post-entry').length);
+											   }
+											});
+									</script>
 				          		</div>
 				          	</div>
 			          	</div>
-			          	<div class="col-lg-offset-1 col-lg-2 block profile-right-bar">
+			          	<div class="offset-lg-7 col-lg-2 block profile-right-bar fixed">
 			          		right bar
 			          	</div>
 	        		</div>

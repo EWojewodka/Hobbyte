@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.webrest.hobbyte.core.model.DatabaseObjectImpl;
+import com.webrest.hobbyte.core.utils.StringUtils;
 import com.webrest.hobbyte.core.utils.collection.PropertyStringService;
 
 /**
@@ -135,5 +136,13 @@ public class AgentDBO extends DatabaseObjectImpl {
 	public void setPeriod(int period) {
 		this.period = period;
 	}
+
+	@Override
+	public DatabaseObjectImpl cloneDBO() {
+		AgentDBO clone = (AgentDBO) super.cloneDBO();
+		clone.setCode(clone.getCode() + StringUtils.generateRandom(3));
+		return clone;
+	}
+
 
 }

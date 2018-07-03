@@ -35,7 +35,7 @@ public class PropertyJarService extends PropertyService {
 		if (!propertiesName.endsWith(".properties"))
 			propertiesName += ".properties";
 		ClassPathResource cpr = new ClassPathResource(propertiesName);
-		Object call = ExceptionStream.printOnFailure().call(() -> {return cpr.getInputStream();});
+		InputStream call = ExceptionStream.printOnFailure().call(() -> {return cpr.getInputStream();}).get();
 		if(call != null)
 			return (InputStream) call;
 		throw new SilentRuntimeException(String.format("Cannot get properties from jar for (%s)", propertiesName));

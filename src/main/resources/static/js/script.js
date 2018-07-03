@@ -13,7 +13,19 @@ jQuery(document).ready(function() {
 	smoothScroll();
 	onlyOneCheckbox();
 	listenMenuTree();
+	autoresizeTextarea();
 });
+
+function autoresizeTextarea() {
+	jQuery.each(jQuery('textarea[data-autoresize]'), function() {
+	    var offset = this.offsetHeight - this.clientHeight;
+	 
+	    var resizeTextarea = function(el) {
+	        jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset);
+	    };
+	    jQuery(this).on('keyup input', function() { resizeTextarea(this); }).removeAttr('data-autoresize');
+	});
+}
 
 function toggleMenu(show) {
 	var leftNavbar = jQuery('.navbar-left');
@@ -337,4 +349,25 @@ function addUrlParam(url,key,value){
 		url += '&';
 	url += key + '=' + value;
 	return url;
+}
+
+function isFunction(functionToCheck) {
+	return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
+
+var lastScrollTop = 0;
+function detectScroll(onDown, onUp, onBottom, onTop) {
+	jQuery(window).scroll(function(event) {
+		var st = jQuery(this).scrollTop();
+		if (st > lastScrollTop) {
+			if(isFunction(onDown))
+				onDown();
+		} else {
+			if(isFunction(onUp))
+				onUp();
+			if(st == 0 && isFunction(onTop))
+				onTop();
+		}
+		lastScrollTop = st;
+	});
 }

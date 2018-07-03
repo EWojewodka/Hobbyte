@@ -27,7 +27,7 @@
 		group="welcome_page"
 		view="sys/templates/param"
 		name="Welcome page"
-		handler="com.webrest.hobbyte.core.appParams.console.AppParamViewHandler"
+		handler="AppParamViewHandler"
 	/>
 	<console 
 		id="facebook"
@@ -35,7 +35,7 @@
 		group="facebook"
 		view="sys/templates/param"
 		name="Facebook params"
-		handler="com.webrest.hobbyte.core.appParams.console.AppParamViewHandler"
+		handler="AppParamViewHandler"
 	/>
 	
 	<console 
@@ -46,19 +46,15 @@
 		fields="id,group,code,value"
 		sort="all"
 		sort-default="group"
-		new="false"
 		name="Application parameters"
-		remove="false"
-		handler="com.webrest.hobbyte.core.console.handler.DBOConsoleHandler"
+		handler="DBOConsoleHandler"
 	/>
 	
 	<console 
 		id="app-param-new"
 		type="params"
 		view="sys/templates/new-param"
-		save="true"
-		new="false"
-		handler="com.webrest.hobbyte.core.appParams.console.AppParamViewHandler"
+		handler="AppParamViewHandler"
 		group="generic"
 	/>
 	
@@ -71,11 +67,9 @@
 		fields="id,login,email,createdAt#created"
 		sort="all"
 		sort-default="id"
-		new="true"
 		name="Users"
-		remove="true"
 		actions="users-details"
-		handler="com.webrest.hobbyte.core.console.handler.ExtranetUserViewHandler"
+		handler="DBOConsoleHandler"
 	/>
 	
 	<console 
@@ -91,8 +85,7 @@
 		bean="com.webrest.hobbyte.app.user.model.ExtranetUser"
 		type="details"
 		view="sys/hobbyte/extranetUser/new_user"
-		save="true"
-		handler="com.webrest.hobbyte.core.console.handler.ExtranetUserViewHandler"
+		handler="ExtranetUserViewHandler"
 	/>
 	
 	<!-- POST ENTRIES -->
@@ -105,8 +98,7 @@
 		sort="all"
 		sort-default="createdAt"
 		name="Post entries list"
-		remove="true"
-		handler="com.webrest.hobbyte.core.console.handler.DBOConsoleHandler"
+		handler="DBOConsoleHandler"
 		
 	/>
 	
@@ -119,7 +111,7 @@
 		fields="name,description,lastInit#creation,size"
 		sort="all"
 		name="Cache maps"
-		handler="com.webrest.hobbyte.core.cache.console.CacheMapConsoleHandler"
+		handler="CacheMapConsoleHandler"
 	/>
 	
 	<console 
@@ -127,9 +119,22 @@
 		bean="com.webrest.hobbyte.core.agent.AgentDBO"
 		type="list"
 		view="sys/templates/list"
-		fields="agentClass#class,lastRun,nextRun,status,period"
+		fields="code#code,lastRun,nextRun,status,period"
 		sort="all"
 		name="Agent list"
-		handler="com.webrest.hobbyte.core.console.handler.DBOConsoleHandler"
+		actions="agent-detail"
+		handler="DBOConsoleHandler"
 	/>
+	
+	<console 
+		id="agent-detail"
+		parent-id="agent-list"
+		type="details"
+		short-name="details"
+		name="Agent detail"
+		view="sys/templates/details"
+		fields="id|disabled,code|input,nextRun#next|datetime,lastRun#last|disabled,propertyString#properties|propertyString,period|number"
+		handler="AgentConsoleDetailHandler"
+	/>
+	
 </consoles>

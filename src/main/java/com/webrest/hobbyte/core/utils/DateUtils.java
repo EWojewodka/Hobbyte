@@ -4,13 +4,11 @@
 package com.webrest.hobbyte.core.utils;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Locale;
 
 import com.webrest.hobbyte.core.i18n.Languages;
-import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
 
 /**
  * @author Emil Wojewódka
@@ -19,30 +17,61 @@ import com.webrest.hobbyte.core.utils.functions.ExceptionStream;
  */
 public class DateUtils {
 
+	private static final String[] AVAILABLE_DATE_PATTERNS = new String[] { "yyyy-MM-dd", "yyyy-MM-dd HH:mm",
+			"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.SSS" };
+
 	public static Long getFutureDate(int minutes) {
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime plusMinutes = now.plusMinutes(minutes);
-		return plusMinutes.toEpochSecond(ZoneOffset.UTC);
+		ZonedDateTime date = ZonedDateTime.now().plusMinutes(minutes);
+		return date.toInstant().toEpochMilli();
 	}
 
 	public static String formatDate(Date date, String format) {
 		return formatDate(date, format, Languages.US.getLocale());
 	}
-	
+
 	public static String formatDate(Date date, String format, Locale locale) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
 		return sdf.format(date);
 	}
 
 	public static Date parseDate(String date, String format) {
+		return parseDate(date, format, false);
+	}
+
+	public static Date parseDate(String date, String format, boolean silentException) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		return ExceptionStream.printOnFailure().call(() -> {
+		try {
 			return sdf.parse(date);
-		}).get();
+		} catch (Exception e) {
+			if (!silentException)
+				e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static Date parseDate(String date) {
-		return parseDate(date, "yyyy-MM-dd");
+		Date resultDate = null;
+		for (String datePattern : AVAILABLE_DATE_PATTERNS) {
+			resultDate = parseDate(date, datePattern, true);
+			if (resultDate != null)
+				break;
+		}
+		System.out.println(resultDate);
+		return resultDate;
+	}
+
+	public static String parseString(String strDateSource, String strDateSourceFormat, String strDateDestFormat) {
+		Date parseDate = null;
+		if (strDateSourceFormat.equalsIgnoreCase("unknown")) {
+			parseDate = parseDate(strDateSource);
+		} else {
+			parseDate = parseDate(strDateSource, strDateSourceFormat);
+		}
+
+		if (parseDate == null)
+			return null;
+
+		return formatDate(parseDate, strDateDestFormat);
 	}
 
 }

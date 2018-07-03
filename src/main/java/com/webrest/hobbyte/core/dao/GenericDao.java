@@ -3,6 +3,8 @@ package com.webrest.hobbyte.core.dao;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -35,8 +37,8 @@ import com.webrest.hobbyte.core.utils.collection.PriorityComparer;
  * @since 24 mar 2018
  */
 @Component
-@Transactional(rollbackOn = Exception.class)
 @SuppressWarnings("unchecked")
+@Transactional
 public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Integer> {
 
 	@PersistenceContext
@@ -113,16 +115,26 @@ public class GenericDao<T extends DatabaseObject> implements IGenericDao<T, Inte
 		return result.isEmpty() ? null : result.get(0);
 	}
 
-	public List<T> findAll(){
+	public List<T> findAll() {
 		return find(new CriteriaFilter());
 	}
-	
+
 	@Override
 	public List<T> find(ICriteriaFilter<?> criteriaFilter) {
 		Criteria criteria = em.unwrap(Session.class).createCriteria(getGenericType());
 
 		// Add where
-		criteria.add(Restrictions.allEq(criteriaFilter.getWhere()));
+		//// add where null
+		Map<String, Object> where = criteriaFilter.getWhere();
+		Set<Entry<String, Object>> entrySet = where.entrySet();
+		for (Entry<String, Object> es : entrySet) {
+			if (es.getValue() != null)
+				continue;
+			criteria.add(Restrictions.isNull(es.getKey()));
+			where.remove(es.getKey());
+		}
+
+		criteria.add(Restrictions.allEq(where));
 
 		// Add where in
 		Map<String, Object[]> whereIn = criteriaFilter.getWhereIn();

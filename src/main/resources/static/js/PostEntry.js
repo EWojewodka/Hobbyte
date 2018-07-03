@@ -21,7 +21,7 @@ function printPostEntry(appendTo,postEntry, before){
 								'<img class="post-profile-image block" src="{author.imageUrl}" />'+
 							'</div>' +
 							'<div class="col-lg-10">' + 
-								'<div class="row">' +
+								'<div class="row work-sans-light blue">' +
 									'{author.name} {author.lastname}' + 
 								'</div>' + 
 								'<div class="row small">' +
@@ -41,8 +41,8 @@ function printPostEntry(appendTo,postEntry, before){
 			'<div class="row reaction-block">'+
 				'<div class="col-lg-9">'+
 					'<div class="row">'+
-						'<a class="thumb-button block small standard-btn" onclick="executeThumb({postEntry.id})"><i class="fa fa-thumbs-up"></i> <span id="post-entry-likes-{postEntry.id}">{reactions.length}</span> Like!</a>'+
-						'<a class="show-comments block small standard-btn" onclick="getComments({postEntry.id})"><i class="fa fa-comments"></i> <span>Comments</span></a>'+
+						'<a class="thumb-button block small standard-btn ghost" onclick="executeThumb({postEntry.id})"><i class="far fa-thumbs-up"></i> <span id="post-entry-likes-{postEntry.id}">{reactions.length}</span> Like!</a>'+
+						'<a class="show-comments block small standard-btn ghost" onclick="getComments({postEntry.id})"><i class="far fa-comment-alt"></i> <span>Comments</span></a>'+
 					'</div>'+
 				'</div>'+
 			'</div>' +
@@ -123,6 +123,8 @@ function sendOnEnter(event, textArea) {
 	if(isEmpty(content))
 		return;
 	var form = jQuery(textArea).parent();
+	ajax.addAjaxData('contentType',false);
+	ajax.addAjaxData('processData', false);
 	ajax.send(new FormData(form[0]),addCommentSuccess);
 	textArea.value = '';
 }
@@ -206,11 +208,14 @@ function renderSingleComment(comment){
 	
 }
 
-function fetchEntries(size,offset){
+function fetchEntries(size,offset,userId){
 	var url = "/post/feed/news";
 	url = addUrlParam(url, "size",size)
 	if(offset !== undefined)
 		url = addUrlParam(url, "offset",offset)
+	if(userId !== undefined)
+		url = addUrlParam(url, "userId",userId)
+		
 	var ajax = new AjaxRequest(url);
 	ajax.method = 'GET';
 	ajax.send(null, function(jsonObj){
